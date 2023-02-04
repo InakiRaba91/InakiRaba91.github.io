@@ -26,7 +26,7 @@ jobs:
       - name: Run Loconotion
         run: |
           docker run \
-          --rm -v "$GITHUB_WORKSPACE/pages_repo/bobo:/app/loconotion/bobo \
+          --rm -v "$GITHUB_WORKSPACE/pages_repo/bobo:/app/loconotion/bobo" \
           --entrypoint /bin/bash loconotion -c 'echo "Hola!" >> /app/loconotion/bobo/prueba.txt'
         working-directory: loconotion
       - name: What's the deal?
