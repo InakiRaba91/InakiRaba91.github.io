@@ -25,14 +25,13 @@ jobs:
         
       - name: Run Loconotion
         run: |
-          docker-compose run \
-          -v "$GITHUB_WORKSPACE/pages_repo/dist:/app/loconotion/dist" \
-          -v "$GITHUB_WORKSPACE/pages_repo/site.toml:/app/loconotion/site.toml" \
-          loconotion "site.toml"
+          docker run \
+          --rm -v "$GITHUB_WORKSPACE/pages_repo/bobo:/app/loconotion/bobo \
+          --entrypoint /bin/bash loconotion -c 'echo "Hola!" >> /app/loconotion/bobo/prueba.txt'
         working-directory: loconotion
       - name: What's the deal?
         run: |
-          find "$GITHUB_WORKSPACE"
+          find $GITHUB_WORKSPACE/pages_repo
       - name: Push to GitHub pages
         run: |
           git config --global user.name "github-actions[bot]"
