@@ -26,17 +26,23 @@ jobs:
         
       - name: Run Loconotion
         run: |
+          mkdir $GITHUB_WORKSPACE/pages_repo/dist
           docker run \
-          -v "$GITHUB_WORKSPACE/pages_repo/dist:/app/loconotion/dist" \
+          -v "$GITHUB_WORKSPACE/pages_repo/dist_root:/app/loconotion/dist" \
           -v "$GITHUB_WORKSPACE/pages_repo/site.toml:/app/loconotion/site.toml" \
           loconotion "site.toml"
         working-directory: loconotion
-
+      
+      # The reason we have to copy dist_root -> dist is because the first was created
+      # within the Docker container, so it's owned by root. Thus, the folder vitae
+      # can't be copied into it. After copying it, the new folder is owned by the 
+      # github runner.
+      # The idea is to have a static page with the Resume (with a specific format 
+      # that can't be created in Notion) so here we will copy that page to the
+      # folder and replace the $RESUME_SECTION reference to point to this (using iFrame)
       - name: copy folder with resume page and point to it in about page
         run: |
-          ls -la
-          chown -R $USER:$(id -g -n $USER) dist/
-          ls -la
+          cp -r dist_root dist
           cp -r ./vitae/ ./dist/site/vitae
           sed -i 's,$RESUME_SECTION,'"$IFRAME"',' ./dist/site/about.html
         env:
