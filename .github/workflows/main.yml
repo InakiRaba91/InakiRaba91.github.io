@@ -14,6 +14,7 @@ jobs:
         with:
           repository: leoncvlt/loconotion
           path: loconotion
+          
       - name: Checkout this repo
         uses: actions/checkout@v2
         with:
@@ -30,9 +31,22 @@ jobs:
           -v "$GITHUB_WORKSPACE/pages_repo/site.toml:/app/loconotion/site.toml" \
           loconotion "site.toml"
         working-directory: loconotion
-      - name: What's the deal?
+
+      - name: copy folder with resume page and point to it in about page
+        run: |
+          ll
+          find .
+          cp -r ./vitae/ ./dist/site/vitae
+          sed -i 's,$RESUME_SECTION,'"$IFRAME"',' ./dist/site/about.html
+        env:
+          IFRAME: '<iframe src="./vitae/vitae.html" style="border:none;height:1500px;width:800px;" title="Iframe Vitae"></iframe>'
+        working-directory: pages_repo
+        
+        
+      - name: Log generated files 
         run: |
           find "$GITHUB_WORKSPACE"
+          
       - name: Push to GitHub pages
         run: |
           git config --global user.name "github-actions[bot]"
