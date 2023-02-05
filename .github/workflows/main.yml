@@ -42,7 +42,11 @@ jobs:
       # folder and replace the $RESUME_SECTION reference to point to this (using iFrame)
       - name: copy folder with resume page and point to it in about page
         run: |
+          echo "Before..."
+          ls
           cp -r dist_root dist
+          echo "After..."
+          find .
           cp -r ./vitae/ ./dist/site/vitae
           sed -i 's,$RESUME_SECTION,'"$IFRAME"',' ./dist/site/about.html
         env:
