@@ -35,7 +35,8 @@ jobs:
       - name: copy folder with resume page and point to it in about page
         run: |
           ls -la
-          find .
+          chown -R $USER:$(id -g -n $USER) dist/
+          ls -la
           cp -r ./vitae/ ./dist/site/vitae
           sed -i 's,$RESUME_SECTION,'"$IFRAME"',' ./dist/site/about.html
         env:
