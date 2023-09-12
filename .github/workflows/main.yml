@@ -12,7 +12,7 @@ jobs:
       - name: Checkout loconotion
         uses: actions/checkout@v3
         with:
-          repository: leoncvlt/loconotion
+          repository: choux130/loconotion # temporal: leoncvlt/loconotion
           path: loconotion
           
       - name: Checkout this repo
