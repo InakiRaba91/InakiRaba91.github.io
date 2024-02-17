@@ -19,7 +19,10 @@ In this setup, the camera consists of a simple dark box with a small aperture (t
 
 The image is formed when the light rays enter it through the pinhole (which we will assume of infinitesimal radius) and are captured by the photographic material the film is composed of. This way, an inverted image is obtained, which can be flipped in a post-processing step. Moreover, this is equivalent to forming a virtual image in front of the camera, at a distance **f** from the pinhole.
 
-![Untitled](/Ovni2.png)
+<figure style="text-align: center;">
+  <img src="/Ovni2.png" alt="Virtual image formation" width="200" style="display: block; margin: auto;">
+  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 2.</strong> Example of virtual inverted image formation. The light rays project to the film located at the back of the analogic camera, causing an inversion. In order to undo the inversion, we can flip the formed image, which is equivalent to capturing a virtual image in a plane in front of the film.</figcaption>
+</figure>
 
 # 2. Intrinsic matrix
 
@@ -30,7 +33,10 @@ In order to characterize the projection, let us start by defining the two system
 - **3D World**: we define the origin of coordinates located at the camera pinhole. Furthermore, the cartesian axes will also be aligned with the camera axes.
 - **2D Image**: we define the origin of coordinates located at the bottom-left corner of the virtual image.
 
-![Untitled](/Ovni3.png)
+<figure style="text-align: center;">
+  <img src="/Ovni3.png" alt="Coordinate systems" width="200" style="display: block; margin: auto;">
+  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 3.</strong> Illustration of the two different coordinates systems: the world coordinate system, centered at the camera pinhole (<span style="color:pink">pinktext</span>) and the image coordinate system, centered at the bottom left corner of the virtual image (<span style="color:red">pinktext</span>).</figcaption>
+</figure>
 
 Given these arbitrary definitions, we can now determine where a point $p=(x, y, z)$ will be projected in the image. To do so, we just need to recall that the projection $P=(X, Y)$ is found at the intersection between the plane containing the virtual image, and the ray passing through both the point p and the pinhole $o=(0, 0, 0)$.
 
