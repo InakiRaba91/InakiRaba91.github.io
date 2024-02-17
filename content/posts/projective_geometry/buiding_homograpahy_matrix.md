@@ -35,7 +35,7 @@ In order to characterize the projection, let us start by defining the two system
 
 <figure style="text-align: center;">
   <img src="/Ovni3.png" alt="Coordinate systems" width="200" style="display: block; margin: auto;">
-  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 3.</strong> Illustration of the two different coordinates systems: the world coordinate system, centered at the camera pinhole (<span style="color:pink">pinktext</span>) and the image coordinate system, centered at the bottom left corner of the virtual image (<span style="color:red">pinktext</span>).</figcaption>
+  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 3.</strong> Illustration of the two different coordinates systems: the world coordinate system, centered at the camera pinhole (<span style="color: pink;">red</span>) and the image coordinate system, centered at the bottom left corner of the virtual image (<span style="color: red;">red</span>).</figcaption>
 </figure>
 
 Given these arbitrary definitions, we can now determine where a point $p=(x, y, z)$ will be projected in the image. To do so, we just need to recall that the projection $P=(X, Y)$ is found at the intersection between the plane containing the virtual image, and the ray passing through both the point p and the pinhole $o=(0, 0, 0)$.
