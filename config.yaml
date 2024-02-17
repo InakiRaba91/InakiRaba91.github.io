@@ -1,0 +1,27 @@
+baseURL: 'http://localhost:1313'
+languageCode: 'en-us'
+title: 'Iñaki’s Log'
+theme: ["PaperMod"]
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
+params:
+  math: true
+
+menu:
+  main:
+    - identifier: Posts
+      name: Posts
+      url: /posts/
+      weight: 10
+    - identifier: Tags
+      name: Tags
+      url: /tags/
+      weight: 20
+    - identifier: About
+      name: About
+      url: /about/
+      weight: 30
