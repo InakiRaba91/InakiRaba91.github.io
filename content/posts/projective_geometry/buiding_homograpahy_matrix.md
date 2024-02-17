@@ -35,14 +35,17 @@ In order to characterize the projection, let us start by defining the two system
 
 <figure style="text-align: center;">
   <img src="/Ovni3.png" alt="Coordinate systems" width="200" style="display: block; margin: auto;">
-  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 3.</strong> Illustration of the two different coordinates systems: the world coordinate system, centered at the camera pinhole (<span style="color: pink;">red</span>) and the image coordinate system, centered at the bottom left corner of the virtual image (<span style="color: red;">red</span>).</figcaption>
+  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 3.</strong> Illustration of the two different coordinates systems: the world coordinate system, centered at the camera pinhole (<strong><span style="color: pink;">pink</span></strong>) and the image coordinate system, centered at the bottom left corner of the virtual image (<strong><span style="color: red;">red</span></strong>).</figcaption>
 </figure>
 
 Given these arbitrary definitions, we can now determine where a point $p=(x, y, z)$ will be projected in the image. To do so, we just need to recall that the projection $P=(X, Y)$ is found at the intersection between the plane containing the virtual image, and the ray passing through both the point p and the pinhole $o=(0, 0, 0)$.
 
 For simplicity, let us focus on how the projection takes place for the horizontal dimension $x$:
 
-![Untitled](/TriangleSimilarity1.png)
+<figure style="text-align: center;">
+  <img src="/TriangleSimilarity1.png" alt="Triangle similarity" width="400" style="display: block; margin: auto;">
+  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 4.</strong> Left image shows how a a 3D point $\vec{p}$ is projected into the virtual image at pixel $\vec{P}$. Right image focuses on the <strong>ZX</strong> plane.</figcaption>
+</figure>
 
 We can observe that there are two similar triangles (black and green) on the right image. Therefore, the rate between the lengths of their sides is preserved:
 
@@ -132,6 +135,16 @@ $$
 
 where $K$ is defined as the intrinsic matrix
 
+$$
+\begin{equation}
+K=\begin{bmatrix}
+f & 0 & \frac{W}{2}\\\\
+0 & f & \frac{H}{2}\\\\
+0 & 0 & 1
+\end{bmatrix} 
+\end{equation}
+$$
+
 and $\vec{p}$ corresponds to the 3D world point
 
 $$
@@ -146,17 +159,10 @@ $$
 
 ImportantIy, homogenous coordinates are defined up to a scale. Why is that the case? Going back to the introduction, we stated that there was a compression involved in projective geometry. We are capturing a 3D world into a 2D image. That implies that there is an infinite set of aligned points (i.e. a line) in the 3D world that are mapped exactly to the same location in image space. Take a look at the image below
 
-$$
-\begin{equation}
-K=\begin{bmatrix}
-f & 0 & \frac{W}{2}\\\\
-0 & f & \frac{H}{2}\\\\
-0 & 0 & 1
-\end{bmatrix} 
-\end{equation}
-$$
-
-![Untitled](/TriangleSimilarity2.png)
+<figure style="text-align: center;">
+  <img src="/TriangleSimilarity2.png" alt="Projective compression" width="200" style="display: block; margin: auto;">
+  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 5.</strong> Illustration of the compression that occurs when projecting points from the 3D world into a 2D image. All points that belong to a ray going through the pinhole, such as $\vec{p}$ and $\vec{p'}$ are mapped to the same pixel.</figcaption>
+</figure>
 
 Once again, due to the similarity of the triangles involved, we know that
 
@@ -217,11 +223,17 @@ $$
 
 So far, we have assumed we had an analog camera, so the image coordinates lived in a continuous space. However, most often we deal with digital images. Since the information needs to be stored in bits, we need to both discretize the locations at which we sample the image, and quantitize the values we measure.
 
-![Untitled](/Wave.png)
+<figure style="text-align: center;">
+  <img src="/Wave.png" alt="Discretization and Quantization" width="200" style="display: block; margin: auto;">
+  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 6.</strong> Illustration of the effects of sampling along the temporal dimension and quantizing the measured signal amplitud.</figcaption>
+</figure>
 
 Since we are focused on the spatial mapping, the effect we care about is the **discretization** that takes place in the projected image. If we use squared pixels, we will get something as displayed below:
 
-![Untitled](/Discretization.png)
+<figure style="text-align: center;">
+  <img src="/Discretization.png" alt="2D Discretization" width="400" style="display: block; margin: auto;">
+  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 7.</strong> Depiction of the effects of capturing a real world object (left) as a 2D digital image, which only allows to store a discrete number of values at a discrete set of 2D pixel locations.</figcaption>
+</figure>
 
 The length of the pixel side is given by the width (height) of the image divided by the number of pixels along the corresponding dimension $N_x$ ($N_y$):
 
@@ -266,7 +278,10 @@ $$
 \end{equation}
 $$
 
-![Untitled](/DiscretizationRectangular.png)
+<figure style="text-align: center;">
+  <img src="/DiscretizationRectangular.png" alt="2D Recangular Discretization" width="400" style="display: block; margin: auto;">
+  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 8.</strong> Effect of using rectangular (non-squared) pixels for the 2D digital image that captures the real world object.</figcaption>
+</figure>
 
 Well, that is how we end up with two different focal lengths along each dimension:
 
@@ -310,11 +325,17 @@ $$
 
 It is common to see an additional parameter in the intrinsic matrix: the **skew** factor. It accounts for a shearing effect, i.e., image axes not being perpendicular, which results in non-rectangular parallelogrammatic pixels.
 
-![Untitled](/DiscretizationShearing.png)
+<figure style="text-align: center;">
+  <img src="/DiscretizationShearing.png" alt="Shearing Distortion" width="400" style="display: block; margin: auto;">
+  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 9.</strong> Effect of shearing distortion when capturing a real world object in a 2D digital image.</figcaption>
+</figure>
 
 Mathematically, it can be modelled by a simple change of basis. Therefore, we just need to find the coefficients of the point expressed in the new basis. Using trigonometry, we can derive. 
 
-![Untitled](/Shearing.png)
+<figure style="text-align: center;">
+  <img src="/Shearing.png" alt="Shearing" width="400" style="display: block; margin: auto;">
+  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 10.</strong> Detailed depiction of the trigonometry involved in the shearing distortion that maps a squared pixel (<strong><span style="color: pink;">pink</span></strong>) to a rhomboid one (<strong><span style="color: green;">green</span></strong>).</figcaption>
+</figure>
 
 Using trigonometry, we can derive 
 
@@ -447,7 +468,10 @@ It is worth pointing out that in most cases, the shearing effect is not present.
 
 So far, we have assumed our arbitrarily world coordinate system (pink) is perfectly aligned with our camera coordinate system (green), with its origin at the camera pinhole and its Cartesian axes parallel to the camera axes.
 
-![Untitled](/OvniRotation.png)
+<figure style="text-align: center;">
+  <img src="/OvniRotation.png" alt="Ovni flying above the camera" width="400" style="display: block; margin: auto;">
+  <figcaption style="font-weight: normal; max-width: 80%; margin: auto;"><strong>Figure 11.</strong> Illustration of a shift and rotation of the camera w.r.t. the world coordinate system (<strong><span style="color: pink;">pink</span></strong>). It allows us to define an additional camera coordinate system (<strong><span style="color: green;">green</span></strong>) centered at the camera pinhola and aligned with the camera plane.</figcaption>
+</figure>
 
 However, when we take photos of videos in the world, we often rotate and/or shift the camera. This results in a camera system that can be derived from the world system by applying two steps sequentially:
 
