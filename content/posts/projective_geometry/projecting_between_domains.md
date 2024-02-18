@@ -5,6 +5,13 @@ tags = ["computer vision", "projective geometry", "homography matrix", "pinhole 
 draft = false
 +++
 
+<span style="background-color: lightgrey; border: 1px solid black; padding: 2px 10px; display: inline-flex; align-items: center;">
+  <details>
+    <summary><strong>Table of Contents</strong></summary>
+      {{< toc >}}
+  </details>
+</span>
+
 # 1. Motivation: sports analytics
 
 At this point, we know how to mathematically characterise the mapping between the 3D world and a 2D image capturing it. So it seems natural to wonder: what can we do with it? In this post, I will focus on a use case that I happen to be familiar with, but there are many others you can think of.

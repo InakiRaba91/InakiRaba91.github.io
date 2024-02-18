@@ -5,6 +5,13 @@ tags = ["computer vision", "projective geometry", "homography matrix", "pinhole 
 draft = false
 +++
 
+<span style="background-color: lightgrey; border: 1px solid black; padding: 2px 10px; display: inline-flex; align-items: center;">
+  <details>
+    <summary><strong>Table of Contents</strong></summary>
+      {{< toc >}}
+  </details>
+</span>
+
 # 1. Pinhole camera model
 
 When we capture something on camera, there is an interesting phenomenon going on: **compression**. We are taking a photograph of a 3D world, and capturing it in a 2D image. This 3D→2D space mapping inevitably leads to information loss. There are multiple locations in the 3D world that project exactly to the same position in the 2D image. Nonetheless, this observation should not come as a surprise to anyone: it is precisely the reason occlusions take place. Multiple objects at different places end up in the same location when viewed through a 2D projection, be it a film or our retina.
@@ -220,7 +227,7 @@ $$
 
 ## 2.3. Accounting for distortions
 
-### 2.3.1. **Digital images**
+### 2.3.1. Digital images
 
 So far, we have assumed we had an analog camera, so the image coordinates lived in a continuous space. However, most often we deal with digital images. Since the information needs to be stored in bits, we need to both discretize the locations at which we sample the image, and quantitize the values we measure.
 
