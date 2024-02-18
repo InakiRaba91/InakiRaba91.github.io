@@ -1,0 +1,47 @@
+baseURL: 'https://inakiraba91.github.io/'
+languageCode: 'en-us'
+title: 'Iñaki’s Log'
+theme: ["PaperMod"]
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
+params:
+  math: true
+  homeInfoParams:
+    Title: "🧵 Welcome to Iñaki’s Log"
+    Content: >-
+      This is **Iñaki Rabanillo**. I am a Machine Learning Engineer with a PhD in Computer Vision applied to Medical Imaging. 
+      I will use this site to document my learning notes in the hope of clarifying my ideas, so it will always be work in progress 🚀  
+  socialIcons:
+    - name: github
+      url: 'https://github.com/InakiRaba91'
+    - name: linkedin
+      url: 'https://www.linkedin.com/in/i%C3%B1aki-rabanillo-viloria-79643449/'
+
+taxonomies:
+   tag: 'tags'
+   category: 'categories'
+
+enableEmoji: true
+
+menu:
+  main:
+    - identifier: Posts
+      name: 📚 Posts
+      url: /posts/
+      weight: 10
+    - identifier: Tags
+      name: 🏷️ Tags
+      url: /tags/
+      weight: 20
+    - identifier: Search
+      name: 🔍 Search
+      url: /search/
+      weight: 30
+    - identifier: About
+      name: 👋 About
+      url: /about/
+      weight: 40
