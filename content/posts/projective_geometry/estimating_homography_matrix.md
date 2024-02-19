@@ -555,7 +555,7 @@ The latter constitute the state-of-the-art and is illustrated in the video below
 
 # 6. References
 
-.1. Richard Hartley and Andrew Zisserman (2000), *Multiple View Geometry in Computer Vision*, Cambridge University Press.
+1. Richard Hartley and Andrew Zisserman (2000), *Multiple View Geometry in Computer Vision*, Cambridge University Press.
 2. Henri P. Gavin (2017), CEE 629 Lecture Notes. System Identification Duke University, *Total Least Squares*
 3. Richard Szeliski (2010), *Computer Vision: Algorithms and Applications*, Springer
 4. [OpenCV Libary: Basic concepts of the homography explained with code](https://docs.opencv.org/3.4/d9/dab/tutorial_homography.html)
