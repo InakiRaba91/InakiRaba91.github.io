@@ -548,10 +548,12 @@ In this post we have shown multiple approaches that allow to retrieve the homogr
 
 The latter constitute the state-of-the-art and is illustrated in the video below. It displays the pitch template (red) projected using the homography retrieved in a fully automated fashion.
 
-[out.mp4](/estimating_homography_matrix/out.mp4)
-
-
-
+<figure class="figure" style="text-align: center;">
+  <video src="/estimating_homography_matrix/HomographyDemo.mp4" width="90%" controls style="display: block; margin: auto;">
+    Homography demo
+  </video>
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of homography estimation in video clip.</figcaption>
+</figure>
 
 # 6. References
 
