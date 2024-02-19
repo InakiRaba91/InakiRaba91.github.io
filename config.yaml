@@ -13,6 +13,8 @@ markup:
     ordered: false
 
 params:
+  defaultTheme: "light"
+  disableThemeToggle: true
   math: true
   fuseOpts:
     isCaseSensitive: false
