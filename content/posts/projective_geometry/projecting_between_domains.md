@@ -1,6 +1,6 @@
 +++
 title = '📐 Projective Geometry: Projecting between domains'
-date = 2023-05-10T11:16:19+01:00
+date = 2023-07-10T11:16:19+01:00
 tags = ["computer vision", "projective geometry", "homography matrix", "pinhole camera"]
 draft = false
 +++
@@ -40,9 +40,9 @@ If we were able to retrieve the homography for this particular frame and locate 
 
 Furthermore, if we were able to do this process over all frames in the video, we would be able to track players throughout the whole game and measure any physical metric we care about.
 
-<span style="background-color: lightyellow; border: 1px solid black; padding: 2px 10px; display: inline-flex; align-items: center;">
+<span style="background-color: lightblue; border: 1px solid black; padding: 2px 10px; display: inline-flex; align-items: center;">
     <img src="/github.svg" alt="GitHub Icon" style="width: 24px; height: 24px; margin-right: 10px;">
-    <a href="https://example.com" style="text-decoration: none; color: blue; line-height: 1;"><strong>Auxiliary repository</strong></a>
+    <a href="https://github.com/InakiRaba91/ProjectiveGeometry" style="text-decoration: none; color: blue; line-height: 1;"><strong>Auxiliary repository</strong></a>
 </span>
 
 
