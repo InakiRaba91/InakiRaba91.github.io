@@ -13,4 +13,4 @@ draft = false
 </div>
 {{< /rawhtml >}}
 
-<iframe src="./vitae.html" style="border:none;height:2200px;width:1800px;" scrolling="no" title="Iframe Vitae"></iframe>
+<iframe src="/about/vitae.html" style="border:none;height:2200px;width:1800px;" scrolling="no" title="Iframe Vitae"></iframe>
