@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>📐 Projective Geometry: Projecting between domains | Iñaki’s Log</title>
+<meta name="keywords" content="computer vision, projective geometry, homography matrix, pinhole camera">
+<meta name="description" content="Table of Contents 1. Motivation: sports analytics 2. Points 3. Lines 4. Conics 4.1. Projection 4.2. Distortion: Objects behind the camera plane 5. Images 5.1. Projection via object decomposition 6. References 1. Motivation: sports analytics At this point, we know how to mathematically characterise the mapping between the 3D world and a 2D image capturing it. So it seems natural to wonder: what can we do with it? In this post, I will focus on a use case that I happen to be familiar with, but there are many others you can think of.">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/projective_geometry/projecting_between_domains/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/projective_geometry/projecting_between_domains/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous">
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" integrity="sha384-VQ8d8WVFw0yHhCk5E8I86oOhv48xLpnDZx5T9GogA/Y84DcCKWXDmSDfn13bzFZY" crossorigin="anonymous"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
+
+</head>
+
+<body class="" id="top">
+
+<head>
+  
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-X47ZD00R5L"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-X47ZD00R5L', { 'anonymize_ip': false });
+}
+</script>
+
+</head>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Iñaki’s Log (Alt + H)">Iñaki’s Log</a>
+            <div class="logo-switches">
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/posts/" title="📚 Posts">
+                    <span>📚 Posts</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="🏷️ Tags">
+                    <span>🏷️ Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="🔍 Search (Alt &#43; /)" accesskey=/>
+                    <span>🔍 Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="👋 About">
+                    <span>👋 About</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      📐 Projective Geometry: Projecting between domains
+    </h1>
+    <div class="post-meta"><span title='2023-07-10 11:16:19 +0100 +0100'>July 10, 2023</span>
+
+</div>
+  </header> 
+  <div class="post-content"><span style="background-color: lightgrey; border: 1px solid black; padding: 2px 10px; display: inline-flex; align-items: center;">
+  <details>
+    <summary><strong>Table of Contents</strong></summary>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-motivation-sports-analytics">1. Motivation: sports analytics</a></li>
+    <li><a href="#2-points">2. Points</a></li>
+    <li><a href="#3-lines">3. Lines</a></li>
+    <li><a href="#4-conics">4. Conics</a>
+      <ul>
+        <li><a href="#41-projection">4.1. Projection</a></li>
+        <li><a href="#42-distortion-objects-behind-the-camera-plane">4.2. Distortion: Objects behind the camera plane</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-images">5. Images</a>
+      <ul>
+        <li><a href="#51-projection-via-object-decomposition">5.1. Projection via object decomposition</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-references">6. References</a></li>
+  </ul>
+</nav>
+  </details>
+</span>
+<h1 id="1-motivation-sports-analytics">1. Motivation: sports analytics<a hidden class="anchor" aria-hidden="true" href="#1-motivation-sports-analytics">#</a></h1>
+<p>At this point, we know how to mathematically characterise the mapping between the 3D world and a 2D image capturing it. So it seems natural to wonder: what can we do with it? In this post, I will focus on a use case that I happen to be familiar with, but there are many others you can think of.</p>
+<p>Imagine you work for a sports team, and the coach wants to monitor the performance of the players. Let us say he or she is interested in physical metrics such as the distance covered, average speed, peak speed, average location… So you, being the data scientist in the organisation, are asked to find out those metrics, and the only source of data you are provided with is video footage from the games.</p>
+<p>It is important to bear in mind what is preserved and what is not after a projective transform:</p>
+<ul>
+<li>Concurrency (multiple lines intersecting at a single point) is <strong>preserved</strong></li>
+<li>Collinearity (multiple points belonging to the same line) is <strong>preserved</strong></li>
+<li>Parallelism (lines equidistant to each other) is <strong>not preserved</strong>!</li>
+</ul>
+<p>The result of these properties manifests as spatial distortions, which in turn render it unfeasible to realiably measure distances in image space. Take the following frame from an NBA game for instance:</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/CelticsLakersPlayers.png" alt="Broadcast frame" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of broadcast frame from an NBA game with labelled players.</figcaption>
+</figure>
+<p>If we were able to retrieve the homography for this particular frame and locate the players on it, then we would be able to back project them and obtain their precise coordinates in the court template:</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/CelticsTemplate.png" alt="NBA Court template" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of NBA court template.</figcaption>
+</figure>
+<p>Furthermore, if we were able to do this process over all frames in the video, we would be able to track players throughout the whole game and measure any physical metric we care about.</p>
+<span style="background-color: lightblue; border: 1px solid black; padding: 2px 10px; display: inline-flex; align-items: center;">
+    <img src="/github.svg" alt="GitHub Icon" style="width: 24px; height: 24px; margin-right: 10px;">
+    <a href="https://github.com/InakiRaba91/ProjectiveGeometry" style="text-decoration: none; color: blue; line-height: 1;"><strong>Auxiliary repository</strong></a>
+</span>
+<h1 id="2-points">2. Points<a hidden class="anchor" aria-hidden="true" href="#2-points">#</a></h1>
+<p>In the previous post (<a href="https://inakiraba91.github.io/posts/projective_geometry/buiding_homograpahy_matrix/">Building the Homography Matrix from scratch</a>), we already saw how to project a point from the 3D world into a 2D image</p>
+<p>$$
+\begin{equation}
+s\cdot
+\begin{bmatrix}
+x&rsquo; \\
+y&rsquo; \\
+1  \\
+\end{bmatrix}=
+\begin{bmatrix}
+h_{11} &amp; h_{12} &amp; h_{13} &amp; h_{14}\\
+h_{21} &amp; h_{22} &amp; h_{23} &amp; h_{24}\\
+h_{31} &amp; h_{32} &amp; h_{33} &amp; h_{34}\\
+\end{bmatrix} \cdot
+\begin{bmatrix}
+x \\
+y \\
+z \\
+1 \\
+\end{bmatrix}
+\end{equation}
+$$</p>
+<p>Importantly, this projection is not revertible. The reason is that each point in the 2D image is the result of collapsing a ray of points in the 3D world onto the image. In order to resolve the ambiguity of which one we are observing, multiple camera angles would be needed</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/MultiCamera.png" alt="Multi camera NBA" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of multiple camera angles of the same NBA court template taken with two different cameras.</figcaption>
+</figure>
+<p>Nevertheless, if we assume all objects of interest are located in a 2D plane, we end up with a 2D→2D mapping, which is revertible. In the scenario that motivated this post, that 2D plane in the 3D world would be the ground ($z=0$): we are interested in tracking player locations across the court, so it suffices to track their feet under the assumption that most of the time those are in the ground.</p>
+<p>Under this circumstances, our projection simplifies to</p>
+<p>$$
+\begin{equation}
+s\cdot
+\begin{bmatrix}
+x&rsquo; \\
+y&rsquo; \\
+1 \\
+\end{bmatrix}=
+\begin{bmatrix}
+h_{11} &amp; h_{12} &amp; h_{13} &amp; h_{14}\\
+h_{21} &amp; h_{22} &amp; h_{23} &amp; h_{24}\\
+h_{31} &amp; h_{32} &amp; h_{33} &amp; h_{34}\\
+\end{bmatrix} \cdot
+\begin{bmatrix}
+x \\
+y \\
+0 \\
+1 \\
+\end{bmatrix}
+\end{equation}
+$$</p>
+<p>or equivalently</p>
+<p>$$
+\begin{equation}
+s\cdot
+\begin{bmatrix}
+x&rsquo; \\
+y&rsquo; \\
+1 \\
+\end{bmatrix}=
+\begin{bmatrix}
+h_{11} &amp; h_{12} &amp; h_{14}\\
+h_{21} &amp; h_{22} &amp; h_{24}\\
+h_{31} &amp; h_{32} &amp; h_{34}\\
+\end{bmatrix} \cdot
+\begin{bmatrix}
+x \\
+y \\
+1 \\
+\end{bmatrix}
+\end{equation}
+$$</p>
+<p>So in order to project a point, we just need to convert it to homogenous coordinates and multiply with the homography matrix:</p>
+<p>$$
+\begin{equation}
+\vec{p&rsquo;}=H\cdot\vec{p}
+\end{equation}
+$$</p>
+<p>This will give us the projected point in homogenous coordinates. In order to retrieve the pixel location within the image, we just need to divide by the scaling factor ($s$):</p>
+<p>$$
+\begin{equation}
+\vec{p&rsquo;}=s\cdot
+\begin{bmatrix}
+x&rsquo; \\
+y&rsquo; \\
+1 \\
+\end{bmatrix}\Longrightarrow
+x&rsquo;=\frac{\vec{P}[0]}{\vec{P}[2]}, \:\:\:
+y&rsquo;=\frac{\vec{P}[1]}{\vec{P}[2]}
+\end{equation}
+$$</p>
+<p><strong>Example</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>camera <span style="color:#f92672">=</span> Camera(H<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>array([
+</span></span><span style="display:flex;"><span>    [ <span style="color:#ae81ff">8.69135802e+00</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">2.96296296e+00</span>,  <span style="color:#ae81ff">6.40000000e+02</span>], 
+</span></span><span style="display:flex;"><span>    [ <span style="color:#ae81ff">0.00000000e+00</span>,  <span style="color:#ae81ff">7.33333333e+00</span>,  <span style="color:#ae81ff">2.93333333e+02</span>], 
+</span></span><span style="display:flex;"><span>    [ <span style="color:#ae81ff">0.00000000e+00</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">4.62962963e-03</span>,  <span style="color:#ae81ff">1.00000000e+00</span>],
+</span></span><span style="display:flex;"><span>]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pt <span style="color:#f92672">=</span> Point(x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, y<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>projected_pt <span style="color:#f92672">=</span> project_points(camera<span style="color:#f92672">=</span>camera, pts<span style="color:#f92672">=</span>(pt, ))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(projected_pt[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> Point(x<span style="color:#f92672">=</span><span style="color:#ae81ff">640.0</span>, y<span style="color:#f92672">=</span><span style="color:#ae81ff">293.333333</span>)
+</span></span></code></pre></div><h1 id="3-lines">3. Lines<a hidden class="anchor" aria-hidden="true" href="#3-lines">#</a></h1>
+<p>A straight line is fully described in 2D through its vector representation $\vec{l}$</p>
+<p>$$
+\begin{equation}
+\vec{l}=
+\begin{bmatrix}
+a \\
+b \\
+c \\
+\end{bmatrix}
+\end{equation}
+$$</p>
+<p>A point expressed in homogeneous coordinates, $\vec{p}=[x, y]^T$, belongs to the line if it satisfies its general form</p>
+<p>$$
+\begin{equation}
+a\cdot x + b\cdot y + c = 0
+\end{equation}
+$$</p>
+<p>That is to say, it is orthogonal to the line vector</p>
+<p>$$
+\begin{equation}
+\vec{l}^T\cdot \vec{p} = 0
+\end{equation}
+$$</p>
+<p>We can leverage the basic property of collinearity preservation under projective geometry: if a point $\vec{p}$ lies in a line $\vec{l}$, the projected point $\vec{p&rsquo;}=H\cdot\vec{p}$ will lie in the projected line $\vec{l&rsquo;}$. Therefore, it must satisfy</p>
+<p>$$
+\begin{equation}
+\vec{l&rsquo;}^T\cdot \vec{p&rsquo;} = 0
+\end{equation}
+$$</p>
+<p>or equivalently</p>
+<p>$$
+\begin{equation}
+\vec{l&rsquo;}^T\cdot H \cdot \vec{p} = 0
+\end{equation}
+$$</p>
+<p>Since both equations are null, they must be equal</p>
+<p>$$
+\begin{equation}
+\vec{l}^T\cdot\vec{p&rsquo;} = \vec{l&rsquo;}^T\cdot H\cdot\vec{p}
+\end{equation}
+$$</p>
+<p>which necessarily implies</p>
+<p>$$
+\begin{equation}
+\vec{l}^T = \vec{l&rsquo;}^T\cdot H
+\end{equation}
+$$</p>
+<p>Consequently, in order to project a line, we simply need to apply</p>
+<p>$$
+\begin{equation}
+\vec{l&rsquo;} = H^{-T}\cdot \vec{l}
+\end{equation}
+$$</p>
+<p><strong>Example</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>camera <span style="color:#f92672">=</span> Camera(H<span style="color:#f92672">=</span>np<span style="color:#f92672">.</span>array([
+</span></span><span style="display:flex;"><span>    [ <span style="color:#ae81ff">8.69135802e+00</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">2.96296296e+00</span>,  <span style="color:#ae81ff">6.40000000e+02</span>], 
+</span></span><span style="display:flex;"><span>    [ <span style="color:#ae81ff">0.00000000e+00</span>,  <span style="color:#ae81ff">7.33333333e+00</span>,  <span style="color:#ae81ff">2.93333333e+02</span>], 
+</span></span><span style="display:flex;"><span>    [ <span style="color:#ae81ff">0.00000000e+00</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">4.62962963e-03</span>,  <span style="color:#ae81ff">1.00000000e+00</span>],
+</span></span><span style="display:flex;"><span>]))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ln <span style="color:#f92672">=</span> Line(a<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, b<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, c<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>projected_ln <span style="color:#f92672">=</span> project_lines(camera<span style="color:#f92672">=</span>camera, lines<span style="color:#f92672">=</span>(ln, ))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(projected_ln[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> Line(a<span style="color:#f92672">=</span><span style="color:#ae81ff">0.0</span>, b<span style="color:#f92672">=</span><span style="color:#ae81ff">7.33333333</span>, c<span style="color:#f92672">=</span><span style="color:#ae81ff">293.333333</span>)
+</span></span></code></pre></div><h1 id="4-conics">4. Conics<a hidden class="anchor" aria-hidden="true" href="#4-conics">#</a></h1>
+<p>Conic curves receive their name since they can be obtained fr the intersection between a plane and a cone with two nappes:</p>
+<ul>
+<li>Circle: plane is perpendicular to the cone axis</li>
+<li>Ellipse: plane intersects with only one half of the plane forming a closed surface</li>
+<li>Hyperbola: plane intersects with both halves of the plane</li>
+<li>Parabola: plane is parallel to the cone slant</li>
+</ul>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/Conics.png" alt="Conics" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Illustration of different conic formation for the four different types. From left to right: parabola, circle, ellipse and hyperbola.</figcaption>
+</figure>
+<h2 id="41-projection">4.1. Projection<a hidden class="anchor" aria-hidden="true" href="#41-projection">#</a></h2>
+<p>Mathematically, a conic curve can be modelled by means of its matrix representation $M$:</p>
+<p>$$
+\begin{equation}
+M=
+\begin{bmatrix}
+A &amp; B/2 &amp; D/2 \\
+B/2 &amp; C &amp; E/2 \\
+D/2 &amp; E/2 &amp; F \\
+\end{bmatrix}
+\end{equation}
+$$</p>
+<p>Any point that belongs to it, expressed in homogeneous coordinates, $\vec{p}=[x, y, 1]^T$, must satisfy the following second-degree polynomial equation:</p>
+<p>$$
+\begin{equation}
+A\cdot x^2 + B\cdot x\cdot y + C\cdot y^2 + D \cdot x + E \cdot y + F = 0
+\end{equation}
+$$</p>
+<p>or in matrix form:</p>
+<p>$$
+\begin{equation}
+\vec{p}^T\cdot M \cdot \vec{p} = 0
+\end{equation}
+$$</p>
+<p>Once again, we can take advantage of the collinearity preservation property, which is valid for any kind of line, not just straight one. Let us say that a point $\vec{p}$ lies in the ellipse given by $M$. Then the projected point $\vec{p&rsquo;}=H\cdot\vec{p}$ must lie in the projected ellipse given by $M'$</p>
+<p>$$
+\begin{equation}
+\vec{p&rsquo;}^T\cdot M&rsquo; \cdot \vec{p&rsquo;} = 0
+\end{equation}
+$$</p>
+<p>Replacing the projected point we obtain</p>
+<p>$$
+\begin{equation}
+(H\cdot\vec{p})^T\cdot M&rsquo; \cdot H\cdot\vec{p} = 0
+\end{equation}
+$$</p>
+<p>Notice the equivalence of the previous null equations</p>
+<p>$$
+\begin{equation}
+\vec{p}^T\cdot H^T\cdot M&rsquo; \cdot H\cdot\vec{p} = \vec{p}^T\cdot M \cdot \vec{p}
+\end{equation}
+$$</p>
+<p>which necessarily implies</p>
+<p>$$
+\begin{equation}
+H^T\cdot M&rsquo; \cdot H = M
+\end{equation}
+$$</p>
+<p>Therefore, projecting a conic reduces to</p>
+<p>$$
+\begin{equation}
+M&rsquo; = H^{-T}\cdot M \cdot H^{-1}
+\end{equation}
+$$</p>
+<h2 id="42-distortion-objects-behind-the-camera-plane">4.2. Distortion: Objects behind the camera plane<a hidden class="anchor" aria-hidden="true" href="#42-distortion-objects-behind-the-camera-plane">#</a></h2>
+<p>Importantly, although the projective transform maps a conic to another conic, it does not necessarily preserve its type. It is not hard to visualise how a circle can become an ellipse depending on the perspective. However, it is not intuitive at all how it might turn into a parabola/hyperbola. So what is going on?</p>
+<p>The key feature is the <strong>camera plane</strong>. It corresponds to the 2D plane parallel to the camera film (where the image is projected onto) that passes through the camera pinhole. Objects in front of it are projected to the film plane (the infinite extension of the film with finite dimensions), but are only captured in the image whenever they lie within the covered pyramid, as displayed below:</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/CameraPlane.png" alt="Camera plane" width="70%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Illustration of the camera plane, given by a 2D plane parallel to the camera film passing through the pinhole.</figcaption>
+</figure>
+<p>On the other hands, objects that lie right on the camera plane would never be projected onto the image plane, since the ray that goes both through them and the pinhole is parallel to the image plane:</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/CameraPlane2.png" alt="At camera plane" width="20%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Illustration of an object located at the camera plane, which would never be projected to the image unless its located exactly at the camera pinhole.</figcaption>
+</figure>
+<p>Finally, when an object is behind the camera plane, the projective transform is still able to project it onto the image film.</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/CameraPlane3.png" alt="Behind camera plane" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Illustration of an object located behind the camera plane, which would never be projected to the image in the real world. However, as a result of a mathematical artefact, it would end up in the image according to the projection equations.</figcaption>
+</figure>
+<p>However, this is a <strong>mathematical artefact!!!</strong> Whenever we take a picture, we ca only capture objects within the field of view in front of the camera. Nonetheless, the mathematical transform that models this process can still be applied to objects behind the camera. Therefore, one must be careful and ensure this transform is restricted to objects in front of the camera, or we’d introduced unexpected distortions.</p>
+<p>Let us now go back to the case of conics. In order to better gain some insight, let us picture the following scenario: a couple of friends are playing frisbee and there happens to be a drone recording the scene from above</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/Frisbee.png" alt="Frisbee" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Scene depicting two people throwing a frisbee to each other with a camera drone filming the pass from above.</figcaption>
+</figure>
+<p>To further simplify the scenario, let us assume the frisbee, of radius $r$, is the only object the camera is able to track. Furthermore, it is following a perfectly horizontal and straight trajectory in a plane parallel to the camera axis, starting at a distance $d$. The camera has focal length $f$ and projects onto an image of size $(W, H)$. Finally, let us define the origin of coordinates in our 3D world at the intersection between the 2D plane the frisbee travels through and the vertical line passing through the camera pinhole, located at a height $h$.</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/Frisbee2.png" alt="Frisbee" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Detailed depiction of the image capturing. The frisbee, represented as a 2D circle, follows a horizontal trayectory from right to left. The camera in turn pointing horizontally to the right and located above the frisbee trajectory. </figcaption>
+</figure>
+<p>The following video displays what we would get if we were to mathematically compute the projection of the conic and display it on the image film. For clarity, we provide at the bottom an amplified view of the virtual image (the result of flipping horizontally and vertically the film image):</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/Frisbee.gif" alt="Frisbee Image" width="90%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Detailed depiction of the image captured by the camera as the frisbee follows its trajectory. Despite being a circle in the real world, it is captured as an ellipse, a parabola or a hyperbola depending on its position w.r.t. the camera plane.</figcaption>
+</figure>
+<p>Whenever the frisbee is right at the edge of the camera plane, the frisbee gets mapped to a parabola. The reason is that point at the edge gets mapped to infinity, turning the circular frisbee into an open surface.</p>
+<p>Moreover, whenever the frisbee is partially in front of the camera, and partially behind it, there is a split in the projection. As a result, we get the unexpected hyperbola. Again, this is a mathematical artefact that would never manifest in a real photograph, it only arises if one naively projects without considering the location of objects w.r.t. the camera plane.</p>
+<p><strong>Note</strong>: you can generate the previous video by simply running this <a href="https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L160">script</a>. In order to do so, just install the repository (<code>poetry install</code>) and then run</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>poetry run python <span style="color:#f92672">-</span>m projective_geometry frisbee<span style="color:#f92672">-</span>demo <span style="color:#f92672">--</span>output <span style="color:#f92672">&lt;</span>LOCATION_OUTPUT_VIDEO<span style="color:#f92672">.</span>mp4<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><h1 id="5-images">5. Images<a hidden class="anchor" aria-hidden="true" href="#5-images">#</a></h1>
+<p>In order to project an image, we start by building a $(3, N)$ matrix $P=[\vec{X}\,\,\,\vec{Y} \,\,\,\vec{1} ]^T$ with the homogenous coordinates for all pixels in the <strong>image grid</strong>:</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/PixelGrid.png" alt="Image Grid" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Depiction of the pixel grid in a soccer broadcast frame.</figcaption>
+</figure>
+<p>Then we <strong>project</strong> the grid of points using the homography matrix characterising the camera and convert the resulting homogeneous coordinates to pixel locations</p>
+<p>$$
+\begin{equation}
+P&rsquo; = H\cdot P
+\end{equation}
+$$</p>
+<p>$$
+\begin{equation}
+p_i&rsquo;&rsquo;=\left[\frac{p_i&rsquo;[0]}{p_i&rsquo;[2]}, \frac{p_i&rsquo;[1]}{p_i&rsquo;[2]}\right] \,\,\,\,\,\,\,\,\forall p_i&rsquo;\in P'
+\end{equation}
+$$</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/ProjectedGrid.png" alt="Projected Grid" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Deformed grid as a result of a projective transform applied to the captured image.</figcaption>
+</figure>
+<p>Finally, we just need to <strong>interpolate</strong> the image values at the projected grid</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/ProjectedImageGrid.png" alt="Projected Image Grid" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Deformed image adjusted to the projected grid.</figcaption>
+</figure>
+<p><strong>OpenCV</strong> provides a method that applies this transform, <a href="https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html#gaf73673a7e8e18ec6963e3774e6a94b87">cv2.warpPerspective</a>. It provides different methods to carry out the interpolation, some of which are differentiable. Differentiability becomes essential for dealing with optimization problems. Most often, this kind of problems are tackled via gradient-descent algorithms. Therefore, whenever the image projection transform is part of the cost function we are trying to optimize for, one must ensure the underlying interpolation is carried out in a differentiable fashion.</p>
+<p>This is useful for validating if a camera is properly corrected by visual inspection. You can simply project the source image using the camera and validate it overlaps with the target image. There is an example in case you want to try it out by yourself <a href="https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L206">here</a>, which you can run with the command below</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>poetry run python <span style="color:#f92672">-</span>m projective_geometry celtics<span style="color:#f92672">-</span>demo <span style="color:#f92672">--</span>output <span style="color:#f92672">&lt;</span>LOCATION_OUTPUT_IMAGE<span style="color:#f92672">.</span>png<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><p>This will display the projected court template on top of the given frame</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/CelticsLakersCourtProjection.png" alt="CourtProjection" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">NBA broadcast frame with the court template projected overlayed in blue. It is the result of applying the projective transform according to the homography that characterizes the camera with with the frame was captured.</figcaption>
+</figure>
+<h2 id="51-projection-via-object-decomposition">5.1. Projection via object decomposition<a hidden class="anchor" aria-hidden="true" href="#51-projection-via-object-decomposition">#</a></h2>
+<p>Notice that when projecting a line, its width varies depending on where it lands on the image. This is expected behaviour and reflects how we perceive the 3D world: objects closer to us occupy a wider field of view than those further away.</p>
+<p>However, in some scenarios, one might be interested in having full control over the visualisation of projected objects. Whenever it is feasible to decompose the original image in its core geometric features, one could therefore project individually each feature and display it on the target image with the desired visualisation properties. For instance, the basketball court ban be broken down into all the line segments, circles and arcs, as illustrated below</p>
+<figure class="figure" style="text-align: center;">
+  <img src="/projecting_between_domains/BaseketballCourtTemplate.png" alt="Basketball Court Template" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">NBA court template displaying all geometric features (points, lines and conics) it consists of.</figcaption>
+</figure>
+<p>The drawback, as already explained, is that objects might be partially or completely behind the camera plane. Consequently, if following this approach, it is essential to exclude those objects from the visualisation in order to avoid undesired artefacts.</p>
+<h1 id="6-references">6. References<a hidden class="anchor" aria-hidden="true" href="#6-references">#</a></h1>
+<ol>
+<li>Richard Hartley and Andrew Zisserman (2000), Page 143, <em>Multiple View Geometry in Computer Vision</em>, Cambridge University Press.</li>
+<li>Wikipedia. <a href="https://en.wikipedia.org/wiki/Conic_section">Conic sections</a> and <a href="https://en.wikipedia.org/wiki/Matrix_representation_of_conic_sections">Matrix Representation</a></li>
+<li>Wei Jiang et. al. (2019), arXiv. <a href="https://arxiv.org/abs/1909.08034">Optimizing Through Learned Errors for Accurate Sports Field Registration</a></li>
+<li><a href="https://docs.opencv.org/4.x/index.html">OpenCV Library</a></li>
+</ol>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/computer-vision/">Computer Vision</a></li>
+      <li><a href="http://localhost:1313/tags/projective-geometry/">Projective Geometry</a></li>
+      <li><a href="http://localhost:1313/tags/homography-matrix/">Homography Matrix</a></li>
+      <li><a href="http://localhost:1313/tags/pinhole-camera/">Pinhole Camera</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="http://localhost:1313/">Iñaki’s Log</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script src="/js/figure-numbering.js"></script>
+</body>
+
+</html>

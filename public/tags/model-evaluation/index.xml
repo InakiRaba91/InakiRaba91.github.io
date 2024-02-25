@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Model Evaluation on Iñaki’s Log</title>
+    <link>http://localhost:1313/tags/model-evaluation/</link>
+    <description>Recent content in Model Evaluation on Iñaki’s Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 02 Feb 2024 11:16:19 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/model-evaluation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>🏋️ Continuous Training: Building a model training pipeline</title>
+      <link>http://localhost:1313/posts/projective_geometry/building_training_pipeline/</link>
+      <pubDate>Fri, 02 Feb 2024 11:16:19 +0100</pubDate>
+      <guid>http://localhost:1313/posts/projective_geometry/building_training_pipeline/</guid>
+      <description>Table of Contents 1. Continuous Training 2. Training Pipeline 2.1. Training 2.2. Evaluation 3. Deployment 1. Continuous Training The process of generating a machine learning model usually consists of training on a dataset, evaluating its performance and then deploying it to a production environment. In certain scenarios, the trained model may perform consistently over a long period of time. However, that is not always the case. There are multiple reasons you may want to retrain it periodically, such as:</description>
+    </item>
+  </channel>
+</rss>
