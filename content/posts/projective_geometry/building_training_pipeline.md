@@ -58,7 +58,7 @@ In this section we will focus on the **Training** component. It carries out a se
 
 <figure class="figure" style="text-align: center;">
   <img src="/building_training_pipeline/training_pipeline.svg" alt="Continuous Training Diagram" width="100%" style="display: block; margin: auto;">
-  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Diagram for the Continuous Training System we will be exploring in this article. It depicts the different components it is comprised of, and the tasks they carry out.</figcaption>
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Diagram for the Continuous Training System we will be exploring in this article. It highlights the different steps that make up the training pipeline.</figcaption>
 </figure>
 
 Lets us now focus on the two key components that carry out the core functionality of the pipeline:
@@ -123,6 +123,11 @@ poetry run python -m animal_classifier validation base_model.pth data/test.csv -
 # 3. Deployment
 
 So after training our model, making sure it outperforms the baseline and gaining confidence about its generalization to unseen data, what's next? It's time to deploy it!
+
+<figure class="figure" style="text-align: center;">
+  <img src="/building_training_pipeline/deployment.svg" alt="Deployment Diagram" width="100%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Diagram for the Continuous Training System we will be exploring in this article. It highlights the deployment step.</figcaption>
+</figure>
 
 Bear in mind that our model is simply an artifact, a file that contains the weights of the model. In order to make predictions, we need to wrap it in an API. We will use the <a href="https://pytorch.org/serve/">`torchserve`</a> library. The process goes as follows:
 1. **Model Archiver**: we need to create a `.mar` file that contains the model and the code to run it: 
