@@ -175,7 +175,7 @@ Torchserve provides a batching mechanism out of the blue. It tries to group the 
 3. **Containerization**: we can use Docker to containerize the server. You can check the details in the `docker/Dockerfile.torchserve` file. To build it, simply run
 
 ```bash
-docker build -t animal_classifier_fastapi:latest -f docker/Dockerfile.torchserve .
+docker build -t animal_classifier_torchserve:latest -f docker/Dockerfile.torchserve .
 ```
 
 4. **Deployment**: we can deploy the container by running:
