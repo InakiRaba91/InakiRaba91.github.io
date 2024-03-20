@@ -48,7 +48,7 @@ But how do you get that data? Well, you may be able to use publicly available da
 
 <figure class="figure" style="text-align: center;">
   <img src="/building_labelling_app/labelling_app.svg" alt="Labelling App" width="100%" style="display: block; margin: auto;">
-  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Diagram for the Continuous Training System we will be exploring in this series. It highlights the labelling componente we will focus on.</figcaption>
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Diagram for the Continuous Training System we will be exploring in this series. It highlights the labelling component we will focus on.</figcaption>
 </figure>
 
 This is where data collection comes in. In this blogpost we will build a web application that allows users to label images of cats and dogs. We will be using React and Node.js. This application plays a twofold role: 
@@ -70,7 +70,7 @@ First of all, let's start with a warning. I had never used React before, so bear
 That clarified, let's start with the frontend. We will be using React, a JavaScript library for building user interfaces. We will assume the images to be labelled are stored in a given directory. Our app will then iterate through the images and display them one by one. The user will then be able to label each image by clicking on a button.
 
 <figure class="figure" style="text-align: center;">
-  <img src="/building_labelling_app/animal_laballer_ui.png" alt="Labelling App" width="50%" style="display: block; margin: auto;">
+  <img src="/building_training_pipeline/animal_laballer_ui.png" alt="Labelling App" width="50%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">UI for our web app.</figcaption>
 </figure>
 
@@ -134,7 +134,7 @@ To see the training in practice, you can download a sample dataset [here](https:
 tar -zxf cats_and_dogs.tar.gz -C data/
 ```
 
-Then make sure you have `poetry` installed and set up the environment running:
+Then make sure you have [`poetry`](https://python-poetry.org/) installed and set up the environment running:
 
 ```bash
 poetry install
@@ -185,7 +185,7 @@ Bear in mind that our model is simply an artifact, a file that contains the weig
 poetry run torch-model-archiver --model-name animal --version 1.0 --model-file animal_classifier/models/model.py --serialized-file ./models/cats_and_dogs/base_model.pth --handler animal_classifier/api/torchserve/handler.py --export-path ./model_store/
 ```
 2. **Settings**: we define the settings for the server in a `config.properties` file, like the one below:
-```json
+```yml
 inference_address=http://127.0.0.1:8080
 inference_address=http://0.0.0.0:8080
 management_address=http://0.0.0.0:8081
@@ -215,7 +215,7 @@ model_snapshot={
 ```
 
 <div style="border: 1px solid black; padding: 10px; background-color: #DAF7A6; border-radius: 5px;">
-  <strong><u>Note</u></strong>: we have reformated the `config.properties` for clarity. However, the model_snapshot must be a single line without spaces, as in the original <a href="https://github.com/InakiRaba91/animal_classifier/blob/main/config.properties"> file</a>.
+  <strong><u>Note</u></strong>: we have reformated the <code>config.properties</code> for clarity. However, the model_snapshot must be a single line without spaces, as in the original <a href="https://github.com/InakiRaba91/animal_classifier/blob/main/config.properties"> file</a>.
 </div> <br>
 
 Torchserve provides a batching mechanism out of the blue. It tries to group the incoming requests until one of the following conditions is met:
@@ -250,7 +250,7 @@ We can now send requests to the endpoint and get predictions back:
 
 ## 3.4. Proxy Deployment
 
-There's one last issue though. When we try to hit the torchserve endpoint from the labelling app, we get an error indicating it
+There's one last issue though. When we try to hit the torchserve endpoint from the labelling app, we get a [CORS error](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors) indicating it
 has been blocked by CORS policy. We will solve it by adding a FastAPI server that acts as a proxy to the torchserve endpoint. This will come handy since it gives as a WebUI to interact with the model. Furthermore, we will also leverage it for canary rollouts as we will see in a future post.
 
 To deploy it, simply run:
@@ -321,7 +321,7 @@ docker-compose up -d
 And go to `http://localhost:3000/` in your browser. You will be able get predictions back from the model and review them. 
 
 <figure class="figure" style="text-align: center;">
-  <img src="/building_labelling_app/animal_laballer_ui_labelled.png" alt="Labelling App" width="50%" style="display: block; margin: auto;">
+  <img src="/building_training_pipeline/animal_laballer_ui_labelled.png" alt="Labelling App" width="50%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">UI for our web app.</figcaption>
 </figure>
 
