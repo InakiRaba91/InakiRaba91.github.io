@@ -47,7 +47,7 @@ A key element of any machine learning project is the **data**. At its core, AI m
 But how do you get that data? Well, you may be able to use publicly available datasets. However, you may find it hard to build a moat around your business if you are using the same data as everyone else. Moreover, it is unlikely that you will be able to find a dataset that is perfectly suited to your specific problem. In many cases, you will need to collect your own data.
 
 <figure class="figure" style="text-align: center;">
-  <img src="/building_labelling_app/labelling_app.svg" alt="Labelling App" width="100%" style="display: block; margin: auto;">
+  <img src="/building_training_pipeline/labelling_app.svg" alt="Labelling App" width="100%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Diagram for the Continuous Training System we will be exploring in this series. It highlights the labelling component we will focus on.</figcaption>
 </figure>
 
