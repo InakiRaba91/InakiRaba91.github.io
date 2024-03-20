@@ -11,6 +11,8 @@ draft = false
       {{< toc >}}
   </details>
 </span>
+<br><br>
+In this series we will build from scratch a Continuous Training System. However, to keep things simple, we will use a toy example and run the system <strong>locally</strong>. In a real-world scenario, the system would be deployed in a cloud environment and the data would be stored in a distributed storage system.
 
 # 1. Continuous Training
 
@@ -30,19 +32,15 @@ deploying it to a production environment. In certain scenarios, the trained mode
 
 We have the following agents/components:
 1. **User**: customer that sends requests to the endpoint in order to get predictions back.
-2. **Endpoint**: the model's API, which receives forwards the requests to the model and sends back the predictions. Furthermore, it stores both the pairs of queries and predictions to the data lake.
+2. **Endpoint**: the model's API, which forwards the requests to the model and sends back the predictions. Furthermore, it stores both the pairs of queries and predictions to the data lake.
 3. **Labelling**: process used to manually annotate the data and review the model's predictions. This allows us to have high quality data on a continuous basis that we can use to capture the data drift and retrain the model.
 4. **Data Lake**: storage system that stores the high quality data used for training.
 5. **Orchestrator**: component that watches the data lake and triggers the retraining process when certain conditions are met.
 6. **Training**: process that takes the data in the data lake and generates a new model as an output artifact.
 
 In this article we will focus on the **Labelling**,  **Training** and **Endpoint** components. 
-<br>
-<div style="border: 1px solid black; padding: 10px; background-color: #DAF7A6; border-radius: 5px;">
-  <strong><u>Note</u></strong>: in this series we will build from scratch a Continuous Training System. However, to keep things simple, we will use a toy example and run the system <strong>locally</strong>. In a real-world scenario, the system would be deployed in a cloud environment and the data would be stored in a distributed storage system.
-</div>
 
-# 2. Data collecetion
+# 2. Data collection
 
 A key element of any machine learning project is the **data**. At its core, AI models ingest vast amounts of data and are tasked with recognizing patterns and finding insights. Assuming the data used for training was representative of the real world, one can then expect the trained model to make accurate predictions on unseen scenarios.
 

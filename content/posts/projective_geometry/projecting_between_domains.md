@@ -48,7 +48,7 @@ Furthermore, if we were able to do this process over all frames in the video, we
 
 # 2. Points
 
-In the previous post ([Building the Homography Matrix from scratch](https://inakiraba91.github.io/posts/projective_geometry/buiding_homograpahy_matrix/)), we already saw how to project a point from the 3D world into a 2D image
+In the previous post ([Building the Homography Matrix from scratch](https://inakiraba91.github.io/posts/projective_geometry/building_homograpahy_matrix/)), we already saw how to project a point from the 3D world into a 2D image
 
 $$
 \begin{equation}
