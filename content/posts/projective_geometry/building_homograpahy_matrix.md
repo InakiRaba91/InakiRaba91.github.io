@@ -19,7 +19,7 @@ When we capture something on camera, there is an interesting phenomenon going on
 So how do we model that 3D→2D mapping? That is what projective geometry is all about. To understand this transform, let us start with the ideal **pinhole camera model**, illustrated below: 
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/Ovni1.png" alt="Ovni flying above the camera" width="30%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/Ovni1.png" alt="Ovni flying above the camera" width="30%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of an analogic camera (cube at the bottom) pointing upwards to capture an ovni flying above it.</figcaption>
 </figure>
 
@@ -28,7 +28,7 @@ In this setup, the camera consists of a simple dark box with a small aperture (t
 The image is formed when the light rays enter it through the pinhole (which we will assume of infinitesimal radius) and are captured by the photographic material the film is composed of. This way, an inverted image is obtained, which can be flipped in a post-processing step. Moreover, this is equivalent to forming a virtual image in front of the camera, at a distance **f** from the pinhole.
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/Ovni2.png" alt="Virtual image formation" width="30%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/Ovni2.png" alt="Virtual image formation" width="30%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of virtual inverted image formation. The light rays project to the film located at the back of the analogic camera, causing an inversion. In order to undo the inversion, we can flip the formed image, which is equivalent to capturing a virtual image in a plane in front of the film.</figcaption>
 </figure>
 
@@ -42,7 +42,7 @@ In order to characterize the projection, let us start by defining the two system
 - **2D Image**: we define the origin of coordinates located at the bottom-left corner of the virtual image.
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/Ovni3.png" alt="Coordinate systems" width="30%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/Ovni3.png" alt="Coordinate systems" width="30%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Illustration of the two different coordinates systems: the world coordinate system, centered at the camera pinhole (<strong><span style="color: pink;">pink</span></strong>) and the image coordinate system, centered at the bottom left corner of the virtual image (<strong><span style="color: red;">red</span></strong>).</figcaption>
 </figure>
 
@@ -51,7 +51,7 @@ Given these arbitrary definitions, we can now determine where a point $p=(x, y, 
 For simplicity, let us focus on how the projection takes place for the horizontal dimension $x$:
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/TriangleSimilarity1.png" alt="Triangle similarity" width="60%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/TriangleSimilarity1.png" alt="Triangle similarity" width="60%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Left image shows how a a 3D point $\vec{p}$ is projected into the virtual image at pixel $\vec{P}$. Right image focuses on the <strong>ZX</strong> plane.</figcaption>
 </figure>
 
@@ -168,7 +168,7 @@ $$
 ImportantIy, homogenous coordinates are defined up to a scale. Why is that the case? Going back to the introduction, we stated that there was a compression involved in projective geometry. We are capturing a 3D world into a 2D image. That implies that there is an infinite set of aligned points (i.e. a line) in the 3D world that are mapped exactly to the same location in image space. Take a look at the image below
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/TriangleSimilarity2.png" alt="Projective compression" width="30%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/TriangleSimilarity2.png" alt="Projective compression" width="30%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Illustration of the compression that occurs when projecting points from the 3D world into a 2D image. All points that belong to a ray going through the pinhole, such as $\vec{p}$ and $\vec{p'}$ are mapped to the same pixel.</figcaption>
 </figure>
 
@@ -232,14 +232,14 @@ $$
 So far, we have assumed we had an analog camera, so the image coordinates lived in a continuous space. However, most often we deal with digital images. Since the information needs to be stored in bits, we need to both discretize the locations at which we sample the image, and quantitize the values we measure.
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/Wave.png" alt="Discretization and Quantization" width="30%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/Wave.png" alt="Discretization and Quantization" width="30%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Illustration of the effects of sampling along the temporal dimension and quantizing the measured signal amplitud.</figcaption>
 </figure>
 
 Since we are focused on the spatial mapping, the effect we care about is the **discretization** that takes place in the projected image. If we use squared pixels, we will get something as displayed below:
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/Discretization.png" alt="2D Discretization" width="60%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/Discretization.png" alt="2D Discretization" width="60%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Depiction of the effects of capturing a real world object (left) as a 2D digital image, which only allows to store a discrete number of values at a discrete set of 2D pixel locations.</figcaption>
 </figure>
 
@@ -287,7 +287,7 @@ $$
 $$
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/DiscretizationRectangular.png" alt="2D Recangular Discretization" width="60%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/DiscretizationRectangular.png" alt="2D Recangular Discretization" width="60%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Effect of using rectangular (non-squared) pixels for the 2D digital image that captures the real world object.</figcaption>
 </figure>
 
@@ -334,14 +334,14 @@ $$
 It is common to see an additional parameter in the intrinsic matrix: the **skew** factor. It accounts for a shearing effect, i.e., image axes not being perpendicular, which results in non-rectangular parallelogrammatic pixels.
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/DiscretizationShearing.png" alt="Shearing Distortion" width="60%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/DiscretizationShearing.png" alt="Shearing Distortion" width="60%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Effect of shearing distortion when capturing a real world object in a 2D digital image.</figcaption>
 </figure>
 
 Mathematically, it can be modelled by a simple change of basis. Therefore, we just need to find the coefficients of the point expressed in the new basis. Using trigonometry, we can derive. 
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/Shearing.png" alt="Shearing" width="60%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/Shearing.png" alt="Shearing" width="60%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Detailed depiction of the trigonometry involved in the shearing distortion that maps a squared pixel (<strong><span style="color: pink;">pink</span></strong>) to a rhomboid one (<strong><span style="color: green;">green</span></strong>).</figcaption>
 </figure>
 
@@ -477,7 +477,7 @@ It is worth pointing out that in most cases, the shearing effect is not present.
 So far, we have assumed our arbitrarily world coordinate system (pink) is perfectly aligned with our camera coordinate system (green), with its origin at the camera pinhole and its Cartesian axes parallel to the camera axes.
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/OvniRotation.png" alt="Ovni flying above the camera" width="60%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/OvniRotation.png" alt="Ovni flying above the camera" width="60%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Illustration of a shift and rotation of the camera w.r.t. the world coordinate system (<strong><span style="color: pink;">pink</span></strong>). It allows us to define an additional camera coordinate system (<strong><span style="color: green;">green</span></strong>) centered at the camera pinhola and aligned with the camera plane.</figcaption>
 </figure>
 
@@ -507,21 +507,21 @@ In such a scenario, it might be convenient to have a static coordinate system as
 In order to account for this misalignment, it is useful to understand how we can map the coordinates between both coordinate systems. To better understand how that is done, let us simplify to 2D, as depicted in the following figure:
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/ChangeOfBasis1.png" alt="Change of Basis" width="60%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/ChangeOfBasis1.png" alt="Change of Basis" width="60%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of two different coordinate systems, <strong><span style="color: pink;">pink</span></strong> one being rotated and shifted w.r.t. to <strong><span style="color: pink;">pink</span></strong> one. A point can be expressed in both of them as <strong><span style="color: green;">$\vec{p'}$</span></strong> and <strong><span style="color: pink;">$\vec{p}$</span></strong> respectively.</figcaption>
 </figure>
 
 The origin of coordinates in the camera system is located at $\vec{t}=[t_x,t_y]$ w.r.t. the world system. Following this observation, we can infer that in order to align both origin of coordinates $O$ and $O'$, we just need to apply a shift given by the vector $\vec{t}$:
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/ChangeOfBasis2.png" alt="Shift" width="45%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/ChangeOfBasis2.png" alt="Shift" width="45%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">By shifting the camera coordinate system by the vector $\vec{t}$ we can center both system of coordinate systems at the same locatiton.</figcaption>
 </figure>
 
 However, we still need to account for the rotation between the axes, given by angle $\varphi$. 
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/ChangeOfBasis3.png" alt="Rotation" width="45%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/ChangeOfBasis3.png" alt="Rotation" width="45%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">By further rotating the camera coordinate system by angle $\varphi$ we can also align both system of coordinate systems.</figcaption>
 </figure>
 
@@ -551,7 +551,7 @@ As we can observe, now both systems are perfectly aligned (notice how we used th
 It is worth remarking that order matters!. If we were to rotate first, we would not be rotating around $O'$ as we would hope to in order to align the camera axes, but around $O$, as illustrated below
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/ChangeOfBasis4.png" alt="Rotation" width="90%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/ChangeOfBasis4.png" alt="Rotation" width="90%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Illustration of why order matters. If we apply first the rotation, and then the shift, both coordinates sistems end up with their axes parallel to each other, but their origin of coordinates misaligned.</figcaption>
 </figure>
 
@@ -670,14 +670,14 @@ $$
 From this definition, we can notice that the process is irreversible, since we can not invert a $3\times 4$ matrix. However, the homography transform can also be used to characterize the mapping between two different 2D planes. This arises when we take two photographs of the same scene from different camera angles for instance, as illustrated below:
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/MultiCamera1.png" alt="Multiple camera views" width="70%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/MultiCamera1.png" alt="Multiple camera views" width="70%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of two different 2D views of the same 3D world object captured by two different cameras.</figcaption>
 </figure>
 
 So what can we do in this scenario? Remember we have chosen arbitrarily how to define our coordinate systems. Thus, we can rearrange the 3D world coordinate system to conveniently align with one of the images, such that the z-axis is orthogonal to it. 
 
 <figure class="figure" style="text-align: center;">
-  <img src="/buiding_homograpahy_matrix/MultiCamera2.png" alt="Multiple camera views" width="70%" style="display: block; margin: auto;">
+  <img src="/building_homograpahy_matrix/MultiCamera2.png" alt="Multiple camera views" width="70%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">We can choose arbitrary the world coordinate system to match the camera coordinate system of one of them. This way, all the pixels from its captured 2D image correspond to 3D locations with $z=0$ in its camera coordinate system.</figcaption>
 </figure>
 

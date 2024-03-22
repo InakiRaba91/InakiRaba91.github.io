@@ -292,7 +292,7 @@ And the following figure when retrieving the homography from a set of line corre
 
 <figure class="figure" style="text-align: center;">
   <img src="/estimating_homography_matrix/HockeyRinkEllipses.png" alt="Conics in Hockey Ice Rink" width="100%" style="display: block; margin: auto;">
-  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of conic correspondences found in an hocker ice rink template.</figcaption>
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of conic correspondences found in a hockey ice rink template.</figcaption>
 </figure>
 
 
@@ -338,7 +338,7 @@ H\cdot M_i^{-1}\cdot M_j-M_i'^{-1}\cdot M_j'\cdot H = 0
 \end{equation}
 $$
 
-This forms a set of linear equations in the items forming the homography matrix $H$. Consequently, we can form a system of equations similar to the one we resolved earlier:
+This forms a set of linear equations in the elements composing the homography matrix $H$. Consequently, we can form a system of equations similar to the one we resolved earlier:
 
 $$
 \begin{equation}
@@ -421,9 +421,9 @@ So far we have focused in retrieving the homography from a set of matching geome
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Two photographs of the same scene taken from different angles.</figcaption>
 </figure>
 
-One way to proceed would be to identify and match geometric features, then apply the previously described procedures. The identification could be done manually, or automatically. The latter has been an active research area over recent decades, and multiple methods can be used, such as Harris corner detector, Canny edge detector, SIFT features, SURF features or ORB features. Interestingly, some of these detectors serve as descriptors too, which in turn provides a way to pair them out of the box.
+One way to proceed would be to identify and match geometric features, then apply the previously described procedures. The identification could be done manually, or automatically. The latter has been an active area of research over recent decades, and multiple methods can be used, such as Harris corner detector, Canny edge detector, SIFT features, SURF features or ORB features. Interestingly, some of these detectors serve as descriptors too, which in turn provides a way to pair them out of the box.
 
-Alternatively, one could view the homography estimation as a registration problem. Let us say we have two image, the source $I(\vec{x})$ and the target $T(\vec{x})$, where $\vec{x}=[x, y]^T$ corresponds to the pixel coordinates for the images. Moreover, let $W(\vec{x}; \vec{h}) = H\cdot \vec{p}$  be the transform that warps a set of pixels under the projective transform. $H$ would be the homography matrix characterizing the transform, and $\vec{h}$ its vectorized form. Then we can minimize the following cost function:
+Alternatively, one could view the homography estimation as a registration problem. Let us say we have two images, the source $I(\vec{x})$ and the target $T(\vec{x})$, where $\vec{x}=[x, y]^T$ corresponds to the pixel coordinates for the images. Moreover, let $W(\vec{x}; \vec{h}) = H\cdot \vec{p}$  be the transform that warps a set of pixels under the projective transform. $H$ would be the homography matrix characterizing the transform, and $\vec{h}$ its vectorized form. Then we can minimize the following cost function:
 
 $$
 \begin{equation}
@@ -520,7 +520,7 @@ On the other hand, predicting the features location allows for another in choice
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Model is asked to find pixel (x-y) coordinates of selected template keypoint (marked in cyan) in the given image.</figcaption>
 </figure>
 
-- **Classification problem**: alternatively, one could train the model to predict the probability of each pixel in the image corresponding to the seek-out keypoint, and then estimate its location by taking the one with the highest one.
+- **Classification problem**: alternatively, one could train the model to predict the probability of each pixel in the image corresponding to the sought-out keypoint, and then estimate its location by taking the one with the highest one.
 <figure class="figure" style="text-align: center;">
   <img src="/estimating_homography_matrix/ClassificationModel.png" alt="Classification Model" width="90%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Model is asked to predict the probability (color-coded in grayscale) of a pixel in the given image to correspond to selected template keypoint (marked in cyan).</figcaption>
