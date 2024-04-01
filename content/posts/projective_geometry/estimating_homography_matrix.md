@@ -95,7 +95,7 @@ For each homogenous coordinate, we get:
 
 $$
 \begin{equation}
-s\cdot x'=h_{11}\cdot x + h_{12}\cdot y + h_{33} 
+s\cdot x'=h_{11}\cdot x + h_{12}\cdot y + h_{13} 
 \end{equation}
 $$
 
