@@ -645,9 +645,9 @@ $$
 \begin{equation}
 s\cdot
 \begin{bmatrix}
-X \\
-Y \\
-1 \\
+X \\\\
+Y \\\\
+1 \\\\
 \end{bmatrix}=\begin{bmatrix}
 f_x & 0 & \frac{W}{2}\\\\
 0 & f_y & \frac{H}{2}\\\\
