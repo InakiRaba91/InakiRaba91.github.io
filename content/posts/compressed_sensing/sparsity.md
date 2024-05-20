@@ -17,21 +17,21 @@ In this series we will focus on the topic of <strong>Compressed Sensing</strong>
 
 # 1. Data compression
 
-These days, the amount of data generated every day is staggering, and it is only increasing. We mostly deal with data that aims at capturing the natural world around us. Take images for example. An image can be thought of as a $W \times H$ 2D array of pixels, where each pixel is a 3-tuple of RGB values represented with $B$ bits per channel. That means there are $2^{3 \cdot B \cdot W \cdot H}$ possible images we could have., which is a mind-boggling number. However, that begs the question: how many of these images are actually interesting?
+In recent times, the amount of data generated each day is staggering, and it is only increasing. We deal with vasts amounts of data that aim at capturing some form of representation of the natural world around us. Take images for example. An image can be thought of as a $W \times H$ 2D array of pixels, where each pixel is a 3-tuple of RGB values represented with $B$ bits per channel. That means there are $2^{3 \cdot B \cdot W \cdot H}$ possible images we could have, which is a mind-boggling number. However, that begs the question: how many of these images are actually interesting?
 
 <figure class="figure" style="text-align: center;">
   <img src="/compressed_sensing_sparsity/random_image.png" alt="Random image" width="70%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Random image.</figcaption>
 </figure>
 
-The answer is not many. If you were to generate images at random, you could spend an eternity doing so, and chances are you would never generate one that looks like nothing but noise. This is because natural images are not random, they have structure and patterns that make them interesting. 
+The answer is not that many. If you were to randomly generate images, it is highly likely that you would never create one that looks like nothing more than noise, even if you spent an eternity doing so.. This is because natural images are not random, they have structure and patterns that make them interesting. 
 
 <figure class="figure" style="text-align: center;">
   <img src="/compressed_sensing_sparsity/abstract_image.png" alt="Random image" width="70%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Abstract image.</figcaption>
 </figure>
 
-The number of natural images (and by this we mean not only images that one could observe in the real world, but also any image inspired by it that may only live in one's imagination) is inmensely vast. However, it's still a tiny fraction of the total number of possible images. That suggests natural images should be highly compressible. We just need to find a suitable basis to represent them in a more compact way.
+The number of natural images (and by this we mean not only images that one could observe in the real world, but also any image inspired by it that may only live in one's imagination) is inmense. However, it is still a tiny fraction of the total number of possible images. That suggests natural images should be highly compressible. We just need to find a suitable basis to represent them in a more compact way.
 
 <figure class="figure" style="text-align: center;">
   <img src="/compressed_sensing_sparsity/sampling.svg" alt="Random image" width="90%" style="display: block; margin: auto;">
@@ -49,7 +49,7 @@ The process described above seems inefficient at first sight. If compressing the
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Natural image capturing via compressive sampling. We use a sensor that is able to sample the world in a compressed way. This compressed representation of the image can then be stored. Finally, in order to retrieve the original image, we need to run a reconstruction algorithm on the compressed data.</figcaption>
 </figure>
 
-You might be wondering at this point though: didn't the <strong>Shannon-Nyquist theorem</strong> tell us that we need to sample at a rate at least twice the highest frequency in the signal in order to be able to reconstruct it? How can one expect to sample at a rate lower than that and still be able to recover the signal? 
+You might be wondering at this point though: did not the <strong>Shannon-Nyquist theorem</strong> tell us that we need to sample at a rate at least twice the highest frequency in the signal in order to be able to reconstruct it? How can one expect to sample at a rate lower than that and still be able to recover the signal? 
 
 Sampling a continuous signal leads inevitably to an ambiguity whenever one tries to retrieve the original signal from a set of discrete measurements. There are infinite ways in which one could do so. However, the <strong>key insight</strong> is that if one has additional knowledge about the signal, uniquely reconstructing it becomes possible. In the Shannon-Nyquist scenario, that knowledge is that the bandwith of the sampled signal $B$ is below half the sampling frequency $f_s$: $B \leq \frac{f_s}{2}$).
 
@@ -58,7 +58,7 @@ Sampling a continuous signal leads inevitably to an ambiguity whenever one tries
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of two sinusoidal signals sampled at a frequency $f_s$. Retrieval of the original signal is only possible with the assumption that its bandwith $B$ satisfied the Shannon-Nyquist Theorem: $B\leq \frac{f_s}{2}$</figcaption>
 </figure>
 
-Compressed sensing is based on the same principle, but goes one step further. It assumes that <strong>the signal we are trying to recover is sparse in a suitable basis</strong>. Depending on the level of sparsity, this may end up being a much more restrictive assumption than the one made by the Shannon-Nyquist theorem. But that's exactly the reason why we may get away with taking far fewer measurements than the Nyquist rate.
+Compressed sensing is based on the same principle, but goes one step further. It assumes that <strong>the signal we are trying to recover is sparse in a suitable basis</strong>. Depending on the level of sparsity, this may end up being a much more restrictive assumption than the one made by the Shannon-Nyquist theorem. But that is exactly the reason why we may get away with taking far fewer measurements than the Nyquist rate.
 
 ## 2.1. Problem formulation
 
@@ -88,7 +88,7 @@ $$
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Representation of measured signal $\mathbf{y}$, obtained by projecting original signal $\mathbf{x}$ on a basis $\mathbf{C}$</figcaption>
 </figure>
 
-The goal of compressed sensing is to find the vector $\mathbf{s}$ that best explains the measurements $\mathbf{y}$. This system of equations is highly underdetermined, and there are infinitely many solutions that could explain the measurements. The key insight is that if $\mathbf{s}$ is sparse enough, then the solution can be found by solving the following optimization problem:
+The <strong>goal of compressed sensing</strong> is to find the vector $\mathbf{s}$ that best explains the measurements $\mathbf{y}$. This system of equations is highly underdetermined, and there are infinitely many solutions that could explain the measurements. The crucial understanding is that if $\mathbf{s}$ is sparse enough, then the solution can be found by solving the following optimization problem:
 
 $$
 \begin{equation}
@@ -125,27 +125,21 @@ Your task is to identify the position of the non-zero entry and you are free to 
 
 <div style="background-color: #FFEFD5; border: 1px solid black; padding: 2px 10px; align-items: center;">
   <div style="line-height: 2.5;"><strong>Counterfeit Coin Riddle</strong></div>
-  <div style="padding-left: 20px;">Given 10 stacks of 10 coins each. One of these stacks of coins contains only counterfeit coins, the other stacks do not. A genuine coin has a weight of 10 grams. The weight of a fake coin is 11 grams. You have a contemporary scale with a precise reading. How many balances are required to determine whether the stack is fake? What if you had eleven stacks?</div>
+  <div style="padding-left: 20px;">You are given 10 stacks of 10 coins each. One of these stacks of coins contains only counterfeit coins, the other stacks do not. A genuine coin has a weight of 10 grams. The weight of a fake coin is 11 grams. You have a contemporary scale with a precise reading. How many balances are required to determine whether the stack is fake? What if you had eleven stacks?</div><br>
+  <figure class="figure" style="text-align: center;">
+    <img src="/compressed_sensing_sparsity/counterfait_coin.png" alt="Counterfait Coin" width="90%" style="display: block; margin: auto;">
+    <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Counterfait Coin Riddle</figcaption>
+  </figure>
 </div><br>
-
-<figure class="figure" style="text-align: center;">
-  <img src="/compressed_sensing_sparsity/counterfait_coin.png" alt="Counterfait Coin" width="90%" style="display: block; margin: auto;">
-  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Counterfait Coin Riddle</figcaption>
-</figure>
 
 We could simply inspect every element of $\mathbf{x}$, i.e., use the canonical basis $\mathbf{A} = \mathbf{I}$ for sampling. However, this would require $n$ measurements in order to guarantee finding the non-zero entry.
 
 You can do much better though. What if your matrix consisted of a single projection vector $\mathbf{A} = [1, 2, \ldots, n]$, which encodes each item's position in its value? Then a single measurement would directly give you the position we are looking for!
 
-Alright, let us make it a bit more challenging. What id you don't know the value of the non-zero entry? One measurement will not work anymore no matter how we choose $\mathbf{A}$:
+Alright, let us make it a bit more challenging. What if you do not know the value of the non-zero entry? One measurement will not work anymore no matter how we choose $\mathbf{A}$:
 
  * If there is a null value $A_{1j} = 0$, any signal whose non-zero element is at location $j$ will give a null measurement. 
  * If all values in $\mathbf{A}$ are non-zero, any vector $\mathbf{x}$ whose non-zero element at location $j$ is $x_j = \frac{1}{A_{1j}}$ will give a unitary measurement.
-
-<figure class="figure" style="text-align: center;">
-  <img src="/compressed_sensing_sparsity/2measurements.svg" alt="2 measurements required" width="40%" style="display: block; margin: auto;">
-  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of column vectors in sensing matrix $\mathbf{A}$ that would allow to retrieve a $1$-sparse vector $\mathbf{x} \in \mathbb{R}^8$ from just $2$ measurements</figcaption>
-</figure>
 
 In other words: using a single measurement leads to an irresolvable ambiguity. What about two measurements? Our vector measurement $\mathbf{y} = [y_1, y_2]$ would correspond to a scaled version of the column $\mathbf{a}_j$, where $j$ is the position of the non-zero entry in $\mathbf{x}$. As long as no column in $\mathbf{A}$ is a multiple of another, we can uniquely identify the non-zero entry.:
 
@@ -154,7 +148,12 @@ In other words: using a single measurement leads to an irresolvable ambiguity. W
 
 Nonetheless, it would require $O(n)$ operations since we might have to inspect all $n$ columns in $\mathbf{A}$.
 
-What if we know our signal has two non-zero entries? If four columns (let's use the first four to illustrate it) are linearly dependent, they would satisfy
+<figure class="figure" style="text-align: center;">
+  <img src="/compressed_sensing_sparsity/2measurements.svg" alt="2 measurements required" width="40%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of column vectors in sensing matrix $\mathbf{A}$ that would allow to retrieve a $1$-sparse vector $\mathbf{x} \in \mathbb{R}^8$ from just $2$ measurements</figcaption>
+</figure>
+
+What if we know our signal has two non-zero entries? If four columns (let us use the first four to illustrate it) are linearly dependent, they would satisfy
 
 \begin{equation}
  z_1 \cdot \mathbf{a}_1 + z_2 \cdot \mathbf{a}_2 + z_3 \cdot \mathbf{a}_3 + z_4 \cdot \mathbf{a}_4 = 0
@@ -184,7 +183,7 @@ From this simple scenarios, we can observe several things:
 
 ## 2.3. The Restricted Isometry Property (RIP)
 
-The notion of how correlated the sensing matrix $\mathbf{C}$ is with the sparsity basis $\mathbf{\Psi}$ is captured by the coherence metric:
+The notion of how correlated the sensing matrix $\mathbf{C}$ is with the sparsity basis $\mathbf{\Psi}$ is captured by the <strong>coherence</strong> metric:
 
 $$
 \begin{equation}
@@ -195,11 +194,11 @@ $$
 where $\mathbf{C}_i$ and $\mathbf{\Psi}_j$ are the $i$-th column of $\mathbf{C}$ and the $j$-th column of $\mathbf{\Psi}$ respectively. A small coherence means that columns in the sensing matrix spread their energy when expressed in the sparsity basis $\mathbf{\Psi}$. By taking measurements on this decorrelated matrix, we can hope to recover the signal with fewer measurements.
 
 Example of pairs of basis that have low coherence include:
-* Fourier basis and the canonical basis.
-* Wavelet basis and the noiselet basis.
-* Random basis and any basis.
+* <strong>Fourier</strong> basis and the <strong>canonical</strong> basis.
+* <strong>Wavelet</strong> basis and the <strong>noiselet</strong> basis.
+* <strong>Random</strong> basis and any basis.
 
-When measurements are incoherent, we can define the isometry constant $\delta_k$ as the smallest number such that the following holds:
+When measurements are incoherent, we can define the <strong>isometry</strong> constant $\delta_k$ as the smallest number such that the following holds:
 
 $$
 \begin{equation}
@@ -209,9 +208,9 @@ $$
 
 which means $\mathbf{\Theta}$ almost preserves the norm of any $k$-sparse vector.
 
-Suppose we have arbitrary $\frac{k}{2}$-sparse vectors $\mathbf{s}$. In order reconstruct such vectors from measurements $\mathbf{y} = \mathbf{\Theta} \mathbf{s}$, we must be able to distinguish between measurements $\mathbf{y}_1 = \mathbf{\Theta} \mathbf{s}_1$ and $\mathbf{y}_2 = \mathbf{\Theta} \mathbf{s}_2$ of any two such vectors. If $\mathbf{y}_1 = \mathbf{y}_2$ for two different $\mathbf{s}_1 \neq \mathbf{s}_2$, retrieval becomes unfeasible. 
+Suppose we have arbitrary $\frac{k}{2}$-sparse vectors $\mathbf{s}$. In order reconstruct such vectors from measurements $\mathbf{y} = \mathbf{\Theta} \mathbf{s}$, we must be able to distinguish between measurements $\mathbf{y}_1 = \mathbf{\Theta} \mathbf{s}_1$ and $\mathbf{y}_2 = \mathbf{\Theta} \mathbf{s}_2$ of any two such vectors. If $\mathbf{y}_1 = \mathbf{y}_2$ for two different $\mathbf{s}_1 \neq \mathbf{s}_2$, then retrieval becomes unfeasible. 
 
-The difference vector $\mathbf{s} = \mathbf{s}_1 - \mathbf{s}_2$ between $\frac{k}{2}$-sparse vectors is at most a $k$-sparse vectors. The RIP property ensures that the measurements will be distinct enough to allow for the reconstruction of the original signals.
+The difference vector $\mathbf{s} = \mathbf{s}_1 - \mathbf{s}_2$ between $\frac{k}{2}$-sparse vectors is at most a $k$-sparse vector. The <strong>RIP property</strong> ensures that the measurements will be distinct enough to allow for the reconstruction of the original signals.
 
 Importantly, if the RIP holds, it can be proven that:
 
@@ -220,7 +219,7 @@ Importantly, if the RIP holds, it can be proven that:
 
 # 3. Why does the L1- norm work?
 
-As we have already mentioned, the $l_0$-norm minimization problem is non-convex and NP-hard. However, under certain conditions, it is possible to relax it to a convex $l_1$-norm minimization problem. This is a remarkable result, and it is not immediately clear why the $l_1$-norm, and not any other norm, like the $l_2$-norm, is a good proxy for sparsity. All the code that we will use to generate the animations in this section is available at the following public repository:
+As we have already mentioned, the $l_0$-norm minimization problem is non-convex and NP-hard. However, under certain conditions, it is possible to relax it to a <strong>convex $l_1$-norm minimization problem</strong>. This is a remarkable result, and it is not immediately clear why the $l_1$-norm, and not any other norm, like the $l_2$-norm, is a good proxy for sparsity. All the code used to generate the animations in this section is available at the following public repository:
 
 <span style="background-color: lightblue; border: 1px solid black; padding: 2px 10px; display: inline-flex; align-items: center;">
     <img src="/github.svg" alt="GitHub Icon" style="width: 24px; height: 24px; margin-right: 10px;">
@@ -300,7 +299,7 @@ $$
 </span>
 <br><br>
 
-The isocontours for the $l_2$-norm term we are trying to minimize are concentric $N$-dimensional ellipsoids centered at $\mathbf{y}$. On the other hand, the $l_1$-norm constraint is an $N$-dimensional diamond centered at the origin. The solution to the optimization problem is therefore the point for which one of the ellipsoids is tangent to the diamond, as depicted in the figure below for the 2D case.
+The <strong>isocontours</strong> for the $l_2$-norm term we are trying to minimize are concentric $N$-dimensional <strong>ellipsoids</strong> centered at $\mathbf{y}$. On the other hand, the $l_1$-norm constraint is an $N$-dimensional <strong>diamond</strong> centered at the origin. The solution to the optimization problem is therefore the point for which one of the ellipsoids is <strong>tangent</strong> to the diamond, as depicted in the figure below for the 2D case.
 
 <figure class="figure" style="text-align: center;">
   <img src="/compressed_sensing_sparsity/Solution.png" alt="Solution at Tangency" width="80%" style="display: block; margin: auto;">
@@ -320,13 +319,13 @@ Let us focus for simplicity in the illustrated 2D scenario. Notice that, for a g
       $$
       where $a$ and $b$ are the semi-major and semi-minor axes of the ellipse. 
       <br><br>
-      We can compute the derivative of the ellipse with respect to $x$:
+      We can compute the <strong>derivative</strong> of the ellipse with respect to $x$:
       $$
       \begin{equation}
       \frac{dy}{dx} = \pm \frac{b}{a} \frac{x}{\sqrt{a^2-x^2}}
       \end{equation}
       $$
-      We are interested in the point of tangency for a given slope $m$. That means the derivative of the ellipse at that point should be equal to the slope of the line:
+      We are interested in the <strong>point of tangency</strong> for a given slope $m$. That means the derivative of the ellipse at that point should be equal to the slope of the line:
       $$
       \begin{equation}
       m = \pm \frac{b}{a} \frac{x_0}{\sqrt{a^2-x_0^2}} \rightarrow m^2 = \frac{b^2}{a^2} \frac{x_0^2}{a^2-x_0^2}
@@ -344,7 +343,7 @@ Let us focus for simplicity in the illustrated 2D scenario. Notice that, for a g
       y_0 = \pm \frac{b^2}{\sqrt{a^2 m^2 + b^2}}
       \end{equation}
       $$
-      This allows to express the tangent line as
+      This allows to express the <strong>tangent line</strong> as
       $$
       \begin{equation}
       y = mx \pm \sqrt{a^2 m^2 + b^2}
@@ -354,7 +353,7 @@ Let us focus for simplicity in the illustrated 2D scenario. Notice that, for a g
         <img src="/compressed_sensing_sparsity/Tangents.png" alt="Tangents to ellipse" width="80%" style="display: block; margin: auto;">
         <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Tangents to an ellipse for a given slope</figcaption>
       </figure>
-      To find the secant line of tangency, we need to find the line that connects all the points of tangency for a set of concentric ellipses. Such a set corresponds to the following equation
+      To find the <strong>secant line of tangency</strong>, we need to find the line that connects all the points of tangency for a set of concentric ellipses. Such a set corresponds to the following equation
       $$
       \begin{equation}
       \frac{x^2}{a^2} + \frac{y^2}{b^2} = s^2
@@ -391,7 +390,7 @@ The orientation and aspect ratio of this set of concentric ellipses is given by 
 1. <strong>The edges of the $l_1$-ball</strong>: only if the secant line of tangency for the concentric ellipses intersects with it. In that case, it will have two non-zero elements.
 2. <strong>The edges of the $l_1$-ball</strong>: otherwise. In that case, it will have only one non-zero element.
 
-Consequently, the solution will be <strong>sparse</strong> whenever it lies on the vertices of the diamond. How likely is this to happen? Well, let us see how different transforms to the set of ellipses impact the solution (notice how scaling just results in the same set):
+Consequently, the solution will be <strong>sparse</strong> whenever it lies on the vertices of the diamond. How likely is this to happen? Well, let us see how different transforms to the set of ellipses impact the solution (we skip scaling since it results in the same set):
 
   * <strong>Shift</strong>
   <figure class="figure" style="text-align: center;">
@@ -417,9 +416,9 @@ Consequently, the solution will be <strong>sparse</strong> whenever it lies on t
     <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Solution for the optimisation problem given by point of tangency (<span style="color:#00D100;">green</span>) as the set of concentric ellipses changes its aspect ratio when using the $l_1$ norm (left) and the $l_2$ norm (right).</figcaption>
   </figure>
 
-We can observe how the solution to the optimization problem is highly dependent on the orientation and aspect ratio of the set of concentric ellipses. Most often, the secant line of tangency will not intersect with the diamond, leading the solution to lie in one of its vertices and therefore be sparse.
+We can observe how the solution to the optimization problem is highly dependent on the orientation and aspect ratio of the set of concentric ellipses. Most often, the secant line of tangency will not intersect with the diamond, leading the solution to lie in one of its <strong>vertices</strong> and therefore be sparse.
 
-The reason the $l_1$-norm works as a proxy for sparsity is because of its discontinuities at the vertices. They create a skewed landscape that makes the solution gravitate towards those vertices more often than not. This is not the case for the $l_2$-norm, which does not have any preferential point along its smooth surface, as the following videos summarizes.
+The reason the $l_1$-norm works as a proxy for sparsity is because of its <strong>discontinuities</strong> at the vertices. They create a skewed landscape that makes the solution gravitate towards those vertices more often than not. This is not the case for the $l_2$-norm, which does not have any preferential point along its smooth surface, as the following videos summarizes.
 
 <figure class="figure" style="text-align: center;">
   <video src="/compressed_sensing_sparsity/Transforms.mp4" width="90%" controls style="display: block; margin: auto;">
@@ -428,27 +427,35 @@ The reason the $l_1$-norm works as a proxy for sparsity is because of its discon
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Solution for the optimisation problem given by point of tangency (<span style="color:#00D100;">green</span>) as the set of concentric ellipses undergoes different transforms when using the $l_1$ norm (left) and the $l_2$ norm (right).</figcaption>
 </figure>
 
-How about the 3D case? The reasoning is analogous:
-* If the secant line of tangency intersects with one of the faces of the diamond, the solution will have three non-zero elements.
+How about the <strong>3D case</strong>? The reasoning is analogous:
+* If the <strong>secant line of tangency</strong> intersects with one of the <strong>faces</strong> of the diamond, the solution will have three non-zero elements.
   <figure class="figure" style="text-align: center;">
     <img src="/compressed_sensing_sparsity/FaceIntersection.png" alt="Face Intersection" width="70%" style="display: block; margin: auto;">
     <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of a scenario where the solution lies in the face of the diamond.</figcaption>
   </figure>
-* If the secant line of tangency intersects does not intersect with the faces, then we can focus on the 2D plane that extends the face in the quadrand where the center of the ellipsoids lie. In particular, we care about the ellipse resulting from the intersection between the ellipsoid and that plane
-  * If the secant line of tangency for the ellipse intersects with one of the edges of the diamond, the solution will have two non-zero elements.
+* If the secant line of tangency intersects does not intersect with the faces, then it boils down to the <strong>2D plane</strong> in which the closest edge lives, which we have already explained earlier. In particular, we care about the ellipse resulting from the intersection between the ellipsoid and that plane:
+  * If the <strong>secant line of tangency</strong> for the ellipse intersects with one of the <strong>edges</strong> of the diamond, the solution will have two non-zero elements.
     <figure class="figure" style="text-align: center;">
       <img src="/compressed_sensing_sparsity/EdgeIntersection.png" alt="Edge Intersection" width="70%" style="display: block; margin: auto;">
       <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of a scenario where the solution lies in the edge of the diamond.</figcaption>
     </figure>
-  * If the secant line of tangency does not intersect with any edgee, then the solution goes to the vertex of the diamond and will have only one non-zero element.
+  * If the <strong>secant line of tangency</strong> does not intersect with any edgee, then the solution goes to the <strong>vertex</strong> of the diamond and will have only one non-zero element.
     <figure class="figure" style="text-align: center;">
       <img src="/compressed_sensing_sparsity/VertexIntersection.png" alt="Vertex Intersection" width="70%" style="display: block; margin: auto;">
       <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of a scenario where the solution lies in the vertex of the diamond.</figcaption>
     </figure>
 
+It is not possible to visually illustrate this process beyond the 3D case. However, the reasoning is the same and it gives us a good intuition of why the $l_1$-norm is a good proxy for <strong>sparsity</strong>.
+
 # 4. Conclusion
 
-In this post, we have introduced the concept of compressed sensing and discussed the conditions under which it is possible to recover a sparse signal from a set of linear measurements. We have seen that the key to successful recovery is the incoherence between the sensing matrix and the sparsity basis. We have also discussed the Restricted Isometry Property and the role of the $l_1$-norm in the recovery process. Finally, we have shown that the $l_1$-norm is a good proxy for sparsity because of the discontinuities of the $l_1$-ball. This makes the solution gravitate towards a sparse solution. In the next post, we will discuss some of the algorithms used to solve the $l_1$-norm minimization problem and recover the original signal.
+In this post:
+* We have introduced the concept of <strong>compressed sensing</strong> and discussed the conditions under which it is possible to recover a sparse signal from a set of linear measurements. 
+* We have seen that the key to successful recovery is the <strong>incoherence</strong> between the sensing matrix and the sparsity basis. 
+* We have discussed the <strong>Restricted Isometry Property</strong> and the role of the $l_1$-norm in the recovery process. 
+* We have shown that the <strong>$l_1$-norm is a good proxy for sparsity</strong> because of the discontinuities of the $l_1$-ball. This makes the solution gravitate towards a sparse solution. 
+
+In the next post, we will discuss some of the algorithms used to solve the $l_1$-norm minimization problem and recover the original signal.
 
 # 5. References
 
