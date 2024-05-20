@@ -166,7 +166,7 @@ poetry run python -m animal_classifier evaluation base_model_latest.pth base_mod
 
 2. **Validation**: to ensure the model is able to generalize to unseen data. 
 ```bash
-poetry run python -m animal_classifier validation base_model.pth data/test.csv --annotations-dir data/cats_and_dogs/annotations --model-dir models/cats_and_dogs --max-loss-validation 5
+poetry run python -m animal_classifier validation base_model.pth data/test.csv --annotations-dir data/cats_and_dogs/annotations --model-dir models/cats_and_dogs --min-accuracy-validation 0.5
 ```
 
 # 3.3. Model Deployment
