@@ -75,7 +75,7 @@ As the width of the subintervals decreases, the approximation of the area under 
 
 $$
 \begin{equation}
-A(x) = \int_{a}^{x} f(t) \cdot dt = \lim_{\Delta x \to 0} \sum_{i=0}^{n-1} f(a + i\cdot \Delta x) \cdot \Delta x
+A(x) = \int_{a}^{x} f(y) \cdot dy = \lim_{\Delta x \to 0} \sum_{i=0}^{n-1} f(a + i\cdot \Delta x) \cdot \Delta x
 \end{equation}
 $$
 
@@ -135,7 +135,63 @@ So the derivative of the area under the curve $A(x)$ is the function $f(x)$ itse
 
 # 4. Integrating the slope of the tangent line
 
+How about going the other way? Say we want to integrate the function that corresponds to the slope of the tangent line $s(x)$ at a point $x$. 
+
+First of all, notice how adding a constant to the function $f(x)$ does not change its derivative $f'(x)$, as illustrated below:
+
+<figure class="figure" style="text-align: center;">
+  <video src="/integration_differentiation/Ambiguity.mp4" width="90%" controls style="display: block; margin: auto;">
+    Adding a constant to the function does not change its derivative
+  </video>
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Adding a constant to the function does not change its derivative. The slope of the tangent line remains the same</figcaption>
+</figure>
+
+That implies that information is lost, so we will only be able to recover the function up to a constant. According to Eq.(4), area under the slope curve $s(x)$ in the interval $[x_0, x]$ can be approximated by:
+
+$$
+\begin{equation}
+\int_{x_0}^{x} s(y) \cdot dy \approx \sum_{i=0}^{n-1} s(x_0 + i\cdot \Delta x) \cdot \Delta x
+\end{equation}
+$$
+
+where $n=\frac{x - x_0}{\Delta x}$. We can expand the sum using Eq.(1):
+
+$$
+\begin{equation}
+\int_{x_0}^{x} s(y) \cdot dy \approx \sum_{i=0}^{n-1} \frac{f(x_0 + (i+1)\cdot \Delta x) - f(x_0 + i\cdot \Delta x)}{\Delta x} \cdot \Delta x
+\end{equation}
+$$
+
+or splitting it in two sums:
+
+$$
+\begin{equation}
+\int_{x_0}^{x} s(y) \cdot dy \approx \sum_{i=1}^{n} f(x_0 + i\cdot \Delta x) - \sum_{i=0}^{n-1} f(x_0 + i\cdot \Delta x)
+\end{equation}
+$$
+
+Most terms in the sum cancel out except for the first and last ones, so the expression simplifies to:
+
+$$
+\begin{equation}
+\int_{x_0}^{x} s(y) \cdot dy \approx f(x_0 + n\cdot \Delta x) - f(x_0) = f(x) - f(x_0)
+\end{equation}
+$$
+
+So the integral of the slope of the tangent line $s(x)$ is the function $f(x)$ itself, up to a constant! That constant is the value of the function at the starting point $x_0$, which is an arbitrary choice.
+
+This is illustrated in the following animation:
+
+<figure class="figure" style="text-align: center;">
+  <video src="/integration_differentiation/IntegratingSlope.mp4" width="90%" controls style="display: block; margin: auto;">
+    Integrating the slope of the tangent line
+  </video>
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">We start from function <span style="color:yellow;">f(x)</span> and compute the slope of the tangen line given by its derivative <span style="color:pink;">$s(x)$</span>. Integrating the slope can be approximated by summing the rectangles below the curve (<span style="color:purple;">purple</span>). The height of each rectangle corresponds to the derivative at that point. That in turn is given by substracting f$f(x+)$ (<span style="color:red;">$\downarrow$</span>) from $f(x+\Delta x)$ (<span style="color:green;">$\uparrow$</span>) and dividing by $\Delta x$. As we add a new rectangle, it contributes with a new $\uparrow$ and $\downarrow$ pair, so the sum cancels out except for the first and last terms.</figcaption>
+</figure>
+
 # 5. Conclusion
+
+In this post, we revisited the definitions of the <strong>derivative</strong> and the <strong>integral</strong>, and we tried to gain some geometric intuition about why they reverse each other. We have shown this can be visually understood by using the geometric approximations of the derivative and the integral. So hopefully, you will not need to accept this concept on blind trust as I had to back in high school!
 
 # 6. References
 
