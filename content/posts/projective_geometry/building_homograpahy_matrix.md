@@ -211,7 +211,7 @@ $$
 \end{equation}
 $$
 
-Consequently, in homogeneous coordinates, they represent exactly the same point in image space! And how do we obtain its image coordinates $\vec{P}=[X,Y]^T$? Following the definition in eq.(6), we simply need to divide by the scale factor encoded in the last dimension:
+Consequently, in homogeneous coordinates, they represent exactly the same point in image space! And how do we obtain its image coordinates $\vec{P}=[X,Y]^T$? Following the definition in Eq.(6), we simply need to divide by the scale factor encoded in the last dimension:
 
 $$
 \begin{equation}

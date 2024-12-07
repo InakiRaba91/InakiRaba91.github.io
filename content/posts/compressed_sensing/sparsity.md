@@ -13,7 +13,7 @@ draft = false
 </span>
 <br><br>
 
-In this series we will focus on the topic of <strong>Compressed Sensing</strong>. We will start by motivating the interest in this recent field. Sparse signals are ubiquitous in nature, and the ability to recover them from a small number of measurements has a wide range of applications. We will try and understand the mathematical underpinnings of the theory, and why the l1-norm is used as a proxy for sparsity.
+In this article we will focus on the topic of <strong>Compressed Sensing</strong>. We will start by motivating the interest in this recent field. Sparse signals are ubiquitous in nature, and the ability to recover them from a small number of measurements has a wide range of applications. We will try and understand the mathematical underpinnings of the theory, and why the l1-norm is used as a proxy for sparsity.
 
 # 1. Data compression
 
@@ -454,8 +454,6 @@ In this post:
 * We have seen that the key to successful recovery is the <strong>incoherence</strong> between the sensing matrix and the sparsity basis. 
 * We have discussed the <strong>Restricted Isometry Property</strong> and the role of the $l_1$-norm in the recovery process. 
 * We have shown that the <strong>$l_1$-norm is a good proxy for sparsity</strong> because of the discontinuities of the $l_1$-ball. This makes the solution gravitate towards a sparse solution. 
-
-In the next post, we will discuss some of the algorithms used to solve the $l_1$-norm minimization problem and recover the original signal.
 
 # 5. References
 
