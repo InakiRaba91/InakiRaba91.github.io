@@ -195,6 +195,6 @@ In this post, we revisited the definitions of the <strong>derivative</strong> an
 
 # 6. References
 
-1. Fundamental Theorem of Calculus. Geometric meaning/Proof [Wikipedia](https://en.wikipedia.org/wiki/Fundamental_theorem_of_calculus#Geometric_meaning/Proof)
-2. Riemann sum [Wikipedia](https://en.wikipedia.org/wiki/Riemann_sum)
-3. 3Blue1Brown (Grant Sanderson). [Integration and the fundamental theorem of calculus. Chapter 8, Essence of calculus](https://www.youtube.com/watch?v=rfG8ce4nNh0)
+1. Fundamental Theorem of Calculus. Geometric meaning/Proof. [Wikipedia](https://en.wikipedia.org/wiki/Fundamental_theorem_of_calculus#Geometric_meaning/Proof)
+2. Riemann sum. [Wikipedia](https://en.wikipedia.org/wiki/Riemann_sum)
+3. [Integration and the fundamental theorem of calculus. Chapter 8, Essence of calculus](https://www.youtube.com/watch?v=rfG8ce4nNh0), by 3Blue1Brown (Grant Sanderson)
