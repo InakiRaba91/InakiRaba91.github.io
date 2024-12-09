@@ -100,7 +100,7 @@ Luckily, it turns out that there is a very simple geometric explanation for this
  * The <strong>derivative</strong> is approximated by the slope of the secant line between two points on the curve.
  * The <strong>integral</strong> is approximated by partitioning the interval into subintervals and summing the areas of the rectangles formed by the function values at the left endpoint of each subinterval.
 
-So say we want to differentiate the function that corresponds to the area under the curve $A(x)$ in the interval $[a, x]$. According to Eq.(1), its derivative $A'(x)$ would be approximated by:
+So say we want to differentiate the function that corresponds to the area under the curve $A(x)$ in the interval $[x_0, x]$. According to Eq.(1), its derivative $A'(x)$ would be approximated by:
 
 $$
 \begin{equation}
@@ -112,15 +112,15 @@ We can expand the numerator using Eq.(4):
 
 $$
 \begin{equation}
-A'(x) \approx \frac{\sum_{i=1}^{n} f(a + i\cdot \Delta x) \cdot \Delta x - \sum_{i=0}^{n-1} f(a + i\cdot \Delta x) \cdot \Delta x}{\Delta x}
+A'(x) \approx \frac{\sum_{i=0}^{n} f(x_0 + i\cdot \Delta x) \cdot \Delta x - \sum_{i=0}^{n-1} f(x_0 + i\cdot \Delta x) \cdot \Delta x}{\Delta x}
 \end{equation}
 $$
 
-And as we observe, all the terms in the sum cancel out except for the last one:
+Notice how the first sum has $n+1$ terms, while the second sum has $n$ terms. This results in all terms being cancelled out except for the last one:
 
 $$
 \begin{equation}
-A'(x) \approx f(a + n\cdot \Delta x) = f(x)
+A'(x) \approx f(x_0 + n\cdot \Delta x) = f(x)
 \end{equation}
 $$
 
