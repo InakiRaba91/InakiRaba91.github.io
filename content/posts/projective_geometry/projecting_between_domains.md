@@ -1,5 +1,5 @@
 +++
-title = '📐 Projective Geometry: Projecting between domains'
+title = '🌒 Projective Geometry: Projecting between domains'
 date = 2023-07-10T11:16:19+01:00
 tags = ["computer vision", "projective geometry", "homography matrix", "pinhole camera"]
 draft = false
