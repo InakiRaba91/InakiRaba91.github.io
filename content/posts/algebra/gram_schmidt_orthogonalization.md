@@ -37,7 +37,7 @@ $$
 
 where $\mathbf{a} = [a_0, a_1, \ldots, a_N]$ are the coefficients of the polynomial basis.
 
-We can define a dot product between two functions $f(x)$ and $g(x)$ in the interval $[a, b]$ as:
+Taylor expansion relies on the information of the function and its derivatives at a single point. Therefore it provides a very good approximation of the function near that point, but as we move farther from it, the approximation becomes less accurate. One can instead minimize the difference between the function and its approximation over a given interval. We will define a dot product between two functions $f(x)$ and $g(x)$ in the interval $[a, b]$ as:
 
 $$
 \begin{equation}
@@ -285,12 +285,98 @@ So to sum up, the Gram-Schmidt process consists of the following steps:
    
 # 3. Legendre Polynomials
 
-# 5. Conclusion
+Now that we have a grasp of the Gram-Schmidt process, let us apply it to find an orthogonal basis that spans the same space 
+as the monomial basis $P_n(x) = x^n$ in the interval $[-1, 1]$. These are known as the <strong>Legendre polynomials</strong>,
+denoted as $L_n(x)$. Moreover, they emerge in multiple fields of physics and engineering, such as quantum mechanics, fluid dynamics, and electromagnetism.
+In order Toget them in their standard form, we need to add an extra step: instead of normalizing the elements to make them unitary, 
+we will normalize them to make them so they evaluate to $L_n(x=1) = 1$:
 
-In this post, we revisited the definitions of the <strong>derivative</strong> and the <strong>integral</strong>, and we tried to gain some geometric intuition about why they reverse each other. We have shown this can be visually understood by using the geometric approximations of the derivative and the integral. So hopefully, you will not need to accept this concept on blind trust as I had to back in high school!
+The first polynomial in our basis is simply the constant function $P_0(x) = 1$ and it is already normalized:
 
-# 6. References
+$$
+\begin{equation}
+L_0(x) = P_0(x) = 1
+\end{equation}
+$$
 
-1. Fundamental Theorem of Calculus. Geometric meaning/Proof. [Wikipedia](https://en.wikipedia.org/wiki/Fundamental_theorem_of_calculus#Geometric_meaning/Proof)
-2. Riemann sum. [Wikipedia](https://en.wikipedia.org/wiki/Riemann_sum)
-3. [Integration and the fundamental theorem of calculus. Chapter 8, Essence of calculus](https://www.youtube.com/watch?v=rfG8ce4nNh0), by 3Blue1Brown (Grant Sanderson)
+To compute the second polynomial $L_1(x)$, we need to orthogonalize the monomial $P_1(x) = x$ with respect to $L_0(x) = 1$.
+
+$$
+\begin{equation}
+L_1(x) = x - \frac{\left\langle x, 1 \right\rangle}{\left\langle 1, 1 \right\rangle} \cdot 1 = x - \frac{\int_{-1}^{1} x dx}{\int_{-1}^{1} dx} = x
+\end{equation}
+$$
+
+Similarly, we can compute the third polynomial $L_2(x)$ by orthogonalizing $P_2(x) = x^2$ with respect to $L_0(x) = 1$ and $L_1(x) = x$:
+
+$$
+\begin{equation}
+\begin{split}
+\tilde{L_2(x)} &= x^2 - \frac{\left\langle x^2, 1 \right\rangle}{\left\langle 1, 1 \right\rangle} \cdot 1 - \frac{\left\langle x^2, x \right\rangle}{\left\langle x, x \right\rangle} \cdot x \\\\
+&= x^2 - \frac{\int_{-1}^{1} x^2 dx}{\int_{-1}^{1} dx} - \frac{\int_{-1}^{1} x^3 dx}{\int_{-1}^{1} x x dx} \cdot x \\\\
+&= x^2 - \frac{1}{3} 
+\end{split}
+\end{equation}
+$$
+
+Recall that we want to normalize the polynomials so that they evaluate to $L_n(1) = 1$. This means we need to divide them by their norm:
+
+$$
+\begin{equation}
+L_2(x) = \frac{\tilde{L_2(x)}}{\tilde{L_2(1)}} = \frac{1}{2} \left( 3 x^2 - 1 \right)
+\end{equation}
+$$
+
+The first few Legendre polynomials are shown in the following table:
+
+$$
+\begin{equation}
+\begin{array}{|c|c|}
+\hline
+\mathbf{n} & \mathbf{L_n(x)} \\\\
+\hline
+0 & 1 \\\\
+1 & x \\\\
+2 & \frac{1}{2} \left( 3 x^2 - 1 \right) \\\\
+3 & \frac{1}{2} \left( 5 x^3 - 3 x \right) \\\\
+4 & \frac{1}{8} \left( 35 x^4 - 30 x^2 + 3 \right) \\\\
+5 & \frac{1}{8} \left( 63 x^5 - 70 x^3 + 15 x \right) \\\\
+\hline
+\end{array}
+\end{equation}
+$$
+
+The following interactive plot shows the Legendre polynomials up to degree $10$. You can use the slider to change the degree of the polynomial:
+
+<!-- Interactive Legendre Polynomials -->
+<input type="range" id="degreeSlider" min="0" max="10" value="0" oninput="updatePlot()">
+<span id="degreeValue">n=0</span>
+<div id="plot"></div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="/js/plotLegendre.js"></script>
+
+
+Additionally, the following snippet allows you to approximate any user-defined function (i.e.: <code>abs(x)</code>, <code>sin(x)</code>, <code>exp(x)</code>) by expanding it on Legendre polynomial basis up to degree $n$. You can use the input field to enter the function you want to approximate and the slider to change the degree of the polynomial. Once you have entered the function, click the button to plot it:
+
+<!-- Interactive Legendre Polynomials Approximation-->
+<input type="text" id="functionInput" value="cos(5x)exp(x)x" placeholder="e.g., cos(x), exp(x)" style="border: 2px solid black; padding: 5px;">
+<button onclick="plotFunction()" style="background-color: #FFFFE0; border: 2px solid black; box-shadow: 2px 2px 5px grey; padding: 5px 10px;">Plot Function</button>
+<br><br>
+<input type="range" id="degreeSliderFunction" min="0" max="10" value="7" oninput="plotFunction()">
+<span id="degreeValueFunction">n=7</span>
+<div id="functionPlot"></div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
+<script src="/js/plotLegendreApprox.js"></script>
+
+# 4. Conclusion
+
+In this article, we have introduced the <strong>Gram-Schmidt</strong> orthogonalization process. This technique allows us to find an <strong>orthogonal basis</strong> that spans the same space as a given set of linearly independent vectors. We have illustrated the process for a set of two and three vectors in 2D and 3D, respectively. We have also applied the Gram-Schmidt process to find the <strong>Legendre polynomials</strong>, which are orthogonal polynomials that span the same space as the monomial basis in the interval $[-1, 1]$. Finally, we have shown how to approximate any user-defined function by expanding it on the Legendre polynomial basis up to a given degree.
+
+# 5. References
+
+1. Approximation Theory. [University of Queensland](https://teaching.smp.uq.edu.au/scims/Num_analysis/Polynomial.html)
+2. Gram-Schmidt process. [Wikipedia](https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process)
+3. Legendre polynomials. [Wikipedia](https://en.wikipedia.org/wiki/Legendre_polynomials)
