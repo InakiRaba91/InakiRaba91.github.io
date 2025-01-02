@@ -349,27 +349,24 @@ $$
 The following interactive plot shows the Legendre polynomials up to degree $10$. You can use the slider to change the degree of the polynomial:
 
 <!-- Interactive Legendre Polynomials -->
-<input type="range" id="degreeSlider" min="0" max="10" value="0" oninput="updatePlot()">
+<input type="range" id="degreeSlider" min="0" max="10" value="0">
 <span id="degreeValue">n=0</span>
 <div id="plot"></div>
-
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="/js/plotLegendre.js"></script>
-
+<script type="module" src="/js/plotLegendre.js"></script>
 
 Additionally, the following snippet allows you to approximate any user-defined function (i.e.: <code>abs(x)</code>, <code>sin(x)</code>, <code>exp(x)</code>) by expanding it on Legendre polynomial basis up to degree $n$. You can use the input field to enter the function you want to approximate and the slider to change the degree of the polynomial. Once you have entered the function, click the button to plot it:
 
 <!-- Interactive Legendre Polynomials Approximation-->
 <input type="text" id="functionInput" value="cos(5x)exp(x)x" placeholder="e.g., cos(x), exp(x)" style="border: 2px solid black; padding: 5px;">
-<button onclick="plotFunction()" style="background-color: #FFFFE0; border: 2px solid black; box-shadow: 2px 2px 5px grey; padding: 5px 10px;">Plot Function</button>
+<button id="plotButton" style="background-color: #FFFFE0; border: 2px solid black; box-shadow: 2px 2px 5px grey; padding: 5px 10px;">Plot Function</button>
 <br><br>
-<input type="range" id="degreeSliderFunction" min="0" max="10" value="7" oninput="plotFunction()">
+<input type="range" id="degreeSliderFunction" min="0" max="10" value="7">
 <span id="degreeValueFunction">n=7</span>
 <div id="functionPlot"></div>
-
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
-<script src="/js/plotLegendreApprox.js"></script>
+<script type="module" src="/js/plotLegendreApprox.js"></script>
 
 # 4. Conclusion
 
