@@ -1,6 +1,6 @@
 +++
 title = '🔁 Integration and Differentiation: Inverse Operations'
-date = 2024-12-07T11:16:19+01:00
+date = 2024-11-07T11:16:19+01:00
 tags = ["integral", "area under curve", "derivative", "tangent", "Riemann sum"]
 draft = false
 +++
