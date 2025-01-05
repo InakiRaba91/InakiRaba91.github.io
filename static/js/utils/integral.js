@@ -4,7 +4,7 @@ import { GaussianQuadrature, approximateFunctionLegendre, computeLegendreCoeffic
 export function funcEval(funcStr, a, b, n) {
     const x = [];
     const y = [];
-    const h = (b - a) / (n - 1);
+    const h = (b - a) / Math.max(1, (n - 1));
     for (let i = 0; i < n; i++) {
         const xi = a + i * h;
         x.push(xi);
@@ -29,7 +29,10 @@ export function funcIntegralRectangle(funcStr, a, b, n) {
 
 export function EvalIntegralPiecewiseConstant(funcStr, a, b, n) {
     const { x: x_base, y: y_base } = funcEval(funcStr, a, b, n);
-    const h = (b - a) / (n - 1);
+    if (y_base.length === 1) {
+        return {x: [a, b], y: [y_base[0], y_base[0]], integral: y_base[0] * (b - a)};
+    }
+    const h = (b - a) / Math.max(1, (n - 1));
     const integral = y_base.slice(0, -1).reduce((a, b) => a + b, 0) * h; 
     let x = [];
     let y = [];
@@ -92,7 +95,7 @@ export function EvalIntegralLegendre(funcStr, a, b, n) {
             y.push(approximateFunctionLegendre(xi, coefficients));
         }
         catch (e) {
-            alert('Invalid function ja');
+            alert('Invalid function');
             return;
         }
     }
