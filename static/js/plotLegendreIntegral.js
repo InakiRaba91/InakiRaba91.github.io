@@ -2,9 +2,9 @@ import { funcIntegralRectangle, EvalIntegralPiecewiseConstant, EvalIntegralPiece
 
 export function plotFunctionIntegral() {
   const funcStr = document.getElementById('functionInput').value;
-  const degree = parseInt(document.getElementById('degreeSliderIntegral').value);
+  const num_points = parseInt(document.getElementById('numPointsSlider').value);
   const method = document.getElementById('methodSelect').value;
-  document.getElementById('degreeValueIntegral').textContent = `n=${degree}`;
+  document.getElementById('numPointsValue').textContent = `n=${num_points}`;
 
   
   const a = -1;
@@ -13,16 +13,16 @@ export function plotFunctionIntegral() {
   let approx;
   switch (method) {
     case 'gaussian':
-      approx = EvalIntegralLegendre(funcStr, a, b, degree);
+      approx = EvalIntegralLegendre(funcStr, a, b, num_points);
       break;
     case 'rectangle':
-      approx = EvalIntegralPiecewiseConstant(funcStr, a, b, degree);
+      approx = EvalIntegralPiecewiseConstant(funcStr, a, b, num_points);
       break;
     case 'trapezoid':
-      approx = EvalIntegralPiecewiseLinear(funcStr, a, b, degree);
+      approx = EvalIntegralPiecewiseLinear(funcStr, a, b, num_points);
       break;
     case 'simpson':
-      approx = EvalIntegralPiecewiseQuadratic(funcStr, a, b, degree);
+      approx = EvalIntegralPiecewiseQuadratic(funcStr, a, b, (1 + num_points) / 2);
       break
     default:
       alert('Invalid method');
@@ -71,12 +71,39 @@ export function plotFunctionIntegral() {
   Plotly.newPlot('functionPlot', [traceOriginal, traceApprox], layout);
 }
 
-// Event listener for the function input
+// Add event listeners
 document.getElementById('plotIntegralButton').addEventListener('click', plotFunctionIntegral);
-document.getElementById('degreeSliderIntegral').addEventListener('input', plotFunctionIntegral);
+document.getElementById('numPointsSlider').addEventListener('input', () => {
+  const degree = parseInt(document.getElementById('numPointsSlider').value);
+  document.getElementById('numPointsValue').textContent = `n=${degree}`;
+  const trapezoidOption = document.getElementById('trapezoidOption');
+  const simpsonOption = document.getElementById('simpsonOption');
+  
+  // Show or hide the rectangle option
+  if (degree > 1) {
+    trapezoidOption.style.display = 'block';
+  } else {
+    trapezoidOption.style.display = 'none';
+    if (methodSelect.value === 'trapezoid') {
+      methodSelect.value = 'gaussian';
+    }
+  }
+
+  // Show or hide the simpson option
+  if (degree > 1 && (degree + 1) % 2 === 0) {
+    simpsonOption.style.display = 'block';
+  } else {
+    simpsonOption.style.display = 'none';
+    if (methodSelect.value === 'simpson') {
+      methodSelect.value = 'gaussian';
+    }
+  }
+
+  plotFunctionIntegral();
+});
 document.getElementById('methodSelect').addEventListener('change', plotFunctionIntegral);
+
 
 // Initial plot
 plotFunctionIntegral();
-
 

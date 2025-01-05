@@ -210,7 +210,7 @@ As a result, we can expect a good numerical approximation of the integral of any
 And here is where a beautiful insight by Carl Friedrich Gauss comes into play. He realized that by choosing the points $\\{x_i\\}_{i=1}^n$ 
 smartly, we can double the degree of the polynomial that we can integrate exactly. This is the idea behind <strong>Gaussian Quadrature</strong>.
 
-Let us say we have a polynomial $P_{2n-1}(x)$ of degree $2n-1$. If we dividie it by the Legendre polynomial $L_n(x)$, we can express it as:
+Let us say we have a polynomial $P_{2n-1}(x)$ of degree $2n-1$. If we divide it by the Legendre polynomial $L_n(x)$, we can express it as:
 
 $$
 \begin{equation}
@@ -240,7 +240,7 @@ $$
 $$
 
 This means the integral of $P_{2n-1}(x)$ is equal to the integral of a polynomial of degree at most $n-1$. That in turn implies we can compute the integral of 
-it exactly from just $n$ points! There is a price to pay though: it is not $P_{2n-1}(x)$ that we have to evaluate, but the remainder $R_{n-1}(x)$.
+it exactly from just $n$ points! There is a price to pay though: it is not $P_{2n-1}(x)$ that we have to evaluate, but the remainder $R_{n-1}(x)$, which we would need to compute.
 
 Notice though we have not chosen the points $\\{x_i\\}_{i=1}^n$ yet. Gauss made a really clever observation. What if we choose the points to 
 be the $n$ roots of the Legendre polynomial $L_n(x)$? Then from Eq.(9) we have
@@ -261,20 +261,28 @@ $$
 
 And that is it! We have found a way to compute the integral of any polynomial of degree $2n-1$ exactly by a weighted sum of its values at $n$ points!
 
+$$
+\begin{equation}
+\int_{a}^{b} f(x)  dx \approx \sum_{i=1}^{n} w_i \cdot f(z_i)
+\end{equation}
+$$
+
+where the weights $\\{w_i\\}_{i=1}^n$ can be precomputed for every $n$ by solving the Vandermonde system of equations in Eq.(7).
+
 The interactive plot below shows how the different methods approximate the integral of a function. You can change the function, the number of points $n$, and the method used to compute the integral.
 
 <!-- Interactive Legendre Polynomials Approximation-->
 <input type="text" id="functionInput" value="cos(2x)exp(x)" placeholder="e.g., cos(x), exp(x)" style="border: 2px solid black; padding: 5px;">
 <button id="plotIntegralButton" style="background-color: #FFFFE0; border: 2px solid black; box-shadow: 2px 2px 5px grey; padding: 5px 10px;">Plot Function</button>
 <br><br>
-<input type="range" id="degreeSliderIntegral" min="2" max="5" value="2">
-<span id="degreeValueIntegral">n=2</span>
+<input type="range" id="numPointsSlider" min="1" max="5" value="2">
+<span id="numPointsValue">n=2</span>
 <br><br>
 <select id="methodSelect" style="background-color: #ADD8E6; border: 2px solid black; padding: 5px;">
   <option value="gaussian" selected>Gaussian Quadrature</option>
   <option value="rectangle">Rectangle Rule</option>
-  <option value="trapezoid">Trapezoid Rule</option>
-  <option value="simpson">Simpson's Rule</option>
+  <option value="trapezoid" id="trapezoidOption">Trapezoid Rule</option>
+  <option value="simpson" id="simpsonOption" style="display: none;">Simpson's Rule</option>
 </select>
 <br><br>
 <div id="functionPlot"></div>
