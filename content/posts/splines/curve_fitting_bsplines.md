@@ -178,7 +178,7 @@ $q_i^{k+1}(t) \leftarrow \frac{t-t_i}{t_{i+k+1}-t_i} q_i^{k}(t) + \frac{t_{i+k+1
 
 The following interactive plot illustrates the polynomial curve that interpolates a set of up to 5 points. You can add and remove points, as well as drag them around to see how the curve changes. Furthermore, you can vary the auxiliary parameters $t_i$ to see how the curve changes.
 
-<!-- <div style="text-align: center; margin-bottom: 10px;">
+<div style="text-align: center; margin-bottom: 10px;">
   <button id="addPointPolyButton" style="background-color:rgb(187, 228, 163); border: 2px solid black; box-shadow: 2px 2px 5px grey; padding: 5px 10px;">Add Point</button>
   <button id="removePointPolyButton" style="background-color:rgb(228, 165, 163); border: 2px solid black; box-shadow: 2px 2px 5px grey; padding: 5px 10px;">Remove Point</button>
 </div>
@@ -193,15 +193,15 @@ The following interactive plot illustrates the polynomial curve that interpolate
   </div>
 </div>
 <figure class="figure" style="text-align: center; margin: 0 auto;">
-  <div id="interactive-container-quad" style="position: relative; width: 600px; height: 400px; border: 1px solid black; margin: 0 auto;">
-    <canvas id="interactive-plot-quad" style="width: 100%; height: 100%;"></canvas>
+  <div id="interactive-container-poly" style="position: relative; width: 600px; height: 400px; border: 1px solid black; margin: 0 auto;">
+    <canvas id="interactive-plot-poly" style="width: 100%; height: 100%;"></canvas>
   </div>
   <figcaption class="caption" style="font-weight: normal; margin-top: 10px;">Interactive plot showing a polynomial curve interpolating up to 5 points. You can vary the parameter $t_i$ to see how the curve changes, as well as add, drag or remove points.</figcaption>
 </figure>
 
-<link rel="stylesheet" type="text/css" href="/css/quad_sliders.css">
+<link rel="stylesheet" type="text/css" href="/css/poly_sliders.css">
 
-<script type="module" src="/js/plotPolyCurve.js"></script> -->
+<script type="module" src="/js/plotPolyCurve.js"></script>
 
 # 2. Bézier curves
 

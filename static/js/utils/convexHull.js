@@ -30,7 +30,7 @@ export function computeConvexHull(points) {
   return lower.concat(upper);
 }
 
-export function drawConvexHull(ctx, points, color_points = 'red', color_hull = 'blue', color_fill = 'lightblue') {
+export function drawConvexHull(ctx, points, color_points = [], color_hull = 'blue', color_fill = 'lightblue') {
   const hull = computeConvexHull(points);
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   drawPoints(ctx, points, color_points); // Redraw points after clearing the canvas
