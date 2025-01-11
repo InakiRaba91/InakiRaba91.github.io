@@ -1,5 +1,7 @@
 import { pointRadius } from './utils/point.js';
 import { drawConvexHull } from './utils/convexHull.js';
+import { updateButtons } from './utils/updateButtons.js';
+import { enableDragging } from './utils/dragPoint.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   const container = document.getElementById('interactive-container');
@@ -16,45 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
   plot.width = container.clientWidth;
   plot.height = container.clientHeight;
 
-  function updateButtons() {
-    addPointButton.disabled = points.length >= maxPoints;
-    removePointButton.disabled = points.length <= minPoints;
-  }
-
   function renderPolygon(ctx, points, updateButtons, drawConvexHull) {
-    updateButtons();
+    updateButtons(addPointButton, removePointButton, points, maxPoints, minPoints);
     drawConvexHull(ctx, points);
   }
 
-  plot.addEventListener('mousedown', (e) => {
-    const rect = plot.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    let draggedPointIndex = null;
-
-    points.forEach((point, index) => {
-      const dx = point.x - x;
-      const dy = point.y - y;
-      if (Math.sqrt(dx * dx + dy * dy) < pointRadius) {
-        draggedPointIndex = index;
-      }
-    });
-
-    if (draggedPointIndex !== null) {
-      const onMouseMove = (e) => {
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        points[draggedPointIndex] = { x, y };
-        renderPolygon(plot.getContext('2d'), points, updateButtons, drawConvexHull);
-      };
-
-      document.addEventListener('mousemove', onMouseMove);
-
-      document.addEventListener('mouseup', () => {
-        document.removeEventListener('mousemove', onMouseMove);
-      }, { once: true });
-    }
-  });
+  enableDragging(plot, points, pointRadius, renderPolygon, plot.getContext('2d'), points, updateButtons, drawConvexHull);
 
   addPointButton.addEventListener('click', () => {
     if (points.length < maxPoints) {

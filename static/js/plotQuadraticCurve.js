@@ -1,5 +1,6 @@
 import { pointRadius, drawPoints } from './utils/point.js';
 import { polyCurve, drawCurve } from './utils/polynomialCurve.js';
+import { enableDragging } from './utils/dragPoint.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   const container = document.getElementById('interactive-container-quad');
@@ -41,35 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
     renderPolyCurve();
   });
 
-  plot.addEventListener('mousedown', (e) => {
-    const rect = plot.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    let draggedPointIndex = null;
-
-    points.forEach((point, index) => {
-      const dx = point.x - x;
-      const dy = point.y - y;
-      if (Math.sqrt(dx * dx + dy * dy) < pointRadius) {
-        draggedPointIndex = index;
-      }
-    });
-
-    if (draggedPointIndex !== null) {
-      const onMouseMove = (e) => {
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        points[draggedPointIndex] = { x, y };
-        renderPolyCurve();
-      };
-
-      document.addEventListener('mousemove', onMouseMove);
-
-      document.addEventListener('mouseup', () => {
-        document.removeEventListener('mousemove', onMouseMove);
-      }, { once: true });
-    }
-  });
-
+  enableDragging(plot, points, pointRadius, renderPolyCurve);
   renderPolyCurve();
 });

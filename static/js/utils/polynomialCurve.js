@@ -1,8 +1,4 @@
-export function affineCombination(points, weights) {
-  return points.reduce((acc, p, i) => {
-    return { x: acc.x + weights[i] * p.x, y: acc.y + weights[i] * p.y };
-  }, { x: 0, y: 0 });
-}
+import { affineCombination } from "./affine.js";
 
 export function polyCurve(points, knots, m = 100) {
   if (points.length !== knots.length) {
@@ -25,6 +21,29 @@ export function polyCurve(points, knots, m = 100) {
         let t_a = knots[k];
         let t_b = knots[k + j + 1];
         let w = [(t_b - t) / (t_b - t_a), (t - t_a) / (t_b - t_a)];
+        q_j.push(affineCombination(p, w));
+      }
+      q = q_j;
+    }
+    curve.push(q[0]);
+  }
+  return curve;
+}
+
+export function BezierCurve(points, m = 100) {
+  const n = points.length - 1;
+  let curve = []
+  // Iterate over time
+  for (let i=0; i <= m; i++) {
+    let t = i / m;
+    let w = [1 - t, t];
+    let q = points;
+    // Iterate over the degrees
+    for (let j=0; j < n; j++) {
+      let q_j = [];
+      // Iterate over the interpolants
+      for (let k=0; k < n - j; k++) {
+        let p = [q[k], q[k + 1]];
         q_j.push(affineCombination(p, w));
       }
       q = q_j;
