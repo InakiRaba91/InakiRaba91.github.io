@@ -1,4 +1,4 @@
-export function createSlider(id, value, disabled, ts, renderCallback) {
+export function createSlider(id, value, disabled, ts, renderCallback, prefix, minValue=0, maxValue=1, step=0.01, allow_equal=false) {
   const sliderDiv = document.createElement('div');
   sliderDiv.style.marginBottom = '10px';
 
@@ -7,15 +7,15 @@ export function createSlider(id, value, disabled, ts, renderCallback) {
   label.style.display = 'inline-block';
   label.style.width = '60px';
   // Extract the relevant part of the id for display
-  const labelText = id.replace('Poly-slider', '').replace('Bezier-slider', '');
+  const labelText = id.replace(prefix, '');
   label.innerHTML = `${labelText}: <span id="${id}-value">${value}</span>`;
 
   const slider = document.createElement('input');
   slider.type = 'range';
   slider.id = id;
-  slider.min = '0';
-  slider.max = '1';
-  slider.step = '0.01';
+  slider.min = minValue;
+  slider.max = maxValue;
+  slider.step = step;
   slider.value = value;
   slider.style.width = '280px';
   slider.disabled = disabled;
@@ -26,10 +26,18 @@ export function createSlider(id, value, disabled, ts, renderCallback) {
     const nextValue = index < ts.length - 1 ? parseFloat(document.getElementById(ts[index + 1].id).value) : Infinity;
     const newValue = parseFloat(e.target.value);
 
-    if (newValue <= prevValue) {
-      e.target.value = prevValue + 0.01;
-    } else if (newValue >= nextValue) {
-      e.target.value = nextValue - 0.01;
+    if (allow_equal) {
+      if (newValue < prevValue) {
+        e.target.value = prevValue;
+      } else if (newValue > nextValue) {
+        e.target.value = nextValue;
+      }
+    } else {
+      if (newValue <= prevValue) {
+        e.target.value = prevValue + step;
+      } else if (newValue >= nextValue) {
+        e.target.value = nextValue - step;
+      }
     }
 
     document.getElementById(`${id}-value`).textContent = e.target.value;
@@ -41,17 +49,21 @@ export function createSlider(id, value, disabled, ts, renderCallback) {
   return sliderDiv;
 }
 
-export function updateSliders(slidersContainer, ts, createSlider, renderCallback) {
+export function updateSliders(slidersContainer, ts, createSlider, renderCallback, prefix, minValue=0, maxValue=1, step=0.01, allowEqual=false) {
   slidersContainer.innerHTML = '';
   ts.forEach(slider => {
-    slidersContainer.appendChild(createSlider(slider.id, slider.value, slider.disabled, ts, renderCallback));
+    slidersContainer.appendChild(createSlider(slider.id, slider.value, slider.disabled, ts, renderCallback, prefix, minValue, maxValue, step, allowEqual));
   });
 }
 
-export function recalculateSliderValues(points, ts) {
-  const n = points.length - 1;
+export function recalculateSliderValues(ts, normalized = true) {
+  const n = ts.length - 1;
   ts.forEach((slider, index) => {
-    slider.value = (index / n).toFixed(2);
+    if (normalized) {
+      slider.value = (index / n).toFixed(2);
+    } else {
+      slider.value = index;
+    }
     slider.disabled = (index === 0 || index === n); // Disable first and last sliders
   });
 }

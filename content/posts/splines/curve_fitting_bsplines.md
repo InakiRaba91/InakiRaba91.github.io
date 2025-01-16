@@ -415,23 +415,13 @@ This results in several issues, namely:
   - Since the curve is not guaranteed to pass through the control points, its relationship to the data becomes **less intuitive**.
 
 One way to mitigate these issues is through **composite Bézier curves**. Given a set of $n=(d-1)\cdot m + 1$ control points, we can construct a 
-composite Bézier curve of degree $d$ by partitioning the control points into $m$ segments of $d$ points each. Each segment $i$, with $i \in \\{1, \ldots, m \\}$, relies on the control points $\\{ \mathbf{c}_{(i-1)\cdot d + j} \\} _{j=0}^{d-1}$ to construct its Bézier curve.
+composite Bézier curve of degree $d$ by partitioning the control points into $m$ segments of $d$ points each. Each segment $i$, with $i \in \\{1, \ldots, m \\}$, 
+relies on the control points $\\{ \mathbf{c}_{(i-1)\cdot d + j} \\} _{j=0}^{d-1}$ to construct its Bézier curve.
 
-The following interactive plot illustrates the construction of a cubic composite Bézier curve from 7 points. You can drag the points around to 
-see how the curve changes, and you can see how the control points are partitioned into groups of 4 points each.
 
-<figure class="figure" style="text-align: center; margin: 0 auto;">
-  <div id="interactive-container-composite-bezier" style="position: relative; width: 600px; height: 400px; border: 1px solid black; margin: 0 auto;">
-    <canvas id="interactive-plot-composite-bezier" style="width: 100%; height: 100%;"></canvas>
-  </div>
-  <figcaption class="caption" style="font-weight: normal; margin-top: 10px;">Interactive plot showing a cubic composite Bézier curve interpolating seven points. </figcaption>
-</figure>
-
-<script type="module" src="/js/plotCompositeBezier.js"></script>
-
-Notice that in general, a composite Bézier curve is not smooth. Nonetheless, we can make it smoothness relying on the direction of the derivative at the endpoints that we provided in the earlier section. In particular, we can enforce $C^0$ continuity across segments by ensuring that the line connecting the last two points of a segment is aligned with the line connecting the first two points of the next segment. In the plot above, try aligning the <span style="color: green;">green</span>, <span style="color: orange;">orange</span>, and <span style="color: cyan;">cyan</span> points to see how the curve becomes smooth.
-
-Cubic Bézier curves are at the core of PostScript. The following interactive plot shows how the letter S is constructed using cubic Bézier curves in the Times New Roman font. You can drag the control points around to see how the curve changes.
+Quadradic Bézier curves are at the core of the TrueType font format, whereas cubic Bézier curves lie at the heart of PostScript. 
+The following interactive plot shows how the letter S is constructed using composite cubic Bézier curves in the Times New Roman font. 
+You can drag the control points around to see how the curve changes.
 
 <figure class="figure" style="text-align: center; margin: 0 auto;">
   <div id="interactive-container-times" style="position: relative; width: 420px; height: 600px; border: 1px solid black; margin: 0 auto;">
@@ -442,13 +432,280 @@ Cubic Bézier curves are at the core of PostScript. The following interactive pl
 
 <script type="module" src="/js/plotTimesNewRoman.js"></script>
 
-<!-- <div id="image-container">
-  <img id="image" src="/curve_fitting_bsplines/TimesS.png" alt="Image" width="420" height="600">
+## 3.5. Smoothness
+
+The main issue with composite Bézier curves is that, in general, a composite Bézier curve is not smooth. By careful manipulation of the control points, 
+we can enforce $c^1$ smoothness. More precisely, we knoe from the earlier section that the derivative at an endpoint is parallel to the line connecting 
+it to its adjacent control point. Therefore, we can enforce $C^1$ continuity across segments by ensuring that the line connecting the last two points 
+of a segment is aligned with the line connecting the first two points of the next segment. 
+
+In the plot above, try aligning the <span style="color: green;">green</span>, <span style="color: orange;">orange</span>, and <span style="color: cyan;">cyan</span> points to see how the curve becomes smooth.
+
+
+The following interactive plot illustrates the construction of a cubic composite Bézier curve from 7 points. You can drag the points around to 
+see how the curve changes, and you can see how the control points are partitioned into groups of 4 points each. Notice how the curve is not differentiable
+at the intermediate <span style="color: orange;">orange</span> point. You can try aligning the <span style="color: green;">green</span>, 
+<span style="color: orange;">orange</span>, and <span style="color: cyan;">cyan</span> points to see how the curve becomes smooth.
+
+<figure class="figure" style="text-align: center; margin: 0 auto;">
+  <div id="interactive-container-composite-bezier" style="position: relative; width: 600px; height: 400px; border: 1px solid black; margin: 0 auto;">
+    <canvas id="interactive-plot-composite-bezier" style="width: 100%; height: 100%;"></canvas>
+  </div>
+  <figcaption class="caption" style="font-weight: normal; margin-top: 10px;">Interactive plot showing a cubic composite Bézier curve interpolating seven points. </figcaption>
+</figure>
+
+<script type="module" src="/js/plotCompositeBezier.js"></script>
+
+# 4. Splines
+
+## 4.1. Intuition
+
+As we have seen, stitching together Bézier curves requires hand-crafting the control points to ensure smoothness. In order for the curve to be differentiable,
+one must ensure the three points centered at each junction are aligned. This can be a cumbersome task, especially for higher degree curves.
+
+Bézier curves are a special case of **spline curves**. Splines are piecewise polynomial curves that are constructed to ensure continuity and smoothness. 
+Whereas Bézier curves are constructed as a convex combination of the control points over the whole interval $[0, 1]$, spline curves offer extra flexibility
+by allowing different segments to be calculated over different intervals. The key to guarantee subsequent combinations are convex is to ensure they
+are computed across a shared subinterval.
+
+Let us start from the simplest scenario. Say we have three **control points** $\\{ c_i \\} _{i=1}^{3}$ and we want to construct a quadratic 
+curve ($d=2$) that interpolates them. We can define four auxiliary parameters $\\{ t_i \\} _{i=2}^{5}$. This set of auxiliary parameters are 
+denoted as **knots**. The choice for the subindices may seem arbitrary, but it will become clear in a moment. 
+
+In order to construct the curve, let us first build the two line segments that connect $(c_1\,c_2)$ and $(c_2\,c_3)$:
+
+$$
+\begin{equation}
+\begin{split}
+p(t|c_1,c_2;t_2,t_4) = \frac{t_4-t}{t_4-t_2} c_1 + \frac{t-t_2}{t_4-t_2} c_2 \quad \text{for } t \in [t_2, t_4] \\\\
+p(t|c_2,c_3;t_3,t_5) = \frac{t_5-t}{t_5-t_3} c_2 + \frac{t-t_3}{t_5-t_3} c_3 \quad \text{for } t \in [t_3, t_5]
+\end{split}
+\end{equation}
+$$
+
+This notation can be a bit cumbersome, specially as the degree of the curve increases. From now on, we will use
+
+$$
+\begin{equation}
+p_{i,k}^d(t) = p(t|c_{i-k}, \ldots, c_i; t_{i-k+1}, \ldots, t_i, t_{i+d+1-k}, \ldots, t_{i+d})
+\end{equation}
+$$
+
+where $k$ indicates the polynomial degree of the segment, $i$ indicates the reference control point (the last one of the segment), and $d$ indicates 
+the degree of the overall curve the segment belongs to. We will drop the superscript $d$ when it is clear from the context.
+
+Notice the intervals for the above segments are different. Nonetheless, they overlap over $[t_3, t_4]$, so we can construct a convex combination 
+of them to form the quadratic curve:
+
+$$
+\begin{equation}
+p_{3,2}^2(t)  = \frac{t_5-t}{t_5-t_2} p_{2,1}^2(t) + \frac{t-t_2}{t_5-t_2} p_{3,1}^2(t) \quad \text{for } t \in [t_3, t_4]
+\end{equation}
+$$
+
+You may be wondering, how does this help? The key insight is what happens at the endpoints. The following interactive plot shows a 
+quadratic spline curve in <span style="color: blue;">blue</span> over $t \in [t_3,t_4]$. Moreover, nothing prevents us from exploring 
+the whole range $[t_2, t_5]$. We display in <span style="color: purple;">purple</span> the curve for $t \in [t_2, t_3]$, and in 
+<span style="color: green;">green</span> the curve for $t \in [t_4, t_5]$. We have set $t_2=0$, $t_3=1$, $t_4=2$, $t_5=3$.
+Notice how we traverse the curve as we vary $t$.
+
+<div style="text-align: center; margin-bottom: 10px;">
+  <label for="tQuadSpline-slider" style="display: inline-block; width: 60px;">t: <span id="tQuadSpline-value">0.00</span></label>
+  <input type="range" id="tQuadSpline-slider" min="0" max="3" step="0.05" value="0.00" style="width: 280px;">
 </div>
-<script type="module" src="/js/Prueba.js"></script> -->
+<figure class="figure" style="text-align: center; margin: 0 auto;">
+  <div id="interactive-container-quad-spline" style="position: relative; width: 600px; height: 400px; border: 1px solid black; margin: 0 auto;">
+    <canvas id="interactive-plot-quad-spline" style="width: 100%; height: 100%;"></canvas>
+  </div>
+  <figcaption class="caption" style="font-weight: normal; margin-top: 10px;">Interactive plot showing a quadratic Spline curve 
+  (<span style="color: blue;">blue</span>) interpolating three points over $t \in [t_3, t_4]$. It also displays the curve for
+  $t \in [t_2, t_3]$ (<span style="color: purple;">purple</span>) and $t \in [t_4, t_5]$ (<span style="color: green;">green</span>).</figcaption>
+</figure>
 
-# 4. Conclusion
+<script type="module" src="/js/plotQuadraticSpline.js"></script>
 
-# 4. References
+There are several observations to be made from the above plot:
+  - The spline curve (<span style="color: blue;">blue</span>) **does not pass through any of the control points** anymore. Notice the 
+  start/end points (<span style="color: blue;">blue</span>) do not correspond to the first/last control points. This is because the overall
+  interval $[t_2, t_5]$ is wider than the subinterval $[t_3, t_4]$ where the curve is defined.
+  - For $t \in [t_3, t_4]$, the point in the spline curve (<span style="color: blue;">blue</span>) results from a **convex combination** of the <span style="color: pink;">pink</span> points in the segments, so it lies in between them.
+  - For $t \notin [t_3, t_4]$, the point in the extended curve (<span style="color: purple;">purple</span> , <span style="color: green;">green</span> )
+  results from an **affine combination** of the <span style="color: pink;">pink</span> points, so it lies beyond them.
+  - Importantly, the curve is **tanget to the segments** at the start/end points (<span style="color: blue;">blue</span>). 
+  
+So how can we leverage this? Let us say we have four points and we want to construct a composite quadratic spline curve. Since the derivative of the endpoints is tangent to the corresponding segment, we just need to ensure the intermediate segment is part of both quadratic curves. The following interactive plot illustrates this concept with a set of four points. You can drag the points around to see how the curve changes.
 
-1. 
+
+<figure class="figure" style="text-align: center; margin: 0 auto;">
+  <div id="interactive-container-quad-comp-spline" style="position: relative; width: 600px; height: 400px; border: 1px solid black; margin: 0 auto;">
+    <canvas id="interactive-plot-quad-comp-spline" style="width: 100%; height: 100%;"></canvas>
+  </div>
+  <figcaption class="caption" style="font-weight: normal; margin-top: 10px;">Interactive plot showing a quadratic composite spline curve interpolating four points. It is composed of two quadratic spline curves, displayed in <span style="color: blue;">blue</span> and <span style="color: green;">green</span>.</figcaption>
+  </figcaption>
+</figure>
+
+<script type="module" src="/js/plotQuadraticCompSpline.js"></script>
+
+## 4.2 Construction
+
+The general construction of a spline curve is described below:
+
+**Algorithm 3**
+
+Let $\\{ c_i \\} _{i=1}^{d+1}$ be a set of $d + 1$ control points and $\\{ t_i \\} _{i=2}^{2d+1}$ be a set of $2d+1$ increasing knots. 
+
+There is a spline curve $p_{d+1,d}^d(t)$ constructed by the following steps:
+
+$p_{j,0}^d(t) \leftarrow c_j \quad \forall i \in \\{1, \ldots, d+1 \\}$
+
+for $1 \leq r \leq d$ do:
+
+&nbsp;&nbsp;&nbsp;&nbsp; for $r+1 \leq j \leq d + 1$ do:
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+$p_{j,r}^d(t) \leftarrow \frac{t_{j+d-r+1}-t}{t_{j+d-r+1}-t_j} p_{j-1,r-1}^d(t) + \frac{t-t_j}{t_{j+d-r+1}-t_j} p_{j,r-1}^d(t)$
+
+We illustrate below the algorithm for $n=3$ points:
+
+<figure class="figure" style="text-align: center;">
+  <img src="/curve_fitting_bsplines/Splines.svg" alt="Neville Aitken" width="90%" controls style="display: block; margin: auto;">
+    Algorithm to construct a Spline curve that interpolates a set of points
+  </video>
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Computing a point in a cubic Spline curve according to Algorithm 3. It is depicted for a set of 4 points.</figcaption>
+  </figcaption>
+</figure>
+
+## 4.3. Convexity
+
+Spline curves are contained within the convex hull by design since all convex combinations are over overlapping intervals. The following interactive plot illustrates the spline curve that interpolates a set of up to 5 points. You can add and remove points, as well as drag them around to see how the curve changes. Furthermore, you try varying the knots $t_i$ and see how much of an impact they make on the curve.
+
+<div style="text-align: center; margin-bottom: 10px;">
+  <button id="addPointSplineButton" style="background-color:rgb(187, 228, 163); border: 2px solid black; box-shadow: 2px 2px 5px grey; padding: 5px 10px;">Add Point</button>
+  <button id="removePointSplineButton" style="background-color:rgb(228, 165, 163); border: 2px solid black; box-shadow: 2px 2px 5px grey; padding: 5px 10px;">Remove Point</button>
+</div>
+<div id="sliders-spline-container" style="text-align: center; margin-bottom: 10px;">
+</div>
+<figure class="figure" style="text-align: center; margin: 0 auto;">
+  <div id="interactive-container-spline" style="position: relative; width: 600px; height: 400px; border: 1px solid black; margin: 0 auto;">
+    <canvas id="interactive-plot-spline" style="width: 100%; height: 100%;"></canvas>
+  </div>
+  <figcaption class="caption" style="font-weight: normal; margin-top: 10px;">Interactive plot showing a spline curve interpolating up to 5 points. You can add, drag or remove points. The curve should be contained within the convex hull, shown in <span style="color: purple;">purple</span>.
+</figure>
+
+<link rel="stylesheet" type="text/css" href="/css/curve_sliders.css">
+
+<script type="module" src="/js/plotSplineCurve.js"></script>
+
+## 4.4. Composition
+
+We can construct a composite spline curve of degree $d$  with $n$ control points $\\{ c_i \\} _{i=1}^{d+1}$ and knots $\\{ t_i \\} _{i=2}^{n+d}$ by
+
+$$ 
+\begin{equation}
+f(t) = 
+\begin{cases}
+p_{d+1,d}^d(t) & \quad t \in [t_{d+1}, t_{d+2}] \\\\
+p_{d+2,d}^d(t) & \quad t \in [t_{d+2}, t_{d+3}] \\\\
+\vdots & \quad \vdots \\\\
+p_{n, d}^d(t) & \quad t \in [t_{n}, t_{n+1}]
+\end{cases}
+\end{equation}
+$$
+
+If we define the piecewise constant function $B_{i,0}(t)$ as
+
+$$
+\begin{equation}
+B_{i,0}(t) =
+\begin{cases}
+1 & \quad \text{if } t \in [t_i, t_{i+1}] \\\\
+0 & \quad \text{otherwise}
+\end{cases}
+\end{equation}
+$$
+
+we can express the composite spline curve as
+
+$$
+\begin{equation}
+f(t) = \sum_{i=d+1}^{n} p_{i,d}^d(t) \cdot B_{i,0}(t) 
+\end{equation}
+$$
+
+The interactive plot below shows a composite quadratic. You can add or remove points, as well as drag them around to see how the curve changes.
+
+<div style="text-align: center; margin-bottom: 10px;">
+  <button id="addPointSplineCompButton" style="background-color:rgb(187, 228, 163); border: 2px solid black; box-shadow: 2px 2px 5px grey; padding: 5px 10px;">Add Point</button>
+  <button id="removePointSplineCompButton" style="background-color:rgb(228, 165, 163); border: 2px solid black; box-shadow: 2px 2px 5px grey; padding: 5px 10px;">Remove Point</button>
+</div>
+<figure class="figure" style="text-align: center; margin: 0 auto;">
+  <div id="interactive-container-quad-comp-spline2" style="position: relative; width: 600px; height: 400px; border: 1px solid black; margin: 0 auto;">
+    <canvas id="interactive-plot-quad-comp-spline2" style="width: 100%; height: 100%;"></canvas>
+  </div>
+  <figcaption class="caption" style="font-weight: normal; margin-top: 10px;">Interactive plot showing a quadratic composite spline curve interpolating four points. It is composed of several quadratic spline curves, displayed in different colors. Notice how curve is smooth at the junctions.</figcaption>
+  </figcaption>
+</figure>
+
+<script type="module" src="/js/plotQuadraticCompSpline2.js"></script>
+
+
+## 4.5. Smoothness
+
+Spline curves are explicitly designed to be smooth at the junctions between its different segments. 
+The following theorem serves as a guideline to ensure the curve is $C^n$ continuous at the junctions. 
+Proving it is beyond the scope of this post, but you can find a detailed proof in chapter 3 of [12]:
+
+**Theorem 1**
+
+Let us that the multiplicity of a knot $t_i$ is $m$, with $1 \leq m \leq d+1$. That is, the knot $t_i$ appears $m$ times in the knot vector. 
+Then, the spline curve 
+
+$$f(t) = p_{i-1,d}^d(t) \cdot B_{i-1,0}(t) + p_{i,d}^d(t) \cdot B_{i,0}(t)$$
+
+is $C^{m-1}$ continuous at $t_i$.
+
+This introduces a generalization that allows knowts to coalesce. In the standard case we have focused so far, where knots do not repeat, i.e., $m=1$, 
+our spline curve is $C^d$ continuous at the junctions. Or equivalently, the derivatives $\\{ f^{(i)}(t_i) \\} _{i=0}^{d-1}$ are continuous at the junctions.
+
+The following interactive plot shows a quadratic spline composed of three segments. See what happens when you double the multiplicity of the intermediate knot, i.e., try setting $t_4=t_5$
+
+<div id="sliders-smooth-container" style="text-align: center; margin-bottom: 10px;">
+</div>
+<figure class="figure" style="text-align: center; margin: 0 auto;">
+  <div id="interactive-container-smooth" style="position: relative; width: 600px; height: 400px; border: 1px solid black; margin: 0 auto;">
+    <canvas id="interactive-plot-smooth" style="width: 100%; height: 100%;"></canvas>
+  </div>
+  <figcaption class="caption" style="font-weight: normal; margin-top: 10px;">Interactive plot showing a quadratic spline composed of three segments. You can double the multiplicity of the 
+  intermediate knot by setting $t_4=t_5$. The effect is the curve remains continuous at the junction, but is no longer differentiable, allowing for a cusp.</figcaption>
+</figure>
+
+<link rel="stylesheet" type="text/css" href="/css/curve_sliders.css">
+
+<script type="module" src="/js/plotSmooth.js"></script>
+
+This flexibility to increase the multiplicity of the knots allows for a wide range of shapes to be constructed. The example above shows a cusp, which allows the curve to change direction abruptly and accomodate for sharp corners.
+
+## 4.5. Expansion in a basis: B-splines
+
+# 5. Examples
+
+# 5.1. Trajectory interpolation
+
+# 5.2. Surface smoothing
+
+# 6. Conclusion
+
+# 7. References
+
+1. Curve fitting. [Wikipedia](https://en.wikipedia.org/wiki/Curve_fitting)
+2. Bezier curve. [Wikipedia](https://en.wikipedia.org/wiki/B%C3%A9zier_curve)
+3. Spline (mathematics). [Wikipedia](https://en.wikipedia.org/wiki/Spline_(mathematics))
+4. Spline interpolation. [Wikipedia](https://en.wikipedia.org/wiki/Spline_interpolation)
+4. Lagrange polynomial. [Wikipedia](https://en.wikipedia.org/wiki/Lagrange_polynomial)
+6. Bernstein polynomial. [Wikipedia](https://en.wikipedia.org/wiki/Bernstein_polynomial)
+7. B-spline. [Wikipedia](https://en.wikipedia.org/wiki/B-spline)
+8. Neville's algorithm. [Wikipedia](https://en.wikipedia.org/wiki/Neville%27s_algorithm)
+9. De Casteljau's algorithm. [Wikipedia](https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm)
+10. Splines in 5 minutes Series. [YouTube](https://www.youtube.com/watch?v=YMl25iCCRew)
+11. Cubic Spline Interpolation Series. [YouTube](https://www.youtube.com/watch?v=LaolbjAzZvg)
+12. Spline methods. Teaching Notes INF-MAT5340, [University of Oslo](https://www.uio.no/studier/emner/matnat/ifi/nedlagte-emner/INF-MAT5340/v07/undervisningsmateriale/)

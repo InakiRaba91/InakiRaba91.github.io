@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
   ];
   const maxPoints = 5;
   const minPoints = 2;
+  const prefix = 'Poly-slider';
 
   let ts = [
     { id: 't0Poly-slider', value: 0, disabled: true },
@@ -53,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (points.length < maxPoints) {
       points.push({ x: plot.clientWidth / 2, y: plot.clientHeight / 2 });
       ts.push({ id: `t${points.length - 1}Poly-slider`, value: 0.5, disabled: false });
-      recalculateSliderValues(points, ts);
-      updateSliders(slidersContainer, ts, createSlider, renderPolyCurve);
+      recalculateSliderValues(ts);
+      updateSliders(slidersContainer, ts, createSlider, renderPolyCurve, prefix);
       updateButtons(addPointButton, removePointButton, points, maxPoints, minPoints);
       renderPolyCurve();
     }
@@ -64,14 +65,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (points.length > minPoints) {
       points.pop();
       ts.pop(); // Remove the last slider
-      recalculateSliderValues(points, ts);
-      updateSliders(slidersContainer, ts, createSlider, renderPolyCurve);
+      recalculateSliderValues(ts);
+      updateSliders(slidersContainer, ts, createSlider, renderPolyCurve, prefix);
       updateButtons(addPointButton, removePointButton, points, maxPoints, minPoints);
       renderPolyCurve();
     }
   });
 
   updateButtons(addPointButton, removePointButton, points, maxPoints, minPoints);
-  updateSliders(slidersContainer, ts, createSlider, renderPolyCurve);
+  updateSliders(slidersContainer, ts, createSlider, renderPolyCurve, prefix);
   renderPolyCurve();
 });

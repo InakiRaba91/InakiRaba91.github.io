@@ -5,7 +5,6 @@ export function polyCurve(points, knots, m = 100) {
     throw new Error("The number of points must be equal to the number of knots");
   }
   const n = points.length - 1;
-  const coefficients = [];
   const delta_t = (knots[n] - knots[0]) / m;
   let curve = []
   // Iterate over time
@@ -52,7 +51,35 @@ export function BezierCurve(points, m = 100) {
   }
   return curve;
 }
-    
+
+export function splineCurve(points, knots, m = 100) {
+  if (2 * (points.length - 1) !== knots.length) {
+    throw new Error("The number of knots must be equal to 2 * (the number of points - 1)");
+  }
+  const d = points.length - 1;
+  const delta_t = (knots[d] - knots[d-1]) / m;
+  let curve = []
+  // Iterate over time
+  for (let i=0; i <= m; i++) {
+    let t = knots[d-1] + i * delta_t;
+    let q = points;
+    // Iterate over the degrees
+    for (let r=1; r <= d; r++) {
+      let q_j = [];
+      // Iterate over the interpolants
+      for (let j=r+1; j <= d+1; j++) {
+        let p = [q[j - r - 1], q[j - r]]; // We substract 1 w.r.t. the equation because JS indexing starts at 0 (1 in the control points)
+        let t_b = knots[j+d-r-1]; // We substract 2 s.r.t. the equation because JS indexing starts at 0 (2 in the knots)
+        let t_a = knots[j-2]; // We substract 2 from the equation because JS indexing starts at 0 (2 in the knots)
+        let w = [(t_b - t) / (t_b - t_a), (t - t_a) / (t_b - t_a)];
+        q_j.push(affineCombination(p, w));
+      }
+      q = q_j;
+    }
+    curve.push(q[0]);
+  }
+  return curve;
+}
 
 export function drawCurve(ctx, points, color = "purple") {
   if (points.length < 2) return; // Need at least two points to draw a line
