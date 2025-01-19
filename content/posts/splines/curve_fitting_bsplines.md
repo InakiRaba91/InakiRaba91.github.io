@@ -552,7 +552,7 @@ The general construction of a spline curve is described below:
 
 **Algorithm 3**
 
-Let $\\{ c_i \\} _{i=1}^{d+1}$ be a set of $d + 1$ control points and $\\{ t_i \\} _{i=2}^{2d+1}$ be a set of $2d+1$ increasing knots. 
+Let $\\{ c_i \\} _{i=1}^{d+1}$ be a set of $d + 1$ control points and $\\{ t_i \\} _{i=2}^{2d+1}$ be a set of $2d+1$ strictly increasing knots. 
 
 There is a spline curve $p_{d+1,d}^d(t)$ constructed by the following steps:
 
@@ -618,7 +618,7 @@ $$
 \begin{equation}
 B_{i,0}(t) =
 \begin{cases}
-1 & \quad \text{if } t \in [t_i, t_{i+1}] \\\\
+1 & \quad \text{if } t \in [t_i, t_{i+1}) \\\\
 0 & \quad \text{otherwise}
 \end{cases}
 \end{equation}
@@ -664,10 +664,9 @@ $$f(t) = p_{i-1,d}^d(t) \cdot B_{i-1,0}(t) + p_{i,d}^d(t) \cdot B_{i,0}(t)$$
 
 is $C^{m-1}$ continuous at $t_i$.
 
-This introduces a generalization that allows knowts to coalesce. In the standard case we have focused so far, where knots do not repeat, i.e., $m=1$, 
-our spline curve is $C^d$ continuous at the junctions. Or equivalently, the derivatives $\\{ f^{(i)}(t_i) \\} _{i=0}^{d-1}$ are continuous at the junctions.
+So far we had assume knots were strictly increasing. This introduces a generalization that allows knowts to coalesce. In the standard scenario where knots do not repeat, i.e., $m=1$, our spline curve is $C^d$ continuous at the junctions. Or equivalently, the derivatives $\\{ f^{(i)}(t_i) \\} _{i=0}^{d-1}$ are continuous at the junctions. As we increase the multiplicity of a knot, the degree of smoothness at it decreases.
 
-The following interactive plot shows a quadratic spline composed of three segments. See what happens when you double the multiplicity of the intermediate knot, i.e., try setting $t_4=t_5$
+The following interactive plot shows a quadratic spline composed of three segments. Now we allos knots to coincide, so give it a try and see what happens when you double the multiplicity of the intermediate knot, i.e., try setting $t_4=t_5$.
 
 <div id="sliders-smooth-container" style="text-align: center; margin-bottom: 10px;">
 </div>
@@ -685,7 +684,96 @@ The following interactive plot shows a quadratic spline composed of three segmen
 
 This flexibility to increase the multiplicity of the knots allows for a wide range of shapes to be constructed. The example above shows a cusp, which allows the curve to change direction abruptly and accomodate for sharp corners.
 
-## 4.5. Expansion in a basis: B-splines
+## 4.6. Expansion in a basis: B-splines
+
+Say we have a set of $n$ control points $\\{ c_i \\} _{i=1}^{n}$ and a set of $n+d-1$ knots $\\{ t_i \\} _{i=2}^{n+d}$. 
+As we have seen, we can construct a spline curve of degree $d$ by
+
+$$
+\begin{equation}
+f(t) = \sum_{i=d+1}^{n} p_{i,d}^d(t) \cdot B_{i,0}(t)
+\end{equation}
+$$
+
+over the interval $[t_{d+1}, t_{n+1}]$. Bear in mind that we now allow for knots to repeat, i.e., $t_i = t_{i+1}$, so we slightly adjust our definition of the basis function to deal with that case:
+
+$$
+\begin{equation}
+B_{i,0}(t) =
+\begin{cases}
+1 & \quad \text{if } t \in [t_i, t_{i+1}) \\\\
+0 & \quad \text{if } t \notin [t_i, t_{i+1}) \\\\
+0 & \quad \text{if } t_i = t_{i+1}
+\end{cases}
+\end{equation}
+$$
+
+Furthermore, we get a division by zero in $p_{i,d}^d(t)$ when $t_i = t_{i+d+1}$. To avoid this, we will simply declare that in our context, *"dividing by zero results in zero"*.
+
+Let us write $f(t)$ in terms of the control points by applying the recursive definition of the spline curve:
+
+$$
+\begin{equation}
+\begin{split}
+f(t) & = \sum_{i=d+1}^{n} p_{i,d}^d(t) \cdot B_{i,0}(t) \\\\
+& = \sum_{i=d+1}^{n} \left(  \frac{t-t_i}{t_{i+1}-t_i} p_{i,d-1}^{d}(t) + \frac{t_{i+1}-t}{t_{i+1}-t_i} p_{i-1,d-1}^{d}(t)  \right) \cdot B_{i,0}(t) \\\\
+& = \sum_{i=d+1}^{n-1} \left(  \frac{t-t_i}{t_{i+1}-t_i} B_{i, 0}(t) + \frac{t_{i+2}-t}{t_{i+2}-t_{i+1}} B_{i+1, 0}(t)  \right) \cdot p_{i,d-1}^{d}(t) \\\\
+& + \frac{t_{d+2}-t}{t_{d+2}-t_{d+1}} B_{d+1, 0}(t) \cdot p_{d,d-1}^{d}(t) + \frac{t-t_{n}}{t_{n+1}-t_{n}} B_{n, 0}(t) \cdot p_{n,d-1}^{d}(t)
+\end{split}
+\end{equation}
+$$
+
+To avoid carrying to boundary terms, we can introduce two additional terms that are null as long as $t\in [t_{d+1}, t_{n+1}]$:
+
+$$
+\begin{equation}
+\frac{t-t_{d}}{t_{d+1}-t_{d}} B_{d, 0}(t) p_{d,d-1}^{d}(t)  + \frac{t_{n+2}-t}{t_{n+2}-t_{n+1}} B_{n+1, 0}(t) p_{n,d-1}^{d}(t)
+\end{equation}
+$$
+
+This is why we indexed the knots from $t_2$ earlier. We can then define
+
+$$
+\begin{equation}
+B_{i,1}(t) = \frac{t-t_i}{t_{i+1}-t_i} B_{i, 0}(t) + \frac{t_{i+2}-t}{t_{i+2}-t_{i+1}} B_{i+1, 0}(t)
+\end{equation}
+$$
+
+which allows us to write the spline curve as
+
+$$
+\begin{equation}
+f(t) = \sum_{i=d}^{n} p_{i,d-1}^{d}(t) \cdot B_{i,1}(t)
+\end{equation}
+$$
+
+If we proceed with the same logic, we can define the basis functions $B_{i,k}(t)$ from the recursive relation:
+
+$$
+\begin{equation}
+B_{i,k}(t) = \frac{t-t_i}{t_{i+k}-t_i} B_{i, k-1}(t) + \frac{t_{i+k+1}-t}{t_{i+k+1}-t_{i+1}} B_{i+1, k-1}(t)
+\end{equation}
+$$
+
+This leads to the following expression for the spline curve in terms of the control points $\\{ c_i \\} _{i=1}^{n}$:
+
+$$
+\begin{equation}
+f(t) = \sum_{i=d}^{n} c_i \cdot B_{i,d}(t)
+\end{equation}
+$$
+
+These basis functions are known as **B-splines**. They are a generalization of the basis functions we have seen so far, 
+and they are used to construct spline curves. The following interactive plot shows the normalized B-splines up to degree $10$. 
+The full basis for a given degree $d$ and a set of $n$ knots is obtained by shifting and dilating these functions accordingly.
+You can use the slider to change the degree of the polynomial:
+
+<!-- Interactive Legendre Polynomials -->
+<input type="range" id="degreeSlider" min="0" max="5" value="0">
+<span id="degreeValue">n=0</span>
+<div id="plot"></div>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="module" src="/js/plotBSplines.js"></script>
 
 # 5. Examples
 
