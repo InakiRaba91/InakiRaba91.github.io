@@ -775,9 +775,117 @@ You can use the slider to change the degree of the polynomial:
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script type="module" src="/js/plotBSplines.js"></script>
 
-# 5. Examples
+# 5. Practical Applications
+
+In the previous section we focsed on how to construct spline curves by convex combinations in order to minimize the impact of round-off errors. However, spline curves refer to a broader class of piecewise polynomial curves that are constructed to ensure $C^n$ continuity at the junctions.  
+
+Convexity though has its limitations. For instance, it is not possible to construct a spline curve that interpolates a set of points. This is because the convex hull of the control points is not guaranteed to contain the curve.
+
+In some applications like denoising, not passing through the control points is not an issue. In other scenarios, like trajectory interpolation, it is crucial. Luckily, it is possible to construct spline curves that remain $C^n$ continuous at the junctions, while still passing through the control points. In this section we will explore two such applications.
 
 # 5.1. Trajectory interpolation
+
+A popular choice for trajectory interpolation is the **cubic spline**. Given a set of $n + 1$ control points $\\{ c_i \\} _{i=0}^{n}$, we can interpolate
+each pair of points with a cubic polynomial ensuring $C^2$ continuity at the junctions. The constraints are:
+
+$$
+\begin{equation}
+\begin{split}
+f(t_i) & = c_i \quad \forall i \in \\{0, \ldots, n \\} \\\\
+f^{\prime}(t_i) & = f^{\prime}(t_{i+1}) \quad \forall i \in \\{1, \ldots, n-1 \\} \\\\
+f^{\prime\prime}(t_i) & = f^{\prime\prime}(t_{i+1}) \quad \forall i \in \\{1, \ldots, n-1 \\}
+\end{split}
+\end{equation}
+$$
+
+Notice each cubic polynomial requires 4 constraints, so we need $4n$ constraints in total. The previous set of equations provides $4n-2$ constraints, so we need to add two more. There are several choices for these additional constraints, but the most common are:
+- **Natural spline**: $f^{\prime\prime}(t_0) = f^{\prime\prime}(t_n) = 0$. This ensures the curve is linear at the endpoints.
+- **Clamped spline**: $f^{\prime}(t_0) = v_0, f^{\prime}(t_n) = v_n$. This ensures the curve has a given velocity at the endpoints.
+- **Not-a-knot spline**: $f^{\prime\prime\prime}(t_0) = f^{\prime\prime\prime}(t_1), f^{\prime\prime\prime}(t_{n-1}) = f^{\prime\prime\prime}(t_n)$. This effectively imposes the first and last two segments, respectively, to be the same cubic polynomial.
+
+For each segment, we can write the cubic polynomial in the interval $[t_{i-1}, t_i]$ in its symmetric form as
+
+$$
+\begin{equation}
+f(t) = \left[ 1 - s_i(t) \right] c_{i-1} + s_i(t) c_i + s_i(t) \left[ 1 - s_i(t) \right] \left[ a_i (1 - s_i(t)) + b_i s_i(t) \right]
+\end{equation}
+$$
+
+where 
+
+$$
+\begin{equation}
+\begin{split}
+s_i(t) & = \frac{t-t_{i-1}}{t_i-t_{i-1}} \\\\
+a_i & = k_{i-1} (t_i - t_{i-1}) - (c_i - c_{i-1}) \\\\
+b_i & = -k_i (t_i - t_{i-1}) + (c_i - c_{i-1})
+\end{split}
+\end{equation}
+$$
+
+Its first and second derivatives are
+
+$$
+\begin{equation}
+\begin{split}
+f^{\prime}(t) = \frac{c_i - c_{i-1}}{t_i - t_{i-1}} & + (1-2s_i(t)) \frac{a_i(1-s_i(t)) + b_i s_i(t)}{t_i - t_{i-1}} \\\\
+& + s_i(t) (1 - s_i(t)) \frac{b_i - a_i}{t_i - t_{i-1}} \\\\
+f^{\prime\prime}(t) & = 2 \frac{b_i - 2a_i + (a_i - b_i) 3 s_i(t)}{(t_i - t_{i-1})^2}
+\end{split}
+\end{equation}
+$$
+
+By computing the derivative $f^{\prime}(t)$ you can verify that our unknowns $\\{k_i\\} _{i=0}^{n}$ happen to be the slopes of the curve at the control points:
+
+$$
+\begin{equation}
+f^{\prime}(t_i) = k_i 
+\end{equation}
+$$
+
+By imposing the constraints in Eq.(33) and careful manipulation (see [4]), we arrive at the recursive relation
+
+$$
+\begin{equation}
+\begin{split}
+\frac{k_{i-1}}{t_i - t_{i-1}} + \left( \frac{1}{t_i - t_{i-1}} + \frac{1}{t_{i+1} - t_i} \right) 2 k_i + \frac{k_{i+1}}{t_{i+1} - t_i} & = \\\\
+3 \left( \frac{c_i - c_{i-1}}{(t_i - t_{i-1})^2} - \frac{c_{i+1} - c_i}{(t_{i+1} - t_i)^2} \right)
+\end{split}
+\end{equation}
+$$
+
+which allows us to form a tridiagonal system of equations to solve for the slopes $\\{k_i\\} _{i=0}^{n}$. The following interactive plot shows a cubic spline interpolating a set of points. You can add or remove points, as well as drag them around to see how the curve changes.
+
+<figure class="figure" style="text-align: center; margin: 0 auto;">
+  <div style="display: flex; justify-content: center; align-items: center;">
+    <div id="interactive-container-video-cubic" style="position: relative; width: 50%; max-width: 640px; aspect-ratio: 16 / 9; border: 1px solid black; margin: 0 auto;">
+      <div id="video-wrapper" style="position: relative; width: 100%; height: 100%;">
+        <video id="interactive-video-cubic" style="width: 100%; height: 100%;">
+          <source src="/curve_fitting_bsplines/brighton.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <canvas id="interactive-plot-video-cubic" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+      </div>
+      <div id="video-controls" style="width: 100%; text-align: center; margin-top: 5px; display: flex; align-items: center; justify-content: center;">
+        <button id="play-pause-button" style="font-size: 24px; margin-right: 10px;">
+          <img id="play-pause-icon" src="/curve_fitting_bsplines/play.png" alt="Play" style="width: 24px; height: 24px;">
+        </button>
+        <input type="range" id="time-slider" min="0" max="10" value="0" step="0.066" style="width: 80%;">
+      </div>
+    </div>
+    <div id="interactive-container-image-cubic" style="position: relative; width: 50%; max-width: 640px; aspect-ratio: 16 / 9; border: 1px solid black; margin: 0 auto;">
+      <canvas id="interactive-plot-image-cubic" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+      <canvas id="interactive-plot-points-cubic" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+      <canvas id="interactive-plot-ref-cubic" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+    </div>
+  </div>
+  <figcaption class="caption" style="font-weight: normal; margin-top: 10px;">Interactive plot showing a quadratic spline composed of three segments. You can double the multiplicity of the 
+  intermediate knot by setting $t_4=t_5$. The effect is the curve remains continuous at the junction, but is no longer differentiable, allowing for a cusp.</figcaption>
+</figure>
+
+<script type="module" src="/js/plotVideo.js"></script>
+
+
 
 # 5.2. Surface smoothing
 
@@ -797,3 +905,4 @@ You can use the slider to change the degree of the polynomial:
 10. Splines in 5 minutes Series. [YouTube](https://www.youtube.com/watch?v=YMl25iCCRew)
 11. Cubic Spline Interpolation Series. [YouTube](https://www.youtube.com/watch?v=LaolbjAzZvg)
 12. Spline methods. Teaching Notes INF-MAT5340, [University of Oslo](https://www.uio.no/studier/emner/matnat/ifi/nedlagte-emner/INF-MAT5340/v07/undervisningsmateriale/)
+13. Interpolation with cubic splines, [Algorithms and Stuff](https://blog.ivank.net/interpolation-with-cubic-splines.html)

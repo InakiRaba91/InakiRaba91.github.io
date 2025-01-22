@@ -5,7 +5,6 @@ const colors = ["red", "green", "blue", "orange", "purple", "pink"];
 function updatePlot() {
     const n = parseInt(document.getElementById('degreeSlider').value);
     const nMax = parseInt(document.getElementById('degreeSlider').max);
-    console.log("nMax: ", nMax);
     document.getElementById('degreeValue').textContent = `n=${n}`;
 
     const delta = 0.02;
