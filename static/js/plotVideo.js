@@ -1,6 +1,6 @@
 import Spline from './utils/cubicSpline.js';
 import { drawCurve } from './utils/polynomialCurve.js';
-import { homographiesBrighton, pitchDimsBrighton } from './utils/brighton_game_info.js';
+import { homographiesBrighton, pitchDimsBrighton } from './utils/brightonGameInfo.js';
 import { backProjectPt, projectPt } from './utils/homography.js';
 
 document.addEventListener('DOMContentLoaded', function() {
