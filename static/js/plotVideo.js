@@ -172,6 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
     resizeCanvas();
     drawBackgroundImage();
     drawPitchInfo();
+    drawCurrentPoint(parseFloat(video.currentTime));
   }
 
   function truncateFloat(num, places=4) {
