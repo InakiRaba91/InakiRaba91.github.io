@@ -901,9 +901,17 @@ which allows us to form a tridiagonal system of equations to solve for the slope
 # 6. Conclusion
 
 In this post, we have covered the basics of curve fitting by polynomial interpolation. 
-- We started by interpolating a set of $n$ points with a **polynomial curve** of degree $n$. This curve is **smooth** and passes through all the points, but suffers from two main drawbacks: it is **not convex**, making it sensitive to round-off errors, and it is **computationally expensive** to evaluate as the number of points increases.
-- In order to reduce computational complexity, we considered instead a **piecewise polynomial curve**. We explored the concept of **spline curves**, which are constructed by convex combinations of segments. This allows us to construct a curve that is **smooth** at the junctions, while still being computationally efficient. We introduced the concept of **B-splines**, which are a generalization of the basis functions used to construct spline curves.
-- We last focused on **cubic splines**, which are a popular choice for trajectory interpolation. We showed how to construct a cubic spline curve that interpolates a set of points while ensuring $C^2$ continuity at the junctions. We also provided an interactive plot that allows you to track a player's trajectory in a football game using cubic splines.
+- We started by interpolating a set of $n$ points with a **polynomial curve** of degree $n$. 
+  This curve is **smooth** and passes through all the points, but suffers from two main drawbacks: it is **not convex**, 
+  making it sensitive to round-off errors, and it is **computationally expensive** to evaluate as the number of points increases.
+- In order to reduce computational complexity, we explored the concept of **spline curves**, of which Bézier curves are a special case. 
+  By breaking the curve into smaller segments, a **piecewise polynomial curve** is constructed ensuring its **smoothness** at the junctions. 
+- We then introduced the concept of **B-splines**, which are a generalization of the basis functions used to construct spline curves. 
+  **Bernstain polynomials** are a special case of B-splines and are used to construct Bézier curves.
+- We showed how splines can be designed to be contained within the **convex hull** of the control points, which helps to minimize round-off errors, 
+  but that comes at the cost of not passing through all the control points.
+- We last focused on **cubic splines** and how, given their ability to pass through the control points, they can be used for **trajectory interpolation**. 
+  We illustrated this concept by tracking a player's trajectory in a football game.
 
 # 7. References
 
