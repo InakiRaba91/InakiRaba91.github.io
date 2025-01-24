@@ -1,6 +1,6 @@
 import Spline from './utils/cubicSpline.js';
 import { drawCurve } from './utils/polynomialCurve.js';
-import { homographiesBrighton, pitchDimsBrighton } from './utils/brightonGameInfo.js';
+import { homographiesBrighton, pitchDimsBrighton } from './utils/brighton_game_info.js';
 import { backProjectPt, projectPt } from './utils/homography.js';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -40,9 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const videoCanvasSize = {}
   const pitchCanvasSize = {}
   const origFrameSize = { height: 720, width: 1280 };
+  let prevPitchCanvasSize = { width: 313, height: 176 };
+  let currentPitchCanvasSize = { width: 313, height: 176 };
   const videoDuration = 10;
   const [sliderTimes, homographySplines] = prepareData();
-  drawInitTrajectoryGross();
+  setInitGrossTrajectory();
+
 
   function prepareData() {
     timeSlider.max = videoDuration;
@@ -65,13 +68,21 @@ document.addEventListener('DOMContentLoaded', function() {
     return [sliderTimes, homographySplines];
   }
 
-  function drawInitTrajectoryGross() {
+  function setInitGrossTrajectory() {
     timedClickedPtsPitch.set(0, {x: 92.05154532953425, y: 75.9672121803067});
     timedClickedPtsPitch.set(1.6, {x: 84.47096441948956, y: 61.526724071085305});
     timedClickedPtsPitch.set(3.6, {x: 76.00299262679475, y: 54.531370061412304});
     timedClickedPtsPitch.set(5.8, {x: 70.16706658552833, y: 60.91546674462651});
     timedClickedPtsPitch.set(7.4, {x: 62.717281499218394, y: 69.75860995192416});
     timedClickedPtsPitch.set(10, {x: 56.68113201047579, y: 57.050018584387225});
+  }
+  
+
+  function drawInitGrossTrajectory() {
+    const pt0PitchCanvas = timedClickedPtsPitch.get(0);
+    const pt0ImgCanvas = projectPt(pt0PitchCanvas, homographiesBrighton[0], pitchDimsBrighton, videoCanvasSize, pitchCanvasSize, origFrameSize); 
+    drawPoint(ctx, canvas, pt0ImgCanvas.x, pt0ImgCanvas.y, colorBase, sizeBaseImg);
+    drawPoint(refPtCtx, refPtCanvas, pt0PitchCanvas.x, pt0PitchCanvas.y, colorBase, sizeBasePitch);
     drawPitchInfo();
   }
 
@@ -91,6 +102,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     if (!currentVideo.paused) {
       currentVideo.play();
+    }
+  }
+
+  function scalePitchInfo() {
+    const sx = currentPitchCanvasSize.width / prevPitchCanvasSize.width;
+    const sy = currentPitchCanvasSize.height / prevPitchCanvasSize.height;
+    for (const [t, pt] of timedClickedPtsPitch) {
+      timedClickedPtsPitch.set(t, { x: pt.x * sx, y: pt.y * sy });
     }
   }
 
@@ -118,6 +137,10 @@ document.addEventListener('DOMContentLoaded', function() {
     refPtCanvas.height = imageContainerHeight;
     pitchCanvasSize.width = containerWidth;
     pitchCanvasSize.height = containerHeight;
+
+    prevPitchCanvasSize = currentPitchCanvasSize;
+    currentPitchCanvasSize = { width: imageContainerWidth, height: imageContainerHeight };
+    scalePitchInfo();
   }
 
   function drawBackgroundImage() {
@@ -247,9 +270,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     if (timedClickedPtsPitch.size > 1) {
       const [ts, xs, ys] = unbundle_timed_points(timedClickedPtsPitch);
-      console.log("ts", ts);
-      console.log("xs", xs);
-      console.log("ys", ys);
       xSplinePitch = new Spline(ts, xs);
       ySplinePitch = new Spline(ts, ys);
       const [minT, maxT] = rangeTimes(ts);
@@ -266,7 +286,6 @@ document.addEventListener('DOMContentLoaded', function() {
       const homography = evalHomographySpline(t);
       const ptPitchCanvas = backProjectPt(ptImgCanvas, homography, pitchDimsBrighton, videoCanvasSize, pitchCanvasSize, origFrameSize);
       timedClickedPtsPitch.set(t, ptPitchCanvas);
-      console.log(timedClickedPtsPitch)
       drawPoint(ctx, canvas, ptImgCanvas.x, ptImgCanvas.y, colorLabelled, sizeLabelled);
       drawPitchInfo();
     }
@@ -366,4 +385,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Set initial canvas size
   resizeCanvasWithImage();
+  drawInitGrossTrajectory();
 });
