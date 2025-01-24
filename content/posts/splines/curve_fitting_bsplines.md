@@ -775,15 +775,13 @@ You can use the slider to change the degree of the polynomial:
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script type="module" src="/js/plotBSplines.js"></script>
 
-# 5. Practical Applications
+# 5. Practical Applications: Trajectory interpolation
 
 In the previous section we focsed on how to construct spline curves by convex combinations in order to minimize the impact of round-off errors. However, spline curves refer to a broader class of piecewise polynomial curves that are constructed to ensure $C^n$ continuity at the junctions.  
 
 Convexity though has its limitations. For instance, it is not possible to construct a spline curve that interpolates a set of points. This is because the convex hull of the control points is not guaranteed to contain the curve.
 
-In some applications like denoising, not passing through the control points is not an issue. In other scenarios, like trajectory interpolation, it is crucial. Luckily, it is possible to construct spline curves that remain $C^n$ continuous at the junctions, while still passing through the control points. In this section we will explore two such applications.
-
-# 5.1. Trajectory interpolation
+In some applications, like denoising, not passing through the control points is not an issue. Nonetheless, in other scenarios, like trajectory interpolation, it is crucial. Luckily, it is possible to construct spline curves that remain $C^n$ continuous at the junctions, while still passing through the control points. Let us dive into it.
 
 A popular choice for trajectory interpolation is the **cubic spline**. Given a set of $n + 1$ control points $\\{ c_i \\} _{i=0}^{n}$, we can interpolate
 each pair of points with a cubic polynomial ensuring $C^2$ continuity at the junctions. The constraints are:
@@ -807,7 +805,10 @@ For each segment, we can write the cubic polynomial in the interval $[t_{i-1}, t
 
 $$
 \begin{equation}
-f(t) = \left[ 1 - s_i(t) \right] c_{i-1} + s_i(t) c_i + s_i(t) \left[ 1 - s_i(t) \right] \left[ a_i (1 - s_i(t)) + b_i s_i(t) \right]
+\begin{split}
+f(t) & = \left[ 1 - s_i(t) \right] c_{i-1} + s_i(t) c_i \\\\
+& + s_i(t) \left[ 1 - s_i(t) \right] \left[ a_i (1 - s_i(t)) + b_i s_i(t) \right]
+\end{split}
 \end{equation}
 $$
 
@@ -854,14 +855,26 @@ $$
 \end{equation}
 $$
 
-which allows us to form a tridiagonal system of equations to solve for the slopes $\\{k_i\\} _{i=0}^{n}$. The following interactive plot shows a cubic spline interpolating a set of points. You can add or remove points, as well as drag them around to see how the curve changes.
+which allows us to form a tridiagonal system of equations to solve for the slopes $\\{k_i\\} _{i=0}^{n}$. The following interactive plot displays a short clip of video corresponding to a football game. The camera can be turned on/off in order to visualize the camera calibration. You can then scroll through the video and click on it to tag the player position at certain timestamps. These frame positions are automatically mapped to the pitch template on the right according to the calibration. The cubic spline interpolation is then performed to obtain the trajectory of the player. An initial example is shown tracking Pascal Groß, but feel free to delete it and add your own points to follow whichever player you like.
 
 <figure class="figure" style="text-align: center; margin: 0 auto;">
+  <div style="text-align: center; margin-bottom: 10px;">
+    <button id="camera-button" style="background-color:rgb(241, 231, 173); border: 2px solid black; box-shadow: 2px 2px 5px grey; padding: 0px 10px;">
+      <img id="camera-icon" src="/curve_fitting_bsplines/camera-on.png" alt="Add Point" style="width: 20px; height: 20px;">
+    </button>
+    <button id="remove-traj-button" style="background-color:rgb(228, 165, 163); border: 2px solid black; box-shadow: 2px 2px 5px grey; padding: 0px 10px;">
+      <img src="/curve_fitting_bsplines/remove.png" alt="Remove Point" style="width: 20px; height: 20px;">
+    </button>
+  </div>
   <div style="display: flex; justify-content: center; align-items: center;">
     <div id="interactive-container-video-cubic" style="position: relative; width: 50%; max-width: 640px; aspect-ratio: 16 / 9; border: 1px solid black; margin: 0 auto;">
       <div id="video-wrapper" style="position: relative; width: 100%; height: 100%;">
         <video id="interactive-video-cubic" style="width: 100%; height: 100%;">
           <source src="/curve_fitting_bsplines/brighton.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <video id="interactive-video-camera-cubic" style="width: 100%; height: 100%; display: none;">
+          <source src="/curve_fitting_bsplines/brighton_homography.mp4" type="video/mp4">
           Your browser does not support the video tag.
         </video>
         <canvas id="interactive-plot-video-cubic" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
@@ -879,17 +892,18 @@ which allows us to form a tridiagonal system of equations to solve for the slope
       <canvas id="interactive-plot-ref-cubic" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
     </div>
   </div>
-  <figcaption class="caption" style="font-weight: normal; margin-top: 10px;">Interactive plot showing a quadratic spline composed of three segments. You can double the multiplicity of the 
-  intermediate knot by setting $t_4=t_5$. The effect is the curve remains continuous at the junction, but is no longer differentiable, allowing for a cusp.</figcaption>
+  <figcaption class="caption" style="font-weight: normal; margin-top: 10px;">Interactive plot displaying a cubic spline interpolation of a player trajectory. You can tag the player position at certain timestamps by clicking on the video. The trajectory is then interpolated using cubic splines on the pitch. The camera calibration can be turned on/off by clicking the camera button. The initial example shows Pascal Groß, but feel free to delete it and add your own points.</figcaption>
+  </figcaption>
 </figure>
 
 <script type="module" src="/js/plotVideo.js"></script>
 
-
-
-# 5.2. Surface smoothing
-
 # 6. Conclusion
+
+In this post, we have covered the basics of curve fitting by polynomial interpolation. 
+- We started by interpolating a set of $n$ points with a **polynomial curve** of degree $n$. This curve is **smooth** and passes through all the points, but suffers from two main drawbacks: it is **not convex**, making it sensitive to round-off errors, and it is **computationally expensive** to evaluate as the number of points increases.
+- In order to reduce computational complexity, we considered instead a **piecewise polynomial curve**. We explored the concept of **spline curves**, which are constructed by convex combinations of segments. This allows us to construct a curve that is **smooth** at the junctions, while still being computationally efficient. We introduced the concept of **B-splines**, which are a generalization of the basis functions used to construct spline curves.
+- We last focused on **cubic splines**, which are a popular choice for trajectory interpolation. We showed how to construct a cubic spline curve that interpolates a set of points while ensuring $C^2$ continuity at the junctions. We also provided an interactive plot that allows you to track a player's trajectory in a football game using cubic splines.
 
 # 7. References
 
