@@ -79,11 +79,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
 
   function drawInitGrossTrajectory() {
-    const pt0PitchCanvas = timedClickedPtsPitch.get(0);
-    const pt0ImgCanvas = projectPt(pt0PitchCanvas, homographiesBrighton[0], pitchDimsBrighton, videoCanvasSize, pitchCanvasSize, origFrameSize); 
-    drawPoint(ctx, canvas, pt0ImgCanvas.x, pt0ImgCanvas.y, colorBase, sizeBaseImg);
-    drawPoint(refPtCtx, refPtCanvas, pt0PitchCanvas.x, pt0PitchCanvas.y, colorBase, sizeBasePitch);
     drawPitchInfo();
+    drawCurrentPoint(0);
   }
 
   function switchVideo() {
@@ -172,6 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
     resizeCanvas();
     drawBackgroundImage();
     drawPitchInfo();
+    drawCurrentPoint(parseFloat(video.currentTime));
   }
 
   function truncateFloat(num, places=4) {
