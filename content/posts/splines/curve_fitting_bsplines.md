@@ -1,6 +1,6 @@
 +++
 title = '➰ Curve fitting: Polynomial, Bézier and Spline curves'
-date = 2025-01-23T11:09:19+01:00
+date = 2025-01-24T11:09:19+01:00
 tags = ["curve fitting", "splines", "b-splines", "bezier curves", "polynomial curves"]
 draft = false
 +++
