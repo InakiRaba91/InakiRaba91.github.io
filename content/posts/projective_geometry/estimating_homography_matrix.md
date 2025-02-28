@@ -279,7 +279,7 @@ And the following figure when retrieving the homography from a set of line corre
     OpenCV provides a built-in method that retrieves the homography from a set of point correspondences: <a href="https://docs.opencv.org/3.4/d9/d0c/group__calib3d.html#ga4abc2ece9fab9398f2e560d53c8c9780" style="text-decoration: none; color: blue; line-height: 1;"><strong>cv2.findHomography()</strong></a><br><br>
     You can try it out in the repo for comparison by calling:<br><br>
     <pre><code>
-      homography = Homography.from_point_correspondences_cv2(
+      camera = Camera.from_point_correspondences_cv2(
         pts_source=points_template, 
         pts_target=points_frame,
       )

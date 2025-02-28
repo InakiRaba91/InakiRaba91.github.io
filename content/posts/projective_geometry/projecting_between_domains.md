@@ -154,7 +154,7 @@ $$
 **Example**
 
 ```python
-homography = Homography(H=np.array([
+camera = Camera(H=np.array([
     [ 8.69135802e+00, -2.96296296e+00,  6.40000000e+02], 
     [ 0.00000000e+00,  7.33333333e+00,  2.93333333e+02], 
     [ 0.00000000e+00, -4.62962963e-03,  1.00000000e+00],
@@ -162,7 +162,7 @@ homography = Homography(H=np.array([
 
 pt = Point(x=0, y=0)
 
-projected_pt = project_points(homography=homography, pts=(pt, ))
+projected_pt = project_points(camera=camera, pts=(pt, ))
 
 print(projected_pt[0])
 
@@ -243,7 +243,7 @@ $$
 **Example**
 
 ```python
-homography = Homography(H=np.array([
+camera = Camera(H=np.array([
     [ 8.69135802e+00, -2.96296296e+00,  6.40000000e+02], 
     [ 0.00000000e+00,  7.33333333e+00,  2.93333333e+02], 
     [ 0.00000000e+00, -4.62962963e-03,  1.00000000e+00],
@@ -251,7 +251,7 @@ homography = Homography(H=np.array([
 
 ln = Line(a=0, b=1, c=0)
 
-projected_ln = project_lines(homography=homography, lines=(ln, ))
+projected_ln = project_lines(camera=camera, lines=(ln, ))
 
 print(projected_ln[0])
 
