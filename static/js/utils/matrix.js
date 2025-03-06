@@ -1,3 +1,14 @@
+export function transposeMatrix(M){
+    var result = [];
+    for(var i = 0; i < M[0].length; i++){
+        result.push([]);
+        for(var j = 0; j < M.length; j++){
+            result[i].push(M[j][i]);
+        }
+    }
+    return result;
+}
+
 export function inverseMatrix(M){
     // I use Guassian Elimination to calculate the inverse:
     // (1) 'augment' the matrix (left) by the identity (on the right)
@@ -91,7 +102,15 @@ export function inverseMatrix(M){
     return I;
 }
 
-export function multiplyMatrix(A, v){
+export function dotProduct(v1, v2){
+    var result = 0;
+    for(var i = 0; i < v1.length; i++){
+        result += v1[i] * v2[i];
+    }
+    return result;
+}
+
+export function multiplyMatrixVector(A, v){
     var result = [];
     for(var i = 0; i < A.length; i++){
         var sum = 0;
@@ -99,6 +118,22 @@ export function multiplyMatrix(A, v){
             sum += A[i][j] * v[j];
         }
         result.push(sum);
+    }
+    return result;
+}
+
+export function matrixProduct(A, B){
+    var result = [];
+    for(var i = 0; i < A.length; i++){
+        var row = [];
+        for(var j = 0; j < B[0].length; j++){
+            var sum = 0;
+            for(var k = 0; k < B.length; k++){
+                sum += A[i][k] * B[k][j];
+            }
+            row.push(sum);
+        }
+        result.push(row);
     }
     return result;
 }
