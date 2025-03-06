@@ -458,7 +458,7 @@ Notice that when projecting a line, its width varies depending on where it lands
 However, in some scenarios, one might be interested in having full control over the visualisation of projected objects. Whenever it is feasible to decompose the original image in its core geometric features, one could therefore project individually each feature and display it on the target image with the desired visualisation properties. For instance, the basketball court ban be broken down into all the line segments, circles and arcs, as illustrated below
 
 <figure class="figure" style="text-align: center;">
-  <img src="/projecting_between_domains/BaseketballCourtTemplate.png" alt="Basketball Court Template" width="80%" style="display: block; margin: auto;">
+  <img src="/projecting_between_domains/BasketballCourtTemplate.png" alt="Basketball Court Template" width="80%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">NBA court template displaying all geometric features (points, lines and conics) it consists of.</figcaption>
 </figure>
 
