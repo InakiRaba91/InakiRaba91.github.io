@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const imageView = new Image();
   const imageFrame = new Image();
-  imageView.src = '/camera_calibration/BaseketballCourtTemplateCameraView.png'; // Replace with the path to your image file
-  imageFrame.src = '/camera_calibration/BaseketballCourtTemplate.png'; // Replace with the path to your image file
+  imageView.src = '/camera_calibration/BasketballCourtTemplateCameraView.png'; // Replace with the path to your image file
+  imageFrame.src = '/camera_calibration/BasketballCourtTemplate.png'; // Replace with the path to your image file
 
   let imagesLoaded = 0;
   function imageLoaded() {
