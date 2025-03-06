@@ -1,0 +1,1 @@
+export const baseImageSize = { width: 1280, height: 720 };

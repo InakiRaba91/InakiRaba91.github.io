@@ -14,20 +14,86 @@ draft = false
 
 # 1. Introduction
 
-We have seen in a previous <a href="https://inakiraba91.github.io/posts/projective_geometry/estimating_homography_matrix/" style="text-decoration: none; color: blue; line-height: 1;">post</a> how we can estimate the homography matrix that characterizes the projective transform between two images. In this 
-article, we will focus on the camera calibration problem, which consists of retrieving the intrinsic matrix $K$of the camera. This matrix characterizes the internal parameters of the camera, such as the focal length, the principal point, and the skew factor:
+We have seen in a previous <a href="https://inakiraba91.github.io/posts/projective_geometry/estimating_homography_matrix/" style="text-decoration: none; color: blue; line-height: 1;">post</a> how we can estimate the homography matrix $H$ that characterizes the projective transform between two images. This matrix takes the form:
 
 $$
 \begin{equation}
-K=\begin{bmatrix}
-f_x & s & \frac{W}{2}\\\\
-0 & f_y & \frac{H}{2}\\\\
-0 & 0 & 1
-\end{bmatrix} 
+H= K \cdot \left[\\; R\\;\\; | \\;\\;\ T\\;\\;\right ]
 \end{equation}
 $$
 
-where $f_x$ and $f_y$ are the focal lengths in the x and y directions, $s$ is the skew factor, and $W$ and $H$ are the width and height of the image in pixels. 
+where:
+ - $R$ is a rotation matrix that defines the camera orientation. It is fully characterized by the rotation angles $[\theta_x, \theta_y, \theta_z]$ around the $x$, $y$ and $z$ axes, respectively.
+ - $T$ is a translation vector that defines the camera location. It is given by the coordinates $[t_x, t_y, t_z]$.
+ - $K$ is the intrinsic matrix, which contains the camera parameters. It is given by:
+   $$
+   \begin{equation}
+   K=\begin{bmatrix}
+   f_x & s & c_x \\\\
+   0 & f_y & c_y \\\\
+   0 & 0 & 1
+   \end{bmatrix}
+   \end{equation}
+   $$
+
+The figure below illustrates the capture of an image. You can tweak the sliders to change the camera parameters and see how the image changes.
+
+<figure class="figure" style="text-align: center; margin: 0 auto;">
+  <div style="margin-bottom: 10px; display: flex; align-items: center;">
+    <label for="focal-length-slider" style="margin-right: 10px;">f: <span id="focal-length-value">0</span></label>
+    <input type="range" id="focal-length-slider" min="250" max="300" value="275" step="1" style="flex: 1;">
+  </div>
+  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+    <div style="flex: 1; margin-right: 5px; display: flex; align-items: center;">
+      <label for="tx-slider" style="margin-right: 10px;">tx: <span id="tx-value">0</span></label>
+      <input type="range" id="tx-slider" min="0" max="20" value="0" step="1" style="flex: 1;">
+    </div>
+    <div style="flex: 1; margin-left: 5px; display: flex; align-items: center;">
+      <label for="theta-x-slider" style="margin-right: 10px;">θx: <span id="theta-x-value">0</span></label>
+      <input type="range" id="theta-x-slider" min="90" max="270" value="180" step="1" style="flex: 1;">
+    </div>
+  </div>
+  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+    <div style="flex: 1; margin-right: 5px; display: flex; align-items: center;">
+      <label for="ty-slider" style="margin-right: 10px;">ty: <span id="ty-value">0</span></label>
+      <input type="range" id="ty-slider" min="0" max="20" value="0" step="1" style="flex: 1;">
+    </div>
+    <div style="flex: 1; margin-left: 5px; display: flex; align-items: center;">
+      <label for="theta-y-slider" style="margin-right: 10px;">θy: <span id="theta-y-value">0</span></label>
+      <input type="range" id="theta-y-slider" min="-90" max="90" value="0" step="1" style="flex: 1;">
+    </div>
+  </div>
+  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+    <div style="flex: 1; margin-right: 5px; display: flex; align-items: center;">
+      <label for="tz-slider" style="margin-right: 10px;">tz: <span id="tz-value">0</span></label>
+      <input type="range" id="tz-slider" min="6" max="20" value="6" step="1" style="flex: 1;">
+    </div>
+    <div style="flex: 1; margin-left: 5px; display: flex; align-items: center;">
+      <label for="theta-z-slider" style="margin-right: 10px;">θz: <span id="theta-z-value">0</span></label>
+      <input type="range" id="theta-z-slider" min="-30" max="30" value="0" step="1" style="flex: 1;">
+    </div>
+  </div>
+  <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+    <div style="width: calc(50% - 5px); text-align: center;">
+      <h4 style="margin-bottom: 5px;">(a) 3D World View</h4>
+      <div id="interactive-container-camera-view" style="position: relative; width: 100%; max-width: 640px; aspect-ratio: 16 / 9; border: 1px solid black; margin: 0 auto;">
+        <canvas id="interactive-plot-basket-court" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+        <canvas id="interactive-plot-camera-view" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+      </div>
+    </div>
+    <div style="width: calc(50% - 5px); text-align: center;">
+      <h4 style="margin-bottom: 5px;">(b) Camera View</h4>
+      <div id="interactive-container-frame-view" style="position: relative; width: 100%; max-width: 640px; aspect-ratio: 16 / 9; border: 1px solid black; margin: 0 auto;">
+        <canvas id="interactive-plot-frame-view" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+      </div>
+    </div>
+  </div>
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">(a) 3D scene reconstruction to show how the camera parameters affect the view of the 3D world from the camera (red cube). Notice how the distance between the film (blue) and the pinhole varies according to the focal length $f$. (b) Frame captured from the camera as we vary its parameters</figcaption>
+</figure>
+<script src="https://docs.opencv.org/4.10.0/opencv.js" type="text/javascript"></script>
+<script type="module" src="/js/cameraProjection.js"></script>
+
+In this article, we will focus on the camera calibration problem, which consists of retrieving the intrinsic matrix $K$of the camera. 
 
 <span style="background-color: lightblue; border: 1px solid black; padding: 2px 10px; display: inline-flex; align-items: center;">
     <img src="/github.svg" alt="GitHub Icon" style="width: 24px; height: 24px; margin-right: 10px;">
@@ -503,7 +569,7 @@ i \\\\
 \end{equation}
 $$
 
-<id="circular_points"></a>
+<a id="circular_points"></a>
 The term "circular points" comes from the fact that all circles intersect with the infinity line at these points. Recall a circle is defined 
 by the equation:
 
@@ -728,28 +794,21 @@ $$
 
 # 4. Camera calibration
 
-We have seen in a previous <a href="https://inakiraba91.github.io/posts/projective_geometry/building_homograpahy_matrix/" style="text-decoration: none; color: blue; line-height: 1;">post</a> 
-that the mapping between the 3D world and the 2D image plane can be represented by a projective transformation, characterized by the homography matrix $H$.
+In this section we will focus on how we can retrieve the intrinsic matrix $K$. The absolute conic and its projection onto the image plane play a key role in this process, so it should make sense now why we have spent so much time discussing them.
 
-$$
-\begin{equation}
-H= K \cdot \left[\\; R\\;\\; | \\;\\;\ T\\;\\;\right ]
-\end{equation}
-$$
-
-where $K$ is the intrinsic matrix, $R$ is a rotation matrix, and $T$ is a translation vector. 
-
-In this section we will focus on how we can retrieve the intrinsic matrix $K$, which takes the form:
+As a reminder, $K$ can be expressed as:
 
 $$
 \begin{equation}
 K=\begin{bmatrix}
-f_x & s & c_x \\\\
-0 & f_y & c_y \\\\
+f_x & s & \frac{W}{2}\\\\
+0 & f_y & \frac{H}{2}\\\\
 0 & 0 & 1
-\end{bmatrix}
+\end{bmatrix} 
 \end{equation}
 $$
+
+where $f_x$ and $f_y$ are the focal lengths in the x and y directions, $s$ is the skew factor, and $W$ and $H$ are the width and height of the image in pixels. 
 
 ## 4.1 Angle between rays
 
@@ -801,6 +860,7 @@ $$
 
 In order to find the image of the absolute conic, denoted by $\omega$, we first need to figure out how the plane at infinity $\Pi_{\infty}$ is mapped to the image plane $\Pi$.
 
+<a id="vanishing_infinity_plane"></a>
 Points at infinity take the form $X_{\infty}=[d^T, 0]^T$ and are mapped to:
 
 $$
@@ -869,13 +929,14 @@ There's still one missing piece though: how do we find $\omega$? Let us see a fe
 
 Combining the equations for the angle between <a href="#angle_camera_center">two rays passing through the camera center</a> and the definition of <a href="#iac">$\omega$</a>, we get:
 
+<a id="angle_iac"></a>
 $$
 \begin{equation}
 \cos(\theta) = \frac{x_1^T\cdot \omega \cdot x_2}{\sqrt{x_1^T\cdot \omega \cdot x_1} \sqrt{x_2^T\cdot \omega \cdot x_2}}
 \end{equation}
 $$
 
-Thus, two points $x_1$ and $x_2$ are orthogonal if and only if they satisfy:
+Thus, the rays passing through the camera center are orthogonal if their image projections $x_1$ and $x_2$ satisfy:
 
 $$
 \begin{equation}
@@ -919,7 +980,7 @@ So to sum up:
 
 ### 4.2.2. Planes and circular points
 
-The absolute canic can be interpreted as the intersection between any sphere and the plane at infinity $\Pi_{\infty}$. 
+The absolute conic can be interpreted as the intersection between any sphere and the plane at infinity $\Pi_{\infty}$. 
 A sphere is defined by points $x=[x_1, x_2, x_3, x_4]^T$ that satisfy:
 
 $$
@@ -954,7 +1015,7 @@ Say we take a plane $\Pi$ that instersects with the shpere at a circle parametri
  - The intersection between the circle and $\Pi_{\infty}$ must lie in the intersection between the plane and $\Pi_{\infty}$, i.e., the line $l_{\infty}$.
  - Any circle intersects with the line at infinity $l_\infty$ at the <a href="#circular_points">circular points</a> $\mathbf{I}$ and $\mathbf{J}$.
 
-As a result, the circular points $\mathbf{I}=[1, i, 0]^T$ and $\mathbf{J}=[1, -i, 0]^T$ are the intersection between $\Omega_{\infty}$ and $\l_{\infty}$. 
+As a result, the circular points $\mathbf{I}=[1, i, 0]^T$ and $\mathbf{J}=[1, -i, 0]^T$ are the intersection between $\Omega_{\infty}$ and $l_{\infty}$. 
 Consequently, <strong>the circular points lie in the absolute conic $\omega$</strong>!
 
 <figure class="figure" style="text-align: center;">
@@ -983,6 +1044,7 @@ $$
 \end{equation}
 $$
 
+<a id="circular_points_orthogonality"></a>
 which implies both the real and imaginary parts of the equation satisfy:
 
 $$
@@ -994,53 +1056,433 @@ $$
 \end{equation}
 $$
 
-
-
 ### 4.2.3. The vanishing points
 
-<figure class="figure" style="text-align: center; margin: 0 auto;">
-  <div id="cube-container">
-    <div id="cube">
-      <div class="face"></div>
-      <div class="face"></div>
-      <div class="face"></div>
-      <div class="face"></div>
-      <div class="face"></div>
-      <div class="face"></div> 
-    </div>
-  </div>
-  <div style="margin-top: 20px;">
-    <label for="rotation-slider-x">Rotate X:</label>
-    <input type="range" id="rotation-slider-x" min="10" max="20" value="10" step="1" style="width: 200px;">
-  </div>
-  <div style="margin-top: 20px;">
-    <label for="rotation-slider-y">Rotate Y:</label>
-    <input type="range" id="rotation-slider-y" min="-20" max="20" value="0" step="1" style="width: 200px;">
-  </div>
-  
+As we have seen, the projective transform is able to map the region of infinity to the image plane. Since all parallel lines intersect with the infinity line at the same vanishing point, we can use this property to find the vanishing points in the image. The figure below illustrates how this vanishing point arises from the perspective projection.
+
+<figure class="figure" style="text-align: center;">
+  <img src="/camera_calibration/vanishing_point.svg" alt="Vanishing point" width="70%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">The points $X_i$ in line $X$ are equally spaced in the 3D Euclidean space, but their projections distance in the image plane decreases as they move away from the camera center. We can trace a parallel line $D$ to $X$ passing through the camera center $C$, which would intersect with $X$ at the infinity plane. The vanishing point $v'$ is the projection of this intersection in the image plane, and is given by the intersection between the line $D$ and the image plane.</figcaption>
 </figure>
 
-<link rel="stylesheet" type="text/css" href="/css/cube.css">
+Any 3D point in the line driven by direction $d=[d_x,d_y,d_z, 0]$ passing through point $A=[A_x, A_y, A_z, 1]$ can be parametrized as:
 
-<script type="module" src="/js/vanishingPoints.js"></script>
+$$
+\begin{equation}
+X(\lambda) = A + \lambda d
+\end{equation}
+$$
+
+where $\lambda$ is a scalar. The projection of this line in the image plane is given by:
+
+$$
+\begin{equation}
+\begin{split}
+x(\lambda) & = H \cdot X(\lambda) \\\\
+&= H\cdot (A + \lambda d) \\\\
+&= H a + \lambda K \left[\\; R\\;\\; | \\;\\;\ T\\;\\;\right ] \cdot \begin{bmatrix} d \\\\ 0 \end{bmatrix} \\\\
+&= a + \lambda KRd
+\end{split}
+\end{equation}
+$$
+
+The vanishing point $v$ is given in the limit $\lambda \rightarrow \infty$, so we can write:
+
+$$
+\begin{equation}
+v = \lim_{\lambda \rightarrow \infty} x(\lambda) = a + \lambda KRd = KRd
+\end{equation}
+$$
+
+where $\lambda$ disappears since the projection is defined up to scale. Notice how the vanishing point only depends on the direction of the line $d$ and not on the point $A$, proving that all parallel share the same vanishing point. 
+
+Another way to think about the vanishing point is as the projection intersection between the line $D$ the plane at infinity $\Pi_{\infty}$. We saw <a href="#vanishing_infinity_plane">earlier</a> that point of intersection $x_\infty$ between the line $D$ and $\Pi_{\infty}$ is given by $X_\infty = [d^T, 0]^T$. So the vanishing point $v$ is given by its projection in the image plane:
+
+$$
+\begin{equation}
+v = K \left[\\; R\\;\\; | \\;\\;\ T\\;\\;\right ] \cdot X_\infty = KRd
+\end{equation}
+$$
+
+Therefore the vanishing point for lines parallel to $d$ is simply the intersection $v$ between the image plane with a ray passing through the camera center and the direction $d$.
+
+<figure class="figure" style="text-align: center;">
+  <img src="/camera_calibration/vanishing_point_image.svg" alt="Vanishing point in the image" width="70%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">The points $X_i$ in line $X$ are equally spaced in the 3D Euclidean space, but their projections distance in the image plane decreases as they move away from the camera center. We can trace a parallel line $D$ to $X$ passing through the camera center $C$, which would intersect with $X$ at the infinity plane. The vanishing point $v'$ is the projection of this intersection in the image plane, and is given by the intersection between the line $D$ and the image plane.</figcaption>
+</figure>
+
+The script below illustrates the concept of the vanishing points. You can tweak the camera parameters to see how the vanishing points change. Notice how the 3D location does not affect them at all, as expected from the previous equation.
+
+<figure class="figure" style="text-align: center; margin: 0 auto;">
+  <div style="margin-bottom: 10px; display: flex; align-items: center;">
+    <label for="focal-length-vp-slider" style="margin-right: 10px;">f: <span id="focal-length-vp-value">0</span></label>
+    <input type="range" id="focal-length-vp-slider" min="250" max="300" value="260" step="1" style="flex: 1;">
+  </div>
+  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+    <div style="flex: 1; margin-right: 5px; display: flex; align-items: center;">
+      <label for="tx-vp-slider" style="margin-right: 10px;">tx: <span id="tx-vp-value">0</span></label>
+      <input type="range" id="tx-vp-slider" min="5" max="15" value="10" step="1" style="flex: 1;">
+    </div>
+    <div style="flex: 1; margin-left: 5px; display: flex; align-items: center;">
+      <label for="theta-x-vp-slider" style="margin-right: 10px;">θx: <span id="theta-x-vp-value">0</span></label>
+      <input type="range" id="theta-x-vp-slider" min="150" max="160" value="155" step="1" style="flex: 1;">
+    </div>
+  </div>
+  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+    <div style="flex: 1; margin-right: 5px; display: flex; align-items: center;">
+      <label for="ty-vp-slider" style="margin-right: 10px;">ty: <span id="ty-vp-value">0</span></label>
+      <input type="range" id="ty-vp-slider" min="0" max="10" value="5" step="1" style="flex: 1;">
+    </div>
+    <div style="flex: 1; margin-left: 5px; display: flex; align-items: center;">
+      <label for="theta-y-vp-slider" style="margin-right: 10px;">θy: <span id="theta-y-vp-value">0</span></label>
+      <input type="range" id="theta-y-vp-slider" min="40" max="50" value="45" step="1" style="flex: 1;">
+    </div>
+  </div>
+  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+    <div style="flex: 1; margin-right: 5px; display: flex; align-items: center;">
+      <label for="tz-vp-slider" style="margin-right: 10px;">tz: <span id="tz-vp-value">0</span></label>
+      <input type="range" id="tz-vp-slider" min="25" max="35" value="30" step="1" style="flex: 1;">
+    </div>
+    <div style="flex: 1; margin-left: 5px; display: flex; align-items: center;">
+      <label for="theta-z-vp-slider" style="margin-right: 10px;">θz: <span id="theta-z-vp-value">0</span></label>
+      <input type="range" id="theta-z-vp-slider" min="15" max="25" value="20" step="1" style="flex: 1;">
+    </div>
+  </div>
+  <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+    <div style="width: calc(50% - 5px); text-align: center;">
+      <h4 style="margin-bottom: 5px;">(a) 3D World View</h4>
+      <div id="interactive-container-camera-view-vp" style="position: relative; width: 100%; max-width: 640px; aspect-ratio: 16 / 9; border: 1px solid black; margin: 0 auto;">
+        <canvas id="interactive-plot-basket-court-vp" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+        <canvas id="interactive-plot-camera-view-vp" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+      </div>
+    </div>
+    <div style="width: calc(50% - 5px); text-align: center;">
+      <h4 style="margin-bottom: 5px;">(b) Camera View</h4>
+      <div id="interactive-container-frame-view-vp" style="position: relative; width: 100%; max-width: 640px; aspect-ratio: 16 / 9; border: 1px solid black; margin: 0 auto;">
+        <canvas id="interactive-plot-frame-view-vp" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+      </div>
+    </div>
+  </div>
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">(a) 3D scene reconstruction to show how the camera parameters affect the view of the 3D world from the camera (red cube). Notice how the distance between the film (blue) and the pinhole varies according to the focal length $f$. (b) Frame captured from the camera as we vary its parameters. Vanishing points are displayed as well.</figcaption>
+</figure>
+<script type="module" src="/js/cameraProjectionVanishingPoints.js"></script>
+
+Since the vanishing point is shared for all parallel rays, we can focus on the rays passing through the camera center. The angle between such rays was determined <a href="#angle_iac">earlier</a> and it is thus valid for vanishing points:
+
+$$
+\begin{equation}
+\cos(\theta) = \frac{v_1^T\cdot \omega \cdot v_2}{\sqrt{v_1^T\cdot \omega \cdot v_1} \sqrt{v_2^T\cdot \omega \cdot v_2}}
+\end{equation}
+$$
+
+This implies that the vanishing points for orthogonal rays satisfy_
+
+$$
+\begin{equation}
+v1^T\cdot \omega \cdot v2 = 0
+\end{equation}
+$$
+
+Given the point/line duality, a similar result can be derived for vanishing lines. They arise from the intersection between a plane $\Pi$ and the plane
+at infinity $\Pi_{\infty}$. We can compute the angle between two planes from the projection of their vanishing lines according to:
+
+$$
+\begin{equation}
+\cos(\theta) = \frac{l_1^T\cdot \omega^{-1} \cdot l_2}{\sqrt{l_1^T\cdot \omega^* \cdot l_1} \sqrt{l_2^T\cdot \omega^{-1} \cdot l_2}}
+\end{equation}
+$$
+
+So to sum up, we have the three following orthogonality relationships:
+1. The vanishing points of perpendicular rays satisfy:
+$$
+\begin{equation}
+v_1^T\cdot \omega \cdot v_2 = 0
+\end{equation}
+$$
+2. The vanishing lines of perpendicular planes satisfy:
+$$
+\begin{equation}
+l_1^T\cdot \omega^{-1} \cdot l_2 = 0
+\end{equation}
+$$
+3. If a line is perpendicular to a plane, their respectives vanishing point $v$ and vanishing line $l$ satisfy:
+$$
+\begin{equation}
+l=\omega \cdot v
+\end{equation}
+$$
 
 ## 4.3. Retrieving the intrinsic matrix
 
-# 5. Application
+Recall our goal here We are trying to find the intrinsic matrix $K$ given the projection of the 3D world captured in the image. We have seen that the image of the absolute conic $\omega$ is a key piece in this puzzle, since it is related to the intrinsic matrix by:
+
+$$
+\begin{equation}
+\omega = K^{-T}\cdot K^{-1}
+\end{equation}
+$$
+
+So once we find $\omega$, we can retrieve $K$ by decomposing it into a product of an upper-triangular matrix with positive diagonal entries and its transpose.
+
+We have found a few relationships that can help us find $\omega$, which are summarized in the following table:
+
+<style>
+table th:first-of-type {
+    width: 45%;
+}
+table th:nth-of-type(2) {
+    width: 55%;
+}
+</style>
+| Condition | Constraint |
+| --- | --- |
+| Vanishing points $v1$ and $v2$ from perpendicular rays| $v_1^T\cdot \omega \cdot v_2 = 0$ |
+| Vanishing lines $l1$ and $l2$ from perpendicular planes | $l_1^T\cdot \omega^{-1} \cdot l_2 = 0$ |
+| Vanishing point $v$ and  $l$ from perpendicular line and plane | $l=\omega \times v$ |
+| Plane imaged with known homography $H = [\mathbf{h_1}, \mathbf{h_2}, \mathbf{h_3}]$ | $\mathbf{h_1}^T\cdot \omega \cdot \mathbf{h_1} = \mathbf{h_2}^T\cdot \omega \cdot \mathbf{h_2}$ <br> $\mathbf{h_1}^T\cdot \omega \cdot \mathbf{h_2} = 0$ |
+| No skew | $\omega_{12} = \omega_{21} = 0$ |
+| Unit aspect ratio | $\omega_{11} = \omega_{22}$ |
+
+Since $\omega$ is a symmetric matrix, we have 6 unknowns to find. We therefore need at least 6 constraints to solve for it. The process of calibrating the camera would look something like:
+1. Parametrize $\omega$ as a vector $w=[w_1, w_2, w_3, w_4, w_5, w_6]^T$, where
+$$
+\begin{equation}
+\omega = \begin{bmatrix}
+w_1 & w_2 & w_4 \\\\
+w_2 & w_3 & w_5 \\\\
+w_4 & w_5 & w_6
+\end{bmatrix}
+\end{equation}
+$$
+2. Find at least 6 constraints from the relationships above and write them in the form $a_i^T\cdot w = 0$.
+3. Stack the constraints in a matrix $A$ to form a linear system of equations $Aw=0$.
+4. Solve the system using the SVD decomposition to find the null space of $A$.
+3. Decompose $\omega$ into $K$ using the Cholesky decomposition.
+
+# 5. Examples
+
+In this section we will see a few examples of how the concepts we have discussed can be applied in practice.
+
+## 5.1. Calibration from two vanishing points
+
+Say we have some prior knowledge about our camera, i.e., we know its principal point is at the center of the image, the pixels are squared and there is no skew. We can write the intrinsic matrix $K$ as:
+
+$$
+\begin{equation}
+K=\begin{bmatrix}
+f & 0 & \frac{W}{2}\\\\
+0 & f & \frac{H}{2}\\\\
+0 & 0 & 1
+\end{bmatrix}
+\end{equation}
+$$
+
+where $f$ is the focal length, $W$ and $H$ are the width and height of the image in pixels. 
+
+We have seen two orthogonal rays have vanishing points that satisfy:
+
+$$
+\begin{equation}
+v_1^T\cdot \omega \cdot v_2 = 0 
+\end{equation}
+$$
+
+or alternatively
+
+$$
+\begin{equation}
+v_1^T\cdot K^{-T}\cdot K^{-1} \cdot v_2 = 0
+\end{equation}
+$$
+
+Replacing $K$ in the equation above, we get:
+
+$$
+\begin{equation}
+\begin{bmatrix}
+v_{1x} & v_{1y} & 1
+\end{bmatrix}
+\begin{bmatrix}
+\frac{1}{f} & 0 & 0\\\\
+0 & \frac{1}{f} & 0\\\\
+-\frac{W}{2f} & -\frac{H}{2f} & 1
+\end{bmatrix}
+\begin{bmatrix}
+\frac{1}{f} & 0 & -\frac{W}{2f}\\\\
+0 & \frac{1}{f} & -\frac{H}{2f}\\\\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+v_{2x} \\\\
+v_{2y} \\\\
+1
+\end{bmatrix} = 0
+\end{equation}
+$$
+
+and we can now expand to:
+
+$$
+\begin{equation}
+\frac{1}{f^2}
+\begin{bmatrix}v_{1x} - \frac{W}{2} & v_{1y} - \frac{H}{2} & f \end{bmatrix}
+\begin{bmatrix}v_{2x} - \frac{W}{2} \\\\
+v_{2y} - \frac{H}{2} \\\\
+f
+\end{bmatrix} = 0
+\end{equation}
+$$
+
+This equation leads to:
+
+$$
+\begin{equation}
+f = \sqrt{-\left(v_{1x} - \frac{W}{2}\right)\left(v_{2x} - \frac{W}{2}\right) - \left(v_{1y} - \frac{H}{2}\right)\left(v_{2y} - \frac{H}{2}\right)}
+\end{equation}
+$$
+
+So imagine we get the following $1280\times 640$ image, which we synthetically generated with $f=580$:
+
+<figure class="figure" style="text-align: center;">
+  <img src="/camera_calibration/BasketballCourtCalibration.png" alt="Vanishing points example" width="70%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of a synthetic basketball court captured using a pinhole camera with no skew, squared pixels, principal point at the center of the $1280\times 640$ image and $f=580$.
+  </figcaption>
+</figure>
+
+We know the court has rectangular shape in the 3D world, so the end lines (the lines behind the baskets) and the sidelines (the lines next to the benches) are perpendicular to each other. Therefore, their corresponding vanishing points in the image must satisfy the equation above. 
+
+We simply need to locate the end/sidelines on the image, parametrize them and extend them to find their intersection. 
+
+<figure class="figure" style="text-align: center;">
+  <img src="/camera_calibration/BasketballCourtCalibrationVanishing.png" alt="Vanishing points example" width="70%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Illustration of how to find the vanishing points for perpendicular sets of lines.
+  </figcaption>
+</figure>
+
+Following this procedure for the basketball court above, we get the following vanishing points, which happen to lie outside the image:
+
+$$
+\begin{equation}
+\begin{split}
+v_1 &= \begin{bmatrix} 7239.60 & 875.45  \end{bmatrix} \\\\
+v_2 &= \begin{bmatrix} 754.46 & -1758.11  \end{bmatrix}
+\end{split}
+\end{equation}
+$$
+
+Finally, we just need to replace these values in the equation above to find the focal length:
+
+$$
+\begin{equation}
+\boxed{f = 580}
+\end{equation}
+$$
+
+which indeed matches the ground-truth focal length of the camera used to capture the image.
+
+## 5.2. Calibration from three linearly independent planes
+
+Now we are going to try to calibrate the camera from the homographies that maps three linearly independent (known) planes in the 3D world and their corresponding projections in the image. To make the estimation more robust, we will assume no skew and squared pixels as well, so the intrinsic matrix $K$ can be written as:
+
+$$
+\begin{equation}
+K=\begin{bmatrix}
+f & 0 & x\\\\
+0 & f & y\\\\
+0 & 0 & 1
+\end{bmatrix}
+\end{equation}
+$$
+
+where $f$ is the focal length, $W$ and $H$ are the width and height of the image in pixels. This allows to write
+
+$$
+\begin{equation}
+\omega = K^{-T}\cdot K^{-1} = \frac{1}{f^2} \cdot \begin{bmatrix}
+1 & 0 & -x \\\\
+0 & 1 & -y \\\\
+-x & -y & x^2 + y^2 + f^2 \end{bmatrix} =
+\begin{bmatrix} \omega_{1} & 0 & \omega_{2} \\\\
+0 & \omega_{1} & \omega_{3} \\\\
+\omega_{2} & \omega_{3} & \omega_{4}
+\end{bmatrix}
+\end{equation}
+$$
+
+The image below shows a synthetic soccer pitch captured using a pinhole camera with no skew, squared pixels, principal point at $(x, y)=(640, 360)$ and focal length $f=4763$.
+
+<figure class="figure" style="text-align: center;">
+  <img src="/camera_calibration/SoccerPitchCalibration.png" alt="Three planes example" width="70%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of a synthetic soccer pitch captured using a pinhole camera with no skew, squared pixels, principal point at the center of the image at $(x, y)=(640, 360)$ and $f=4763$.
+  </figcaption>
+</figure>
+
+We now identify three linearly independent planes and proceed as follows in order to find the homography that maps them to the image:
+1. Locate four non-collinear points $\\{ p_i \\} _{i=1}^{4}$ from each plane in the image
+2. Find an orthonormal basis for the plane in the 3D world. Gram-Schmidt process, which we have discussed in an earlier <a href="https://inakiraba91.github.io/posts/algebra/gram_schmidt_orthogonalization/" style="text-decoration: none; color: blue; line-height: 1;">post</a>, can be used to find such basis.
+3. Express each of the corresponding real world points $\\{ P_i \\} _{i=1}^{4}$ in the basis
+4. Find the homography matrix $H_i=[\mathbf{h_{i1}}, \mathbf{h_{i2}}, \mathbf{h_{i3}}]$ that maps $$\\{ P_i \\} _{i=1}^{4} \rightarrow \\{ p_i \\} _{i=1}^{4}$$
+5. Get two constraints based on the circular points, as seen <a href="#circular_points_orthogonality">earlier</a>:
+$$
+\begin{equation}
+\begin{split}
+\mathbf{h_{i1}}^T\cdot \omega \cdot \mathbf{h_{i1}} &= \mathbf{h_{i2}}^T\cdot \omega \cdot \mathbf{h_{i2}} \\\\
+\mathbf{h_{i1}}^T\cdot \omega \cdot \mathbf{h_{i2}} &= 0
+\end{split}
+\end{equation}
+$$
+6. Rewrite each constraint in the form $a_i^T\cdot w = 0$, where $w=[\omega_1, \omega_2, \omega_3, \omega_4]^T$
+7. Stack the constraints in a matrix $A$ to form a linear system of equations $Aw=0$
+8. Solve the system using the SVD decomposition to find the null space of $A$
+9. Retrieve focal length $f$ and principal point $(x, y)$ from $\omega$ by:
+$$
+\begin{equation}
+\begin{split}
+f &= \sqrt{\omega_1} \\\\
+x &= -\frac{\omega_2}{\omega_1} \\\\
+y &= -\frac{\omega_3}{\omega_1}
+\end{split}
+\end{equation}
+$$
+
+<figure class="figure" style="text-align: center;">
+  <img src="/camera_calibration/SoccerPitchCalibrationPlanes.png" alt="Three planes example" width="100%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">The three planes in the 3D world correspond to the ground 
+  plane (<span style="color: blue;">left</span>), the left goal plane (<span style="color: magenta;">center</span>), and the inclined plane passing
+  through the crossbar and the edge of the small box (<span style="color: red;">right</span>). 
+  We locate four points in each plane to find the homography matrix $H_i$ that maps each plane to the image.
+  </figcaption>
+</figure>
+
+Using the three planes shown above and following the steps described, we find the following intrinsic matrix:
+
+$$
+\begin{equation}
+\boxed{K=\begin{bmatrix}
+4820 & 0 & 640\\\\
+0 & 4820 & 360\\\\
+0 & 0 & 1
+\end{bmatrix}}
+\end{equation}
+$$
+
+which resembles reasonably well the ground-truth intrinsic matrix used to generate the image.
 
 # 6. Conclusion
+
+In this article we have seen how the image of the absolute conic $\omega$ can be used to calibrate a camera through the different relationships it gives 
+rise to:
+1. Vanishing points corresponding to orthogonal rays.
+2. Vanishing lines corresponding to orthogonal planes
+3. Vanishing points and lines corresponding to orthogonal rays and planes
+4. Circular points
+
+Furthermore, we have seen a couple practical examples of how to calibrate a camera using these relationships. However, the calibration process can be quite sensitive to noise, so it is important to have a good set of constraints to ensure the accuracy of the calibration.
 
 # 7. References
 
 1. Richard Hartley and Andrew Zisserman (2000), *Multiple View Geometry in Computer Vision*, Cambridge University Press.
 2. Henri P. Gavin (2017), CEE 629 Lecture Notes. System Identification Duke University, *Total Least Squares*
-3. Richard Szeliski (2010), *Computer Vision: Algorithms and Applications*, Springer
-4. [OpenCV Libary: Basic concepts of the homography explained with code](https://docs.opencv.org/3.4/d9/dab/tutorial_homography.html)
-5. Juho Kannala et. al. (2006), *Algorithms for Computing a Planar Homography from Conics in Correspondence,* Proceedings of the British Machine Vision Conference 2006.
-6. Simon Baker and Iain Matthews (2004), *Lucas-Kanade 20 years on: A unifying framework*. International Journal of Computer Vision.
-7. Lucilio Cordero Grande et. al. (2013), *Groupwise Elastic Registration by a New Sparsity-Promoting Metric: Application to the Alignment of Cardiac Magnetic Resonance Perfusion Images,* IEEE Transactions on Pattern Analysis and Machine Intelligence.
-8. Detone et.al. (2016), *[Deep Image Homography Estimation](https://arxiv.org/abs/1606.03798)*, arXiv.
-9. Ty Nguyen et. al. (2018), *[Unsupervised Deep Homography: A Fast and Robust Homography Estimation Model](https://arxiv.org/abs/1709.03966),* arXiv.
-10. Wei Jiang et. al. (2019), *Optimizing Through Learned Errors for Accurate Sports Field Registration*, 2020 IEEE Winter Conference on Applications of Computer Vision (WACV)
-11. Xiaohan Nie et. al. (2021), *A Robust and Efficient Framework for Sports-Field Registration,* 2021 IEEE Winter Conference on Applications of Computer Vision (WACV)
-12. James McCaffrey (2013), *[Why You Should Use Cross-Entropy Error Instead Of Classification Error Or Mean Squared Error For Neural Network Classifier Training](https://jamesmccaffrey.wordpress.com/2013/11/05/why-you-should-use-cross-entropy-error-instead-of-classification-error-or-mean-squared-error-for-neural-network-classifier-training/)*
+3. [OpenCV Libary: Basic concepts of the homography explained with code](https://docs.opencv.org/3.4/d9/dab/tutorial_homography.html)
+4. [Conic Dual to Circular Points](https://cmp.felk.cvut.cz/cmp/courses/p33vid/Annotated/geometry-apr-22-2009.pdf)
+5. Cholesky decomposition: [Wikipedia](https://en.wikipedia.org/wiki/Cholesky_decomposition)
