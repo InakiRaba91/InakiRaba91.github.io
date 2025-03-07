@@ -1380,6 +1380,12 @@ $$
 
 which indeed matches the ground-truth focal length of the camera used to capture the image.
 
+**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L645). In order to do so, just install the repository (`poetry install`) and then run 
+
+```python
+poetry run python -m projective_geometry focal-length-from-orthogonal-vanishing-points-demo
+```
+
 ## 5.2. Calibration from three linearly independent planes
 
 Now we are going to try to calibrate the camera from the homographies that maps three linearly independent (known) planes in the 3D world and their corresponding projections in the image. To make the estimation more robust, we will assume no skew and squared pixels as well, so the intrinsic matrix $K$ can be written as:
@@ -1467,6 +1473,12 @@ $$
 $$
 
 which resembles reasonably well the ground-truth intrinsic matrix used to generate the image.
+
+**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L655). In order to do so, just install the repository (`poetry install`) and then run 
+
+```python
+poetry run python -m projective_geometry intrinsic-from-three-planes-demo
+```
 
 # 6. Conclusion
 
