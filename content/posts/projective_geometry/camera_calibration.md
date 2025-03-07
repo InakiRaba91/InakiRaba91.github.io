@@ -1486,3 +1486,4 @@ Furthermore, we have seen a couple practical examples of how to calibrate a came
 3. [OpenCV Libary: Basic concepts of the homography explained with code](https://docs.opencv.org/3.4/d9/dab/tutorial_homography.html)
 4. [Conic Dual to Circular Points](https://cmp.felk.cvut.cz/cmp/courses/p33vid/Annotated/geometry-apr-22-2009.pdf)
 5. Cholesky decomposition: [Wikipedia](https://en.wikipedia.org/wiki/Cholesky_decomposition)
+6. [Absolute Conic-based Single View to 3D](https://dpsingh28.github.io/projects/g3d_sv3d/)

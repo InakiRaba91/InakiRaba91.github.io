@@ -470,3 +470,4 @@ The drawback, as already explained, is that objects might be partially or comple
 2. Wikipedia. [Conic sections](https://en.wikipedia.org/wiki/Conic_section) and [Matrix Representation](https://en.wikipedia.org/wiki/Matrix_representation_of_conic_sections)
 3. Wei Jiang et. al. (2019), arXiv. [Optimizing Through Learned Errors for Accurate Sports Field Registration](https://arxiv.org/abs/1909.08034)
 4. [OpenCV Library](https://docs.opencv.org/4.x/index.html)
+5. [Absolute Conic-based Single View to 3D](https://dpsingh28.github.io/projects/g3d_sv3d/)
