@@ -1,6 +1,6 @@
 +++
 title = '🔭  Projective Geometry: Camera calibration'
-date = 2025-03-62T11:16:19+01:00
+date = 2025-03-06T11:16:19+01:00
 tags = ["computer vision", "projective geometry", "camera calibration", "intrinsic matrix", "pinhole camera"]
 draft = false
 +++
