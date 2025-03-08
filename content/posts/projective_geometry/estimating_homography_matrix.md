@@ -21,11 +21,12 @@ So far, we have figured out how to:
 
 However, one might wonder: how do we actually compute the homography matrix that fully describes that transform in the first place? In this post, we will explain different approaches to do precisely that.
 
+<a id="KRT_ambiguity"></a>
 <div style="background-color: lightyellow; border: 1px solid black; padding: 2px 10px; display: flex; align-items: start;">
   <span style="margin-right: 10px;">⚠️</span>
   <span>
     There are multiple ways to characterize the perspective transform. In this post we will focus on estimating the homography matrix, as oposed to the more interpretable KRT parametrisation (focal length, rotation angles and 3D location). <br><br>
-    The reason for that choice is the implicit assumption that we are only given a 2D image to characterize the transform. Under that constraint, the KRT parametrisation is not resolvable, as illustrated in the image below. If we have a zenithal view of the pitch, we could end up capturing the exact same image by varying accordingly the distance to the ground and the focal length. <br><br>
+    The reason for that choice is the implicit assumption that we are only given a 2D image to characterize the transform. Under that constraint, the KRT parametrisation is not resolvable in the general case, as illustrated in the image below. If we have a zenithal view of the pitch, we could end up capturing the exact same image by varying accordingly the distance to the ground and the focal length. <br><br>
     To resolve the ambiguity, we would need correspondences between points in the captured 2D image and non-coplanar points in the 3D world. <br><br>
     <figure class="figure" style="text-align: center;">
       <img src="/estimating_homography_matrix/CameraParametersAmbiguity.png" alt="Camera Parameters Ambiguity" width="80%" style="display: block; margin: auto;">
