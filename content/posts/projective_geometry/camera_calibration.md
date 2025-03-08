@@ -1491,7 +1491,67 @@ rise to:
 
 Furthermore, we have seen a couple practical examples of how to calibrate a camera using these relationships. However, the calibration process can be quite sensitive to noise, so it is important to have a good set of constraints to ensure the accuracy of the calibration.
 
-# 7. References
+# 7. Appendix
+
+In an earlier <a href="https://inakiraba91.github.io/posts/projective_geometry/estimating_homography_matrix/#KRT_ambiguity" style="text-decoration: none; color: blue; line-height: 1;">post</a>, we mentioned that the KRT parametrisation is not retrievable in general if we only have access to the projection of a 2D plane from the 3D world. We illustrated the unresolvable ambiguity with the following figure:
+
+<figure class="figure" style="text-align: center;">
+  <img src="/estimating_homography_matrix/CameraParametersAmbiguity.png" alt="Camera Parameters Ambiguity" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Depiction of a soccer field photographed by two different cameras from a zenithal view. By adjusting the focal length, it is possible to capture the exact same image of the field from both angles. This illustrates the ambiguity in trying to retrieve the camera parameters from a 2D image.</figcaption>
+</figure>
+
+But we have just shown throughout this article that the intrinsic matrix $K$ can be retrieved from the image of the absolute conic $\omega$. So how can we reconcile these two statements?
+
+Well, the KRT parametrisation is retrievable except for one case: when the image plane is parallel to the 2D plane we are projecting from the 3D world. And that is precisely what the previously figure shows. It depicts how a soccer pitch is captured from a zenithal view, i.e., the image plane is parallel to the ground plane (XY plane). So why does that give rise to an ambiguity?
+
+Notice that all the constraints we have for the image of the absolute conic $\omega$ rely on being able to locate the image projection for geometric features that live in the real of infinity: the vanishing points, the vanishing lines, the circular points. That projection is given by the homography
+matrix that maps the 2D plane in question, to the image plane.
+
+For the ambiguous case, those two planes are parallel. Without loss of generality, we can assume the 2D planes are parallel to the XY plane, and the origin of coordinates is at the camera center, as illustrated below:
+
+<figure class="figure" style="text-align: center;">
+  <img src="/camera_calibration/CameraParametersAmbiguityMapping.svg" alt="Camera Parameters Ambiguity Mapping" width="80%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Depiction of a soccer field photographed with a camera located at the origin of coordinates in the 3D world with its image plane aligned to the XY plane and parallel to the ground where the soccer field lies on.</figcaption>
+</figure>
+
+The homography matrix between the 2D planes is thus given by
+
+$$
+\begin{equation}
+H = \begin{bmatrix}
+f & 0 & 0 \\\\
+0 & f & 0 \\\\
+0 & 0 & d
+\end{bmatrix}
+\end{equation}
+$$
+
+where $f$ is the focal length and $d$ is the distance between the two planes. Since the homography is defined up to scale, you can already see that scaling $f$ and $d$ by the same factor will not change the image of the 2D plane in the image plane. This is the ambiguity we are talking about.
+
+But what if we were to find $\omega$? Well, let us see. A point in the 3D ground can be expressed relative to that 2D plane in the form $P=[X, Y, 0]$. Therefore its projection $p$ onto the image plane is given by:
+
+$$
+\begin{equation}
+p = H\cdot P = \begin{bmatrix}
+f & 0 & 0 \\\\
+0 & f & 0 \\\\
+0 & 0 & d
+\end{bmatrix}
+\begin{bmatrix}
+X \\\\
+Y \\\\
+0
+\end{bmatrix} = \begin{bmatrix}
+f\cdot X \\\\
+f\cdot Y \\\\
+0
+\end{bmatrix}
+\end{equation}
+$$
+
+so it projects to infinity as well! Therefore we will not be able to locate the vanishing points, vanishing lines, or circular points in the image, and we will not be able to retrieve the image of the absolute conic $\omega$.
+
+# 8. References
 
 1. Richard Hartley and Andrew Zisserman (2000), *Multiple View Geometry in Computer Vision*, Cambridge University Press.
 2. Henri P. Gavin (2017), CEE 629 Lecture Notes. System Identification Duke University, *Total Least Squares*
