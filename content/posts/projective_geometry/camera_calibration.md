@@ -102,6 +102,8 @@ In this article, we will focus on the camera calibration problem, which consists
 
 # 2. Conics
 
+Conics play a key role in the process of calibrating the camera, so let us start by introducing some of their properties.
+
 We can express conics in homogeneous coordinates as the set of points $x$ that satisfy the equation:
 
 $$
@@ -142,7 +144,7 @@ l^T\cdot x = (C\cdot x)^T\cdot x = x^T\cdot C^T\cdot x = x^T\cdot C\cdot x = 0
 \end{equation}
 $$
 2. <ins>Is the only point of intersection between the conic and the line</ins>. We can prove its uniqueness by contradiction. 
-Suppose there is another point $q$ on the line that lies on the conic $q^T\cdot C\cdot q = 0$. 
+Suppose there is another point $y$ on the line that lies on the conic $y^T\cdot C\cdot y = 0$. 
 We can then take a linear combination $r = x + \alpha y$. For every $\alpha$, the point $r$ lies on the line:
 $$
 \begin{equation}
