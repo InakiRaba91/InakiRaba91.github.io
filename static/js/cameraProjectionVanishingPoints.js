@@ -1,5 +1,5 @@
-import { displayCameraView } from './utils/displayCameraView.js';
-import { displayFrameView } from './utils/displayFrameView.js';
+import { displayCameraView } from './utils/display/displayCameraViewIntrinsicPost.js';
+import { displayFrameView } from './utils/display/displayFrameViewIntrinsicPost.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   const focalLengthSlider = document.getElementById('focal-length-vp-slider');

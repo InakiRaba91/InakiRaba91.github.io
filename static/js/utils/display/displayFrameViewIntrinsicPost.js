@@ -1,8 +1,8 @@
-import { getHomographyMatrix } from './camera.js';
-import { matrixProduct } from './matrix.js';
-import { baseImageSize } from './imageSize.js';
-import { basketballCourtSize, getIntrinsicImageToPitchMatrix } from './pitch.js';
-import { getVanishingPoints, drawVanishingPoints } from './vanishingPoints.js';
+import { getHomographyMatrix } from '../camera.js';
+import { matrixProduct } from '../matrix.js';
+import { baseImageSize } from '../imageSize.js';
+import { basketballCourtSize, getIntrinsicImageToPitchMatrix } from '../pitch.js';
+import { getVanishingPoints, drawVanishingPoints } from '../vanishingPoints.js';
 
 export function displayFrameView(img, canvas, camera, displayVanishingPoints = false) {
   const homographyMatrix = getHomographyMatrix(camera);
