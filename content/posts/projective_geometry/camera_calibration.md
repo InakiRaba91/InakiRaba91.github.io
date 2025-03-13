@@ -14,7 +14,7 @@ draft = false
 
 # 1. Introduction
 
-We have seen in a previous <a href="https://inakiraba91.github.io/posts/projective_geometry/estimating_homography_matrix/" style="text-decoration: none; color: blue; line-height: 1;">post</a> how we can estimate the homography matrix $H$ that characterizes the projective transform between two images. This matrix takes the form:
+We have seen in a previous <a href="https://inakiraba91.github.io/posts/projective_geometry/building_homograpahy_matrix/" style="text-decoration: none; color: blue; line-height: 1;">post</a> how we can estimate the homography matrix $H$ that characterizes the projective transform between two images. This matrix takes the form:
 
 $$
 \begin{equation}
