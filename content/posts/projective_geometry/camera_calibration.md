@@ -144,7 +144,7 @@ l^T\cdot x = (C\cdot x)^T\cdot x = x^T\cdot C^T\cdot x = x^T\cdot C\cdot x = 0
 \end{equation}
 $$
 2. <ins>Is the only point of intersection between the conic and the line</ins>. We can prove its uniqueness by contradiction. 
-Suppose there is another point $y$ on the line that lies on the conic $y^T\cdot C\cdot y = 0$. 
+Suppose there is another point $y$ on the line ($l=C\cdot y$) that lies on the conic $y^T\cdot C\cdot y = 0$. 
 We can then take a linear combination $r = x + \alpha y$. For every $\alpha$, the point $r$ lies on the line:
 $$
 \begin{equation}
@@ -162,6 +162,8 @@ r^T\cdot C\cdot r  & = (x + \alpha y)^T\cdot C\cdot (x + \alpha y) \\\\
 \end{split}
 \end{equation}
 $$
+
+which would imply the whole line intersects with the conic, which is a unfeasible for non-degenerate conics. Therefore, the point $x$ is the only point of intersection between the line and the conic.
 
 <strong>Tangency is preserved under the projective transformation</strong>. That is, if $l$ is tangent to the conic $C$ at point $x$, 
 then $l'$ is tangent to the conic $C'$ at point $x'$. Recall that we can project each item under the homography matrix $H$ by:
@@ -191,7 +193,7 @@ $$
 
 <figure class="figure" style="text-align: center;">
   <img src="/camera_calibration/tangent_conic.svg" alt="Conic tangent" width="50%" style="display: block; margin: auto;">
-  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Line $l=C\cdot p$ is tangent to the conic $C$ at point $p$.</figcaption>
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Line $l=C\cdot x$ is tangent to the conic $C$ at point $x$.</figcaption>
 </figure>
 
 ## 2.2. Duality
