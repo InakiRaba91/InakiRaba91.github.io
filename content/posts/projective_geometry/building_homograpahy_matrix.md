@@ -597,7 +597,7 @@ z \\\\
 $$
 
 which allows us to define the extrinsic matrix as
-
+<a id="extrinsic_matrix"></a>
 $$
 \begin{equation}
 E= \left[\\; R^T\\;\\; | \\;\\;-R^T\cdot\vec{t}\\;\\;\right ]
