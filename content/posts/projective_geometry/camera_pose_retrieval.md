@@ -30,7 +30,11 @@ Our goal then is to do so from a set of $n$ 3D points and their corresponding 2D
 
 <span style="background-color: lightblue; border: 1px solid black; padding: 2px 10px; display: inline-flex; align-items: center;">
     <img src="/github.svg" alt="GitHub Icon" style="width: 24px; height: 24px; margin-right: 10px;">
-    <a href="https://github.com/InakiRaba91/ProjectiveGeometry" style="text-decoration: none; color: blue; line-height: 1;"><strong>Auxiliary repository</strong></a>
+    <a href="https://github.com/InakiRaba91/ProjectiveGeometry" style="text-decoration: none; color: blue; line-height: 1;"><strong>Auxiliary repository (Camera Pose Retrieval)</strong></a>
+</span>
+<span style="background-color: #C6F6C6; border: 1px solid black; padding: 2px 10px; display: inline-flex; align-items: center;">
+    <img src="/github.svg" alt="GitHub Icon" style="width: 24px; height: 24px; margin-right: 10px;">
+    <a href="https://github.com/InakiRaba91/p3p_ambiguity" style="text-decoration: none; color: green; line-height: 1;"><strong>Auxiliary repository (Video scenes)</strong></a>
 </span>
 
 # 2. Degrees of freedom
@@ -805,8 +809,56 @@ T = \bar{P'} - R'\cdot\bar{P}
 \end{equation}
 $$
 
+# 5. Example
 
-# 5. References
+Let us follow up on our first scenario for the camera calibration <a href="https://inakiraba91.github.io/posts/projective_geometry/camera_calibration/#51-calibration-from-two-vanishing-points" style="text-decoration: none; color: blue; line-height: 1;">article</a>. We started from the synthetic image displayed below, which was generated with the following camera parameters:
+
+$$
+\begin{equation}
+\begin{split}
+f &= 350 \text{ pixels} \\\\
+t_x &= -5 \text{ pixels} \\\\
+t_y &= 5 \text{ pixels} \\\\
+t_z &= 15 \text{ pixels} \\\\
+\theta_x &= -170 \degree \\\\
+\theta_y &= 10 \degree \\\\
+\theta_z &= 170 \degree
+\end{split}
+\end{equation}
+$$
+
+<figure class="figure" style="text-align: center;">
+  <img src="/camera_calibration/BasketballCourtCalibration.png" alt="Vanishing points example" width="70%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of a synthetic basketball court captured using a pinhole camera with no skew, squared pixels, principal point at the center of the $1280\times 640$ image and parameters as detailed above.
+  </figcaption>
+</figure>
+
+We already saw we can retrieve the focal length from the two vanishing points, so let us assume it is known. We can now retrieve the camera pose from 4 non-collinear points, which in our case correspond to the corners of the basketball court. We know their coordinates in the world coordinate system given the court dimensions, and we can identify their image coordinates in the synthetic image.
+
+<figure class="figure" style="text-align: center;">
+  <img src="/camera_calibration/BasketballCourtCalibrationCorners.png" alt="Corners example" width="70%" style="display: block; margin: auto;">
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Four corners (<strong><span style="color: pink;">pink</span></strong>) of the basketball court in the synthetic image used for the camera pose retrieval.
+  </figcaption>
+</figure>
+
+In order to estimate the camera pose, we can pick 3 points to obtain the candidates based on the P3P algorithm described above. Then, we can select our final guess by choosing the candidate that minimizes the reprojection error in the remaining point, which gives us the values we expect.
+
+**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L740). In order to do so, just install the repository (`poetry install`) and then run 
+
+```python
+poetry run python -m projective_geometry camera-pose-from-four-points-demo
+```
+# 6. Conclusion
+
+In this article, we have seen how to retrieve the camera pose from 3D points and their corresponding 2D projections. We have covered:
+ - We have illustrated geometrically how many points are needed to remove the **degrees of freedom**.
+ - We have explained **Arun's method** to find the rigid transform that aligns the world points to the camera points.
+ - We have introduced **Grunert's algorithm** to estimate the camera pose from 3 point correspondences (P3P problem).
+ - We have detailed how to handle both the **noiseless and noisy** scenarios.
+ - We have illustrated how the **ambiguity** that leads to four valid solutions in the P3P problem arises.
+ - We have illustrated with a **practical example** how to retrieve the camera pose from 4 non-collinear points.
+
+# 7. References
 
 1. Richard Hartley and Andrew Zisserman (2000), *Multiple View Geometry in Computer Vision*, Cambridge University Press.
 2. Stefen Lavalle, Lecture on "Perspective n-point problem": [YouTube](https://www.youtube.com/watch?v=0JGC5hZYCVE)
