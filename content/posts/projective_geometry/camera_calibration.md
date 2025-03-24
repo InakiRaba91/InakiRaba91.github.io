@@ -1345,11 +1345,11 @@ f = \sqrt{-\left(v_{1x} - \frac{W}{2}\right)\left(v_{2x} - \frac{W}{2}\right) - 
 \end{equation}
 $$
 
-So imagine we get the following $1280\times 640$ image, which we synthetically generated with $f=580$:
+So imagine we get the following $1280\times 640$ image, which we synthetically generated with $f=350$:
 
 <figure class="figure" style="text-align: center;">
   <img src="/camera_calibration/BasketballCourtCalibration.png" alt="Vanishing points example" width="70%" style="display: block; margin: auto;">
-  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of a synthetic basketball court captured using a pinhole camera with no skew, squared pixels, principal point at the center of the $1280\times 640$ image and $f=580$.
+  <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Example of a synthetic basketball court captured using a pinhole camera with no skew, squared pixels, principal point at the center of the $1280\times 640$ image and $f=350$.
   </figcaption>
 </figure>
 
@@ -1368,8 +1368,8 @@ Following this procedure for the basketball court above, we get the following va
 $$
 \begin{equation}
 \begin{split}
-v_1 &= \begin{bmatrix} 7239.60 & 875.45  \end{bmatrix} \\\\
-v_2 &= \begin{bmatrix} 754.46 & -1758.11  \end{bmatrix}
+v_1 &= \begin{bmatrix} -1815.16 & 868.08  \end{bmatrix} \\\\
+v_2 &= \begin{bmatrix} 341.78 & -1322.13  \end{bmatrix}
 \end{split}
 \end{equation}
 $$
@@ -1378,13 +1378,13 @@ Finally, we just need to replace these values in the equation above to find the 
 
 $$
 \begin{equation}
-\boxed{f = 580}
+\boxed{f = 350}
 \end{equation}
 $$
 
 which indeed matches the ground-truth focal length of the camera used to capture the image.
 
-**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L645). In order to do so, just install the repository (`poetry install`) and then run 
+**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L646). In order to do so, just install the repository (`poetry install`) and then run 
 
 ```python
 poetry run python -m projective_geometry focal-length-from-orthogonal-vanishing-points-demo
@@ -1478,7 +1478,7 @@ $$
 
 which resembles reasonably well the ground-truth intrinsic matrix used to generate the image.
 
-**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L655). In order to do so, just install the repository (`poetry install`) and then run 
+**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L656). In order to do so, just install the repository (`poetry install`) and then run 
 
 ```python
 poetry run python -m projective_geometry intrinsic-from-three-planes-demo

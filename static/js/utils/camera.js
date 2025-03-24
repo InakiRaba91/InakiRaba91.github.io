@@ -35,6 +35,22 @@ export function getRotationMatrix(rx, ry, rz) {
   return matrixProduct(matrixProduct(Rz, Ry), Rx);
 }
 
+export function getRotationMatrixAxisAngle(axis, angle) {
+  const [ux, uy, uz] = axis;
+  const c = Math.cos(angle * Math.PI / 180);
+  const s = Math.sin(angle * Math.PI / 180);
+  return [
+    [ux * ux * (1 - c) + c, ux * uy * (1 - c) - uz * s, ux * uz * (1 - c) + uy * s],
+    [ux * uy * (1 - c) + uz * s, uy * uy * (1 - c) + c, uy * uz * (1 - c) - ux * s],
+    [ux * uz * (1 - c) - uy * s, uy * uz * (1 - c) + ux * s, uz * uz * (1 - c) + c],
+  ];
+}
+
+export function rotatePoints(pts, angle, pt, axis) {
+  const R = getRotationMatrixAxisAngle(axis, angle);
+  return pts.map(p => multiplyMatrixVector(R, p.map((val, i) => val - pt[i])).map((val, i) => val + pt[i]));
+}
+
 export function getExtrinsicMatrix(tx, ty, tz, rx, ry, rz) {
   const R = getRotationMatrix(rx, ry, rz);
   const Rt = transposeMatrix(R);
@@ -53,9 +69,6 @@ export function getHomographyMatrix(camera) {
   const E = getExtrinsicMatrix(tx, ty, tz, rx, ry, rz);
   return matrixProduct(K, E);
 }
-
-export const refCamera = {f: 480, tx: 0, ty: -30, tz: 45, rx: -130, ry: 0, rz: 0};
-export const refHomography = getHomographyMatrix(refCamera);
 
 export function projectPt(pts3d, camera) {
   const homography = getHomographyMatrix(camera);
