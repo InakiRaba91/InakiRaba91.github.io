@@ -9,7 +9,7 @@ on:
       hugoVersion:
         description: "Hugo Version"
         required: false
-        default: "0.122.0"
+        default: "0.147.0"
 
 # Allow one concurrent deployment
 concurrency:
