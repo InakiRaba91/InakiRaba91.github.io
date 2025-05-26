@@ -69,3 +69,7 @@ menu:
       name: 👋 About
       url: /about/
       weight: 40
+
+services:
+  googleAnalytics:
+    ID: G-X47ZD00R5L
