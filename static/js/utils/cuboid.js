@@ -28,7 +28,7 @@ export function getCuboid(lengths = {x: 2, y: 2, z: 2}) {
   const x = lengths.x / 2
   const y = lengths.y / 2
   const z = lengths.z / 2
-  // We want the pinhole at the origin
+  // We want cuboid centered at the origin
   return [
     [-x, -y, -z],
     [-x, y, -z],

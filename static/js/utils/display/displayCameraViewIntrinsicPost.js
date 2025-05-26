@@ -17,7 +17,9 @@ export function displayCameraView(ctx, canvas, camera, fMax, fMin, cubeSize = 10
   let baseCuboid = getCuboid(Lengths);
   baseCuboid = baseCuboid.map(pt => [pt[0], pt[1], pt[2] - cubeSize]); // Shift pinhole to origin
   const cuboid3DPts = baseCuboid.map(pt => multiplyMatrixVector(E, [pt[0], pt[1], pt[2], 1]));
-  const film3DPts = baseFilm.map(pt => multiplyMatrixVector(E, [pt[0] * Lengths.x / 2, pt[1] * Lengths.y / 2, pt[2] * Lengths.z / 2, 1]));
+  // const film3DPts = baseFilm.map(pt => multiplyMatrixVector(E, [pt[0] * Lengths.x / 2, pt[1] * Lengths.y / 2, pt[2] * Lengths.z / 2, 1]));
+  const film3DPts = baseFilm.map(pt => multiplyMatrixVector(E, [pt[0], pt[1], pt[2], 1]));
+  console.log('film3DPts', film3DPts);
   const pinhole3DPt = multiplyMatrixVector(E, [baseCuboidPinhole[0][0] * Lengths.x / 2, baseCuboidPinhole[0][1] * Lengths.y / 2, baseCuboidPinhole[0][2] * Lengths.z / 2, 1]);
   const cuboid2DPts = cuboid3DPts.map(pt => multiplyMatrixVector(refHomography, [pt[0], pt[1], pt[2], 1])).map(val => [val[0] / val[2], val[1] / val[2]]);
   const film2DPts = film3DPts.map(pt => multiplyMatrixVector(refHomography, [pt[0], pt[1], pt[2], 1])).map(val => [val[0] / val[2], val[1] / val[2]]);
