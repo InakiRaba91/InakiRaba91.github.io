@@ -283,8 +283,7 @@ x &= l_1\times l_2 \\\\
 \end{equation}
 $$
 
-From the properties of the cross product, this simplifies to:-
-
+From the properties of the cross product, this simplifies to:
 $$
 \begin{equation}
 x = (C^*)^T\cdot (x_1\times x_2)
