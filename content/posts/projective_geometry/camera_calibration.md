@@ -544,7 +544,7 @@ C^*_{\infty}=\begin{bmatrix}
 \end{equation}
 $$
 
-which describes a degenerate conic, since it has rank 2. And this is precisely the matrix $D$!. Points on it must satisfy
+which describes a degenerate conic, since it has rank 2. And this is precisely the matrix $D$. Points on it must satisfy
 
 $$
 \begin{equation}
