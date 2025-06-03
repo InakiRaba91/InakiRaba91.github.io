@@ -887,13 +887,13 @@ Since the absolute conic $\Omega_{\infty}$ lies in $\Pi_{\infty}$, its image $\o
 $$
 \begin{equation}
 \begin{split}
-x_1^2 + x_2^2 + x_3^2 = 0 \\
+x_1^2 + x_2^2 + x_3^2 = 0 \\\\
 x_4 = 0
 \end{split}
 \end{equation}
 $$
 
-so they satisfy the conic relationship $d^T\cdot I \cdot d = 0$, i.e., $\Omega_{\infty}=U$ for points at infinity. We know how to project a conic under the homography transform, so we get
+so they satisfy the conic relationship $d^T\cdot I \cdot d = 0$, i.e., $\Omega_{\infty}=I$ for points at infinity. We know how to project a conic under the homography transform, so we get
 
 $$
 \begin{equation}
