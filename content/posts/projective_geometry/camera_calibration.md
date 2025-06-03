@@ -887,7 +887,7 @@ Since the absolute conic $\Omega_{\infty}$ lies in $\Pi_{\infty}$, its image $\o
 $$
 \begin{equation}
 \begin{split}
-x_1^2 + x_2^2 + x_3^2 = 0
+x_1^2 + x_2^2 + x_3^2 = 0 \\
 x_4 = 0
 \end{split}
 \end{equation}
