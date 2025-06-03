@@ -1083,7 +1083,7 @@ $$
 \begin{split}
 x(\lambda) & = H \cdot X(\lambda) \\\\
 &= H\cdot (A + \lambda d) \\\\
-&= H a + \lambda K \left[\\; R\\;\\; | \\;\\;\ T\\;\\;\right ] \cdot \begin{bmatrix} d \\\\ 0 \end{bmatrix} \\\\
+&= H A + \lambda K \left[\\; R\\;\\; | \\;\\;\ T\\;\\;\right ] \cdot \begin{bmatrix} d \\\\ 0 \end{bmatrix} \\\\
 &= a + \lambda KRd
 \end{split}
 \end{equation}
