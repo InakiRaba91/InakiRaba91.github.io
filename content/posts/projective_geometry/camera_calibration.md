@@ -958,7 +958,7 @@ the image at point $x$, as illustrated below.
   </figcaption>
 </figure>
 
-We saw earlier that there is a <a href="#pole_polar_plane">pole-polar relationship</a> w.r.t. the absolute conic $\Omega_infty$
+We saw earlier that there is a <a href="#pole_polar_plane">pole-polar relationship</a> w.r.t. the absolute conic $\Omega_\infty$
 between:
 * The line $l_\infty$ of intersection between a plane $\Pi$ with $\Pi_{\infty}$ 
 * The point of intersection $x_\infty$ between the normal ray $d$ to the plane and $\Pi_{\infty}$
