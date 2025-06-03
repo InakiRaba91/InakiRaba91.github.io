@@ -1004,7 +1004,7 @@ There is a set of points that satisfy this equation while lying at the infinity 
 $$
 \begin{equation}
 \begin{split}
-x_1^2 + x_2^2 + x_3^2 = 0
+x_1^2 + x_2^2 + x_3^2 = 0 \\\\
 x_4 = 0
 \end{split}
 \end{equation}
