@@ -744,7 +744,7 @@ For instance, notice that <ins>if two rays with direction $d_1$ and $d_2$ are or
 will be conjugate points with respect to the absolute conic $\Omega_{\infty}$</ins>. And conjugacy is preserved under projective transformations! 
 
 Furthermore, say we have a plane $\Pi_1$. It intersects with the plane at infinity $\Pi_{\infty}$ at a line $l$. The ray normal to it does so 
-at the point $d_1T$. We can now take two planes $\Pi_2$ and $\Pi_3$ orthogonal to it, whose normal rays intersect with $\Pi_{\infty}$ at 
+at the point $d_1$. We can now take two planes $\Pi_2$ and $\Pi_3$ orthogonal to it, whose normal rays intersect with $\Pi_{\infty}$ at 
 $d_2$ and $d_3$, respectively. Two important remarks:
 
 1. Since the $\Pi_2$ and $\Pi_3$ are orthogonal to $\Pi_1$, both $d_2$ and $d_3$ are conjugate points w.r.t. $\Omega_{\infty}$. Or equivalently, they must 
