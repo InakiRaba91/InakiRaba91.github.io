@@ -163,7 +163,7 @@ r^T\cdot C\cdot r  & = (x + \alpha y)^T\cdot C\cdot (x + \alpha y) \\\\
 \end{equation}
 $$
 
-which would imply the whole line intersects with the conic, which is a unfeasible for non-degenerate conics. Therefore, the point $x$ is the only point of intersection between the line and the conic.
+which would imply the whole line intersects with the conic, which is unfeasible for non-degenerate conics. Therefore, the point $x$ is the only point of intersection between the line and the conic.
 
 <strong>Tangency is preserved under the projective transformation</strong>. That is, if $l$ is tangent to the conic $C$ at point $x$, 
 then $l'$ is tangent to the conic $C'$ at point $x'$. Recall that we can project each item under the homography matrix $H$ by:
