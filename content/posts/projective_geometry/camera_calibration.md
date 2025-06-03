@@ -1039,7 +1039,7 @@ $$
 \end{equation}
 $$
 
-Since the circular points lie in the absolute conic, their projection must lies in $\omega$. Thus it will satisfy:
+Since the circular points lie in the absolute conic, their projection must lie in $\omega$. Thus it will satisfy:
 
 $$
 \begin{equation}
