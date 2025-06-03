@@ -691,7 +691,7 @@ x_4 & = 0
 $$
 
 Even though this is a pretty abstract concept, we can make an interesting observation about the absolute conic: <ins>all circles intersect
-with the absolute conic at two points</ins>. This is because a circlelie in a plane, whose intersection with the infinity plane is a line. 
+with the absolute conic at two points</ins>. This is because a circle lies in a plane, whose intersection with the infinity plane is a line. 
 This line will in turn intersect with the absolute conic at precisely two points!
 
 ### 3.2.3. Angles between rays
