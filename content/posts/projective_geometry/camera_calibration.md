@@ -209,7 +209,7 @@ $$
 \begin{split}
 x^T\cdot C\cdot x &= x^T\cdot C^T \cdot C^{-T}\cdot C\cdot x \\\\
 &= (C\cdot x)^T\cdot C^{-T}\cdot C\cdot x \\\\
-&= l^T\cdot C^{-T}\cdot C\cdot l \\\\
+&= l^T\cdot C^{-T}\cdot l \\\\
 &= 0 
 \end{split}
 \end{equation}
