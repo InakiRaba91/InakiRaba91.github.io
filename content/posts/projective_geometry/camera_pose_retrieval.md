@@ -843,7 +843,7 @@ We already saw we can retrieve the focal length from the two vanishing points, s
 
 In order to estimate the camera pose, we can pick 3 points to obtain the candidates based on the P3P algorithm described above. Then, we can select our final guess by choosing the candidate that minimizes the reprojection error in the remaining point, which gives us the values we expect.
 
-**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L740). In order to do so, just install the repository (`poetry install`) and then run 
+**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L742). In order to do so, just install the repository (`poetry install`) and then run 
 
 ```python
 poetry run python -m projective_geometry camera-pose-from-four-points-demo
