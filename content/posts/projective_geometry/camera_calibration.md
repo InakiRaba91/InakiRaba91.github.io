@@ -1383,7 +1383,7 @@ $$
 
 which indeed matches the ground-truth focal length of the camera used to capture the image.
 
-**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L646). In order to do so, just install the repository (`poetry install`) and then run 
+**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L648). In order to do so, just install the repository (`poetry install`) and then run 
 
 ```python
 poetry run python -m projective_geometry focal-length-from-orthogonal-vanishing-points-demo
@@ -1477,7 +1477,7 @@ $$
 
 which resembles reasonably well the ground-truth intrinsic matrix used to generate the image.
 
-**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L656). In order to do so, just install the repository (`poetry install`) and then run 
+**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L658). In order to do so, just install the repository (`poetry install`) and then run 
 
 ```python
 poetry run python -m projective_geometry intrinsic-from-three-planes-demo
