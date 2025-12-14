@@ -338,7 +338,7 @@ Two points $x$ and $y$ are said to be conjugate with respect to a conic $C$ if o
 
 $$
 \begin{equation}
-l^T\cdot x = 0 \Rightarrow y^T\cdot C\cdot d = 0
+l^T\cdot x = 0 \Rightarrow y^T\cdot C\cdot x = 0
 \end{equation}
 $$
 
@@ -555,7 +555,7 @@ x_3 = 0
 \end{equation}
 $$
 
-so a basis for the <strong>circular points</strong> $\\{ \mathbf{I}, \mathbf{J} \\}$ is given by the vectors:
+so a basis for the solution are the <strong>circular points</strong> $\\{ \mathbf{I}, \mathbf{J} \\}$ given by the vectors:
 
 $$
 \begin{equation}
@@ -692,7 +692,7 @@ $$
 
 Even though this is a pretty abstract concept, we can make an interesting observation about the absolute conic: <ins>all circles intersect
 with the absolute conic at two points</ins>. This is because a circle lies in a plane, whose intersection with the infinity plane is a line. 
-This line will in turn intersect with the absolute conic at precisely two points!
+This line will in turn intersect with the absolute conic at precisely two points, the circular points!
 
 ### 3.2.3. Angles between rays
 
@@ -704,7 +704,7 @@ $$
 \end{equation}
 $$
 
-A ray with direction vector $d$ intersects the infinity plane at the point $p_d=[d_x, d_Y, d_z, 0]^T$. Since the fourth component is zero,
+A ray with direction vector $d$ intersects the infinity plane at the point $p_d=[d_x, d_y, d_z, 0]^T$. Since the fourth component is zero,
 we can write the product with the absolute conic as:
 
 $$
@@ -749,7 +749,7 @@ $d_2$ and $d_3$, respectively. Two important remarks:
 
 1. Since the $\Pi_2$ and $\Pi_3$ are orthogonal to $\Pi_1$, both $d_2$ and $d_3$ are conjugate points w.r.t. $\Omega_{\infty}$. Or equivalently, they must 
 lie on the polar of $d_1$. 
-2. Since the rays $d_2$ and $d_3$ are orthogonal their corresponding planes $\Pi_2$ and $\Pi_3$, they must be parallel to $\Pi_1$. We will see in a following section that all parallel rays intersect with the $\Pi_{\infty}$ at the same vanishing point. So the intersection of the rays $d_2$ and $d_3$ with $\Pi_{\infty}$ will lie in the line $l$.
+2. Since the rays $d_2$ and $d_3$ are orthogonal to their corresponding planes $\Pi_2$ and $\Pi_3$, they must also be parallel to $\Pi_1$. We will see in a following section that all parallel rays intersect with the $\Pi_{\infty}$ at the same vanishing point. So the intersection of the rays $d_2$ and $d_3$ with $\Pi_{\infty}$ will lie in the line $l$.
 
 <a id="pole_polar_plane"></a>
 As a result, <ins>the line $l$ of intersection between a plane and $\Pi_{\infty}$ is in polar-pole relationship with the point of intersection $d$ between the ray normal to the plane and $\Pi_{\infty}$</ins>! And once again, this relationship is preserved under projective transformations.
