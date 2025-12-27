@@ -20,18 +20,17 @@ draft = false
 # 2.1. Gravity
 
 <figure class="figure" style="text-align: center;">
-  <div style="width: 80%; max-width: 800px; margin: 20px auto;">
-    <label for="ballTrajGravityPosSlider" style="display: block; margin-bottom: 10px;">y0: <span id="ballTrajGravityPosValue">0.0</span>yds</label>
-    <input type="range" id="ballTrajGravityPosSlider" min="-8" max="8" step="1" value="0" style="width: 100%;">
+  <div style="width: 80%; max-width: 800px; margin: 20px auto; display: flex; align-items: center; gap: 15px;">
+    <label for="ballTrajGravityPosSlider" style="white-space: nowrap; min-width: 120px;">y0: <span id="ballTrajGravityPosValue">0.0</span>yds</label>
+    <input type="range" id="ballTrajGravityPosSlider" min="-8" max="8" step="1" value="0" style="flex: 1;">
   </div>
-  <div style="width: 80%; max-width: 800px; margin: 20px auto;">
-    <label for="ballTrajGravityVelSlider" style="display: block; margin-bottom: 10px;">|v|: <span id="ballTrajGravityVelValue">25.0</span>yds/s</label>
-    <input type="range" id="ballTrajGravityVelSlider" min="20" max="30" step="1" value="25" style="width: 100%;">
+  <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; margin: 20px auto; max-width: 100%;">
+    <canvas id="ballTrajGravityCanvas" width="640" height="360" style="border: 1px solid #ccc;"></canvas>
+    <canvas id="ballTrajGravityBirdEyeCanvas" width="640" height="360" style="border: 1px solid #ccc;"></canvas>
   </div>
-  <canvas id="ballTrajGravityCanvas" width="640" height="360" style="border: 1px solid #ccc; display: block; margin: auto;"></canvas>
-  <div style="width: 80%; max-width: 800px; margin: 20px auto;">
-    <label for="ballTrajGravityTSlider" style="display: block; margin-bottom: 10px;">t: <span id="ballTrajGravityTValue">0.0</span>s</label>
-    <input type="range" id="ballTrajGravityTSlider" min="0" max="5" step="0.1" value="0" style="width: 100%;">
+  <div style="width: 80%; max-width: 800px; margin: 20px auto; display: flex; align-items: center; gap: 15px;">
+    <label for="ballTrajGravityTSlider" style="white-space: nowrap; min-width: 120px;">t: <span id="ballTrajGravityTValue">0.0</span>s</label>
+    <input type="range" id="ballTrajGravityTSlider" min="0" max="5" step="0.1" value="0" style="flex: 1;">
   </div>
   <figcaption class="caption" style="font-weight: normal; max-width: 90%; margin: auto;">Interactive visualization: move the slider to change the ball's position along the camera axis and observe how its projection (ellipse) changes in the image.</figcaption>
 </figure>
@@ -43,14 +42,13 @@ draft = false
 
 <figure class="figure" style="text-align: center;">
   <div style="width: 80%; max-width: 800px; margin: 20px auto;">
-    <label for="ballTrajBouncePosSlider" style="display: block; margin-bottom: 10px;">y0: <span id="ballTrajBouncePosValue">0.0</span>yds</label>
-    <input type="range" id="ballTrajBouncePosSlider" min="-8" max="8" step="1" value="0" style="width: 100%;">
-  </div>
-  <div style="width: 80%; max-width: 800px; margin: 20px auto;">
     <label for="ballTrajBounceVelSlider" style="display: block; margin-bottom: 10px;">|v|: <span id="ballTrajBounceVelValue">25.0</span>yds/s</label>
     <input type="range" id="ballTrajBounceVelSlider" min="20" max="30" step="1" value="25" style="width: 100%;">
   </div>
-  <canvas id="ballTrajBounceCanvas" width="640" height="360" style="border: 1px solid #ccc; display: block; margin: auto;"></canvas>
+  <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; margin: 20px auto; max-width: 100%;">
+    <canvas id="ballTrajBounceCanvas" width="640" height="360" style="border: 1px solid #ccc;"></canvas>
+    <canvas id="ballTrajBounceBirdEyeCanvas" width="640" height="360" style="border: 1px solid #ccc;"></canvas>
+  </div>
   <div style="width: 80%; max-width: 800px; margin: 20px auto;">
     <label for="ballTrajBounceTSlider" style="display: block; margin-bottom: 10px;">t: <span id="ballTrajBounceTValue">0.0</span>s</label>
     <input type="range" id="ballTrajBounceTSlider" min="0" max="5" step="0.1" value="0" style="width: 100%;">
@@ -64,6 +62,27 @@ draft = false
 # 2.2. Friction and drag
 
 <figure class="figure" style="text-align: center;">
+  <div style="width: 80%; max-width: 800px; margin: 20px auto;">
+    <label for="ballTrajSlowAngleSlider" style="display: block; margin-bottom: 10px;">$\measuredangle_v$: <span id="ballTrajSlowAngleValue">15.0</span>$\degree$</label>
+    <input type="range" id="ballTrajSlowAngleSlider" min="0" max="30" step="1" value="15" style="width: 100%;">
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; margin: 20px auto; max-width: 100%;">
+    <canvas id="ballTrajSlowCanvas" width="640" height="360" style="border: 1px solid #ccc;"></canvas>
+    <canvas id="ballTrajSlowBirdEyeCanvas" width="640" height="360" style="border: 1px solid #ccc;"></canvas>
+  </div>  <div style="width: 80%; max-width: 800px; margin: 20px auto;">
+    <label for="ballTrajSlowTSlider" style="display: block; margin-bottom: 10px;">t: <span id="ballTrajSlowTValue">0.0</span>s</label>
+    <input type="range" id="ballTrajSlowTSlider" min="0" max="20" step="0.1" value="0" style="width: 100%;">
+  </div>
+  <figcaption class="caption" style="font-weight: normal; max-width: 90%; margin: auto;">Interactive visualization: move the slider to change the ball's position along the camera axis and observe how its projection (ellipse) changes in the image.</figcaption>
+</figure>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
+<script type="module" src="/js/ballTrajSlow.js"></script>
+
+
+# 2.3. Magnus effect
+
+<!-- <figure class="figure" style="text-align: center;">
   <div style="width: 80%; max-width: 800px; margin: 20px auto;">
     <label for="ballTrajSlowPosSlider" style="display: block; margin-bottom: 10px;">y0: <span id="ballTrajSlowPosValue">0.0</span>yds</label>
     <input type="range" id="ballTrajSlowPosSlider" min="-8" max="8" step="1" value="0" style="width: 100%;">
@@ -81,10 +100,7 @@ draft = false
 </figure>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
-<script type="module" src="/js/ballTrajSlow.js"></script>
-
-
-# 2.3. Magnus effect
+<script type="module" src="/js/ballTrajSlow.js"></script> -->
 
 # 2.4. Putting it all together
 
