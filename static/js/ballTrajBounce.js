@@ -63,24 +63,24 @@ document.addEventListener('DOMContentLoaded', function() {
     drawVisualization();
   });
   
-  function preRenderTrajectory(offscreenCanvas, offscreenCtx, backgroundImage, homographyMatrix, centeredMatrix, force_null_z=false) {
+  function preRenderTrajectory(offscreenCanvas, offscreenCtx, backgroundImage, homographyMatrix, centeredMatrix, tSparse, force_null_z=false) {
     // Pre-render background + trajectory to offscreen canvas
     offscreenCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
     offscreenCtx.drawImage(backgroundImage, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
     
     // Draw ball at each position in trajectory on offscreen canvas
-    for (const timeStep in posT) {
-      const position = posT[timeStep];
+    for (const timeStep of tSparse) {
+      const position = [...posT[timeStep]];
       if (force_null_z) {
         position[2] = 0.0;
       }
-      drawBallProjection(offscreenCanvas, position, SoccerBallRadius, homographyMatrix, centeredMatrix, 'rgba(90, 183, 245, 0.78)', 'rgba(90, 183, 245, 0.78)');
+      drawBallProjection(offscreenCanvas, position, SoccerBallRadius, homographyMatrix, centeredMatrix, 'rgba(199, 221, 236, 0.78)', 'rgba(199, 221, 236, 0.78)');
     }
   }
 
   function drawCurrentBall(canvas, homographyMatrix, centeredMatrix, force_null_z=false) {
     if (!posT) return;
-    const posCurrentT = posT[t];
+    const posCurrentT = [...posT[t]];
     if (force_null_z) {
       posCurrentT[2] = 0.0;
     }
@@ -90,7 +90,10 @@ document.addEventListener('DOMContentLoaded', function() {
   function computeAndDrawTrajectory() {
     // Create dense time array
     const numDense = 1000 + 1;
-    const tsDense = Array.from({length: numDense}, (_, i) => i * (tEnd - tStart) / (numDense - 1));
+    const tsDense = Array.from({length: numDense}, (_, i) => tStart + i * (tEnd - tStart) / (numDense - 1));
+    const tStep = parseFloat(tSlider.step);
+    const numSparse = Math.floor((tEnd - tStart) / tStep) + 1;
+    const tSparse = Array.from({length: numSparse}, (_, i) => tStart + i * (tEnd - tStart) / (numSparse - 1));
     
     // Create initial state
     let bx = x;
@@ -111,8 +114,8 @@ document.addEventListener('DOMContentLoaded', function() {
     posT = computeTrajectory(state0, tsDense, false, false, false, true);
     
     // Pre-render both canvases
-    preRenderTrajectory(offscreenCanvas, offscreenCtx, backgroundImage, SoccerTrajHomographyMatrix, SoccerTrajHomographyCenteredMatrix);
-    preRenderTrajectory(offscreenCanvasBirdEye, offscreenCtxBirdEye, backgroundImageBirdEye, SoccerTrajHomographyBirdEyeMatrix, SoccerTrajHomographyCenteredBirdEyeMatrix, true);
+    preRenderTrajectory(offscreenCanvas, offscreenCtx, backgroundImage, SoccerTrajHomographyMatrix, SoccerTrajHomographyCenteredMatrix, tSparse);
+    preRenderTrajectory(offscreenCanvasBirdEye, offscreenCtxBirdEye, backgroundImageBirdEye, SoccerTrajHomographyBirdEyeMatrix, SoccerTrajHomographyCenteredBirdEyeMatrix, tSparse, true);
     
     // Draw the visualization
     drawVisualization();

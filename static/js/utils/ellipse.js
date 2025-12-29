@@ -39,6 +39,33 @@ export function getEllipseParams(M, tol = 1e-6) {
 }
 
 /**
+ * Convert ellipse parameters to a conic matrix representation
+ * This is the inverse of getEllipseParams
+ * 
+ * @param {number} a - Semi-major axis
+ * @param {number} b - Semi-minor axis
+ * @param {number} x0 - Center x coordinate
+ * @param {number} y0 - Center y coordinate
+ * @param {number} angle - Rotation angle in degrees
+ * @returns {Array<Array<number>>} 3x3 conic matrix
+ */
+export function getEllipseMatrix(a, b, x0, y0, angle) {
+  const theta = (angle * Math.PI) / 180;
+  const A = (a * Math.sin(theta)) ** 2 + (b * Math.cos(theta)) ** 2;
+  const B = 2 * ((b ** 2) - (a ** 2)) * Math.sin(theta) * Math.cos(theta);
+  const C = (a * Math.cos(theta)) ** 2 + (b * Math.sin(theta)) ** 2;
+  const D = -2 * A * x0 - B * y0;
+  const E = -B * x0 - 2 * C * y0;
+  const F = A * (x0 ** 2) + B * x0 * y0 + C * (y0 ** 2) - (a * b) ** 2;
+  
+  return [
+    [A, B / 2, D / 2],
+    [B / 2, C, E / 2],
+    [D / 2, E / 2, F]
+  ];
+}
+
+/**
  * Draw an ellipse on a canvas from a conic matrix representation
  * 
  * @param {CanvasRenderingContext2D} ctx - Canvas 2D context

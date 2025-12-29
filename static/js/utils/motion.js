@@ -131,8 +131,8 @@ export function computeTrajectory(s, ts, useFriction=true, useDrag=true, useMagn
     
     if (newPos[2] <= BALL_RADIUS && newVel[2] < 0) {
       // Ball hit the ground while moving down
-      // Apply bounce: reverse z-velocity with restitution
       if (bounce) {
+        // Apply bounce: reverse z-velocity with restitution
         newVel[2] = -COEF_RESTITUTION * newVel[2];
       
         // Adjust z position to be at ground level with restitution
@@ -144,8 +144,10 @@ export function computeTrajectory(s, ts, useFriction=true, useDrag=true, useMagn
           newPos[2] = BALL_RADIUS - EPS;
         }
       } else {
-        newVel[2] = 0.0;
+        // No bounce: stop the ball completely where it lands
+        newVel = [0.0, 0.0, 0.0];
         newPos[2] = BALL_RADIUS - EPS;
+        atRest = true;
       }
       
       // Update state
