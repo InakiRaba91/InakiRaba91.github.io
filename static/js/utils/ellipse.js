@@ -39,6 +39,29 @@ export function getEllipseParams(M, tol = 1e-6) {
 }
 
 /**
+ * Get the bounding box of an ellipse from its conic matrix representation
+ * 
+ * @param {Array<Array<number>>} M - 3x3 conic matrix
+ * @param {number} tol - tolerance for numerical comparisons (default: 1e-6)
+ * @returns {Object} Bounding box with bottomLeft and topRight corners: {bottomLeft: {x, y}, topRight: {x, y}}
+ */
+export function getBBoxEllipse(M, tol = 1e-6) {
+  const { a, b, x0, y0, angle } = getEllipseParams(M, tol);
+  const theta = (angle * Math.PI) / 180;
+  const x_extent = Math.sqrt((a * Math.cos(theta)) ** 2 + (b * Math.sin(theta)) ** 2);
+  const y_extent = Math.sqrt((a * Math.sin(theta)) ** 2 + (b * Math.cos(theta)) ** 2);
+  const x_left = x0 - x_extent;
+  const x_right = x0 + x_extent;
+  const y_bottom = y0 - y_extent;
+  const y_top = y0 + y_extent;
+  
+  return {
+    bottomLeft: { x: x_left, y: y_bottom },
+    topRight: { x: x_right, y: y_top }
+  };
+}
+
+/**
  * Convert ellipse parameters to a conic matrix representation
  * This is the inverse of getEllipseParams
  * 

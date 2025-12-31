@@ -1,9 +1,9 @@
 import { matrixProduct } from './matrix.js';
-import { getEllipseParams } from './ellipse.js';
+import { getEllipseParams, getBBoxEllipse } from './ellipse.js';
 import { baseImageSize } from './imageSize.js';
 import { obtainBallConic, getProjectionConeFromEllipse } from './conic.js';
 
-export function drawBallProjection(canvas, ballPosition, ballRadius, homographyMatrix, homographyCenteredMatrix, fillColor, lineColor) {
+export function drawBallProjection(canvas, ballPosition, ballRadius, homographyMatrix, homographyCenteredMatrix, fillColor, lineColor, drawBbox=false, bboxColor='white') {
   const ctx = canvas.getContext('2d');
   const KCanvas = [
     [canvas.width / baseImageSize.width, 0, 0],
@@ -28,6 +28,18 @@ export function drawBallProjection(canvas, ballPosition, ballRadius, homographyM
   ctx.strokeStyle = lineColor;
   ctx.lineWidth = 2;
   ctx.stroke();
+
+  if (drawBbox) {
+    const bbox = getBBoxEllipse(C);
+    ctx.strokeStyle = bboxColor;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(
+      bbox.bottomLeft.x,
+      bbox.bottomLeft.y,
+      bbox.topRight.x - bbox.bottomLeft.x,
+      bbox.topRight.y - bbox.bottomLeft.y
+    );
+  }
 
   return Q;
 }

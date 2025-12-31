@@ -352,7 +352,7 @@ The following interactive plot shows the Legendre polynomials up to degree $10$.
 <input type="range" id="degreeSlider" min="0" max="10" value="0">
 <span id="degreeValue">n=0</span>
 <div id="plot"></div>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <script type="module" src="/js/plotLegendre.js"></script>
 
 Additionally, the following snippet allows you to approximate any user-defined function (i.e.: <code>abs(x)</code>, <code>sin(x)</code>, <code>exp(x)</code>) by expanding it on Legendre polynomial basis up to degree $n$. You can use the input field to enter the function you want to approximate and the slider to change the degree of the polynomial. Once you have entered the function, click the button to plot it:
@@ -364,7 +364,7 @@ Additionally, the following snippet allows you to approximate any user-defined f
 <input type="range" id="degreeSliderFunction" min="0" max="10" value="7">
 <span id="degreeValueFunction">n=7</span>
 <div id="functionPlot"></div>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
 <script type="module" src="/js/plotLegendreApprox.js"></script>
 

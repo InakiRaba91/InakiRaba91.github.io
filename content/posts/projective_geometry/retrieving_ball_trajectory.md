@@ -381,7 +381,6 @@ Depending on how we represent the 2D objects, we can define different types of c
 
 Up to now, our visualizations have represented the ball projections as ellipses. Therefore we need a metric that quantifies the error between two ellipses. Below you can see an example of the observed ellipses (ellipse outlines marked in red) for a pass in a basketball game:
 
-
 <figure class="figure" style="text-align: center;">
   <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; margin: 20px auto; max-width: 100%;">
     <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
@@ -397,7 +396,7 @@ Up to now, our visualizations have represented the ball projections as ellipses.
     <label for="ballTrajEllipseTSlider" style="white-space: nowrap; min-width: 120px;">t: <span id="ballTrajEllipseTValue">0.0</span>s</label>
     <input type="range" id="ballTrajEllipseTSlider" min="0" max="5" step="0.1" value="0" style="flex: 1;">
   </div>
-  <figcaption class="caption" style="font-weight: normal; max-width: 90%; margin: auto;">Interactive visualization of pass trajectory represented as ellipses from broadcast and bird's eye views. You can modify the time (t) to see how the ball moves in 3D space.</figcaption>
+  <figcaption class="caption" style="font-weight: normal; max-width: 90%; margin: auto;">Interactive visualization of pass trajectory represented as ellipses (outlined in <span style="color: red;">red</span>) from broadcast and bird's eye views. You can modify the time (t) to see how the ball moves in 3D space.</figcaption>
 </figure>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
@@ -423,20 +422,294 @@ $$
 We will now explore two different distance metrics $d(p, O)$ that can be used in this context.
 
 #### 3.1.1.1. Algebraic distance
+
+An ellipse in 2D can be parametrized by its matrix representation $\mathbf{C}$. Any point $\mathbf{p}=[x, y, 1]^T$ lying on the ellipse satisfies the following equation:
+
+$$
+\begin{equation}
+\mathbf{p}^T \mathbf{C} \mathbf{p} = 0
+\end{equation}
+$$
+
+We can extend this equation and define the function:
+
+$$
+\begin{equation}
+f(\mathbf{x, y}) = \mathbf{p}^T \mathbf{C} \mathbf{p}
+\end{equation}
+$$
+
+This function defines a paraboloid surface where the ellipse corresponds to the zero level set. The figure below shows a 3D visualization of this paraboloid surface for a given ellipse:
+
+<figure class="figure" style="text-align: center;">
+  <div id="paraboloidPlot" style="width: 100%; max-width: 700px; height: 500px; margin: 20px auto;"></div>
+  <figcaption class="caption" style="font-weight: normal; max-width: 90%; margin: auto;">3D visualization of the parabolic surface f(z) = x² + y²/4 - 1 with ground plane at z = 0.</figcaption>
+</figure>
+
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script src="/js/paraboloidSurface.js"></script>
+
+Furthermore, its isocontours given by $f(\mathbf{x, y}) = k$ represent scaled versions of the ellipse. The figure below illustrates these isocontours for different values of $k$:
+
+<figure class="figure" style="text-align: center;">
+  <div id="ellipseContoursPlot" style="width: 100%; max-width: 700px; height: 500px; margin: 20px auto;"></div>
+  <figcaption class="caption" style="font-weight: normal; max-width: 90%; margin: auto;">2D isocontours of f(x, y) = x² + y²/4 - 1 for various constant values k. Each curve represents the set of points where f(x, y) = k. The thicker blue curve (k=0) corresponds to the zero level set, which defines the ellipse itself.</figcaption>
+</figure>
+
+<script src="/js/ellipseContours.js"></script>
+
+Based on this observation, we can define the algebraic distance from a point $\mathbf{p}$ to the ellipse represented by matrix $\mathbf{C}$ as:
+
+$$
+\begin{equation}
+d_{\text{alg}}(\mathbf{p}, \mathbf{C}) = |\mathbf{p}^T \mathbf{C} \mathbf{p}|
+\end{equation}
+$$
+
+This distance measures how far the point is from lying on the ellipse in terms of the paraboloid function value. In other words, it captures what isocontour the point lies on. The bigger the value, the further the isocontour from the ellipse. 
+
 #### 3.1.1.2. Sampson distance
 
+One limitation of the algebraic distance is that it does not correspond to a geometric distance in the image plane. Ideally, we would like to measure the shortest Euclidean distance from the point to the ellipse. 
+
+$$
+\begin{equation}
+d_{\text{geo}}(\mathbf{p}, \mathbf{C}) = \min_{\mathbf{q} \in \text{ellipse}} || \mathbf{p} - \mathbf{q} ||
+\end{equation}
+$$
+
+However, computing this geometric distance is not straightforward, as it involves solving a quartic equation. Instead, we can use the Sampson distance, which provides a first-order approximation of the geometric distance. The Sampson distance is defined as:
+
+$$
+\begin{equation}
+d_{\text{Sampson}}(\mathbf{p}, \mathbf{C}) = \frac{(\mathbf{p}^T \mathbf{C} \mathbf{p})^2}{(2 \mathbf{C} \mathbf{p})_x^2 + (2 \mathbf{C} \mathbf{p})_y^2}
+\end{equation}
+$$
+
+We provide a detailed derivation of this formula for the interested reader below:
+
+<span style="background-color: lightyellow; border: 1px solid black; padding: 2px 10px; display: inline-flex; align-items: center;">
+  <details>
+    <summary><strong>Sampson distance derivation</strong></summary>
+      Given a noisy measurement vector $\mathbf{p} \in \mathbb{R}^n$ and a constraint function $f(\mathbf{p}) \in \mathbb{R}^m$, the goal is to find a corrected vector $\mathbf{p} + \delta \mathbf{p}$ that lies on the manifold defined by $f(\mathbf{p}) = 0$, while minimizing the correction magnitude $|| \delta \mathbf{p} ||^2$:
+      $$
+      \begin{equation}
+      \delta \mathbf{p} = \arg \min_{\delta \mathbf{p}} || \delta \mathbf{p} ||^2 \quad \text{s.t.} \quad f(\mathbf{p} + \delta \mathbf{p}) = 0
+      \end{equation}
+      $$
+      Sampson's idea is to assume that if $\delta \mathbf{p}$ is small, we can linearize the constraint function using a first-order Taylor expansion around $\mathbf{p}$:
+      $$
+      \begin{equation}
+      f(\mathbf{p} + \delta \mathbf{p}) \approx f(\mathbf{p}) + J_f(\mathbf{p}) \delta \mathbf{p}
+      \end{equation}
+      $$
+      where $J_f(\mathbf{p})$ is the Jacobian matrix of $f$ evaluated at $\mathbf{p}$. Since we want $f(\mathbf{p} + \delta \mathbf{p}) = 0$, this leads to the linearized constraint:
+      $$
+      \begin{equation}
+      f(\mathbf{p}) + J_f(\mathbf{p}) \delta \mathbf{p} = 0
+      \end{equation}
+      $$
+      This is a constrained optimization problem that can be solved using Lagrange multipliers. The Lagrangian is defined as:
+      $$
+      \begin{equation}
+      \mathcal{L}(\delta \mathbf{p}, \lambda) = || \delta \mathbf{p} ||^2 + \lambda^T (f(\mathbf{p}) + J_f(\mathbf{p}) \delta \mathbf{p})
+      \end{equation}
+      $$
+      Taking the gradient of the Lagrangian with respect to $\delta \mathbf{p}$ and setting it to zero gives:
+      $$
+      \begin{equation}
+      \frac{\partial \mathcal{L}}{\partial \delta \mathbf{p}} = 2 \delta \mathbf{p} + J_f(\mathbf{p})^T \lambda = 0
+      \end{equation}
+      $$
+      Solving for $\delta \mathbf{p}$ yields:
+      $$
+      \begin{equation}
+      \delta \mathbf{p} = -\frac{1}{2} J_f(\mathbf{p})^T \lambda
+      \end{equation}
+      $$
+      Substituting this back into the linearized constraint gives:
+      $$
+      \begin{equation}
+      f(\mathbf{p}) - \frac{1}{2} J_f(\mathbf{p}) J_f(\mathbf{p})^T \lambda = 0
+      \end{equation}
+      $$
+      Solving for $\lambda$:  
+      $$
+      \begin{equation}
+      \lambda = 2 (J_f(\mathbf{p}) J_f(\mathbf{p})^T)^{-1} f(\mathbf{p})
+      \end{equation}
+      $$
+      Substituting $\lambda$ back into the expression for $\delta \mathbf{p}$ gives:
+      $$
+      \begin{equation}
+      \delta \mathbf{p} = - J_f(\mathbf{p})^T (J_f(\mathbf{p}) J_f(\mathbf{p})^T)^{-1} f(\mathbf{p})
+      \end{equation}
+      $$
+      Finally, the squared magnitude of the correction $\delta \mathbf{p}$, which defines the Sampson distance, is given by:
+      $$
+      \begin{equation}
+      \boxed{d_{\text{Sampson}}(\mathbf{p}) = || \delta \mathbf{p} ||^2 = f(\mathbf{p})^T (J_f(\mathbf{p}) J_f(\mathbf{p})^T)^{-1} f(\mathbf{p})}
+      \end{equation}
+      $$
+      Let us apply this to the case of an ellipse defined by the matrix $\mathbf{C}$. The constraint function is a mapping from $\mathbf{p}=[x, y]^T\in \mathbb{R}^2$ to $f(\mathbf{p}) \in \mathbb{R}$ defined as:
+      $$
+      \begin{equation}
+      f(\mathbf{p}) = \mathbf{p}_H^T \mathbf{C} \mathbf{p}_H
+      \end{equation}
+      $$
+      with $\mathbf{p}_H = [x, y, 1]^T$. As we have seen before, this is a paraboloid surface where the ellipse corresponds to the zero level set. For a given point $\mathbf{p}$, we are approximating the surface by the tangent plane at that point as illustrated below:
+      <figure class="figure" style="text-align: center; margin-left: auto; margin-right: auto;">
+        <div id="sampsonTangentPlot" style="width: 700px; height: 500px; margin: 20px auto;"></div>
+        <figcaption class="caption" style="font-weight: normal; max-width: 90%; margin: auto;">Tangent plane approximation of the parabolic surface. The figure shows: (1) the parabolic surface (<span style="color: blue;">blue</span>) defined by $f(p) = p_H^T\cdot C\cdot p$, (2) a noisy measurement point (<span style="color: red;">red</span>), (3) the tangent plane (<span style="color: orange;">orange</span>) at that point, (4) the ground plane (<span style="color: gray;">gray</span>) at z=0, and (5) the ellipse (<span style="color: green;">green</span>) corresponding to $p_H^T\cdot C\cdot p = 0$.</figcaption>
+      </figure>
+      <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+      <script src="/js/sampsonTangentPlane.js"></script>
+      We can compute the Jacobian of $f(\mathbf{p})$ as follows:
+      $$
+      \begin{equation}
+      J_f(\mathbf{p}) = \begin{bmatrix} \frac{\partial f}{\partial x} & \frac{\partial f}{\partial y} \end{bmatrix} = \begin{bmatrix} 2 (\mathbf{C} \mathbf{p})_x & 2 (\mathbf{C} \mathbf{p})_y \end{bmatrix}
+      \end{equation}
+      $$
+      which leads to the result above:
+      $$
+      \begin{equation}
+      d_{\text{Sampson}}(\mathbf{p}, \mathbf{C}) = \frac{(\mathbf{p}^T \mathbf{C} \mathbf{p})^2}{(2 \mathbf{C} \mathbf{p})_x^2 + (2 \mathbf{C} \mathbf{p})_y^2}
+      \end{equation}
+      $$
+  </details>
+</span>
+
 ### 3.1.2. Bounding box fitting
+
+In many practical scenarios, the ball detections are represented as bounding boxes rather than ellipses. This is the case when using object detection models like YOLO or Faster R-CNN, which output axis-aligned bounding boxes around detected objects. 
+
+Our simiulation engine produces ellipses, so we need an additional step to convert these ellipses into bounding boxes. To do so, recall an ellipse with parameters centered at $(0, 0)$, with semi-major axis $a$, semi-minor axis $b$, and orientation angle $\theta$ can be parametrized as:
+
+$$
+\begin{equation}
+\frac{(x \cos \theta - y \sin \theta)^2}{a^2} + \frac{(x \sin \theta + y \cos \theta)^2}{b^2} = 1
+\end{equation}
+$$
+
+The derivative is given by:
+
+$$
+\begin{equation}
+\frac{d y}{d x} = -\frac{a^2 x \sin^2\theta + y(a-b)(a+b)\sin\theta\cos\theta + b^2 x \cos^2\theta}{a^2 y \cos^2\theta + x(a-b)(a+b)\sin\theta\cos\theta + b^2 y \sin^2\theta}
+\end{equation}
+$$
+
+We are looking for the points where the tangent is vertical or horizontal, i.e. where $\frac{d y}{d x} = 0$ or $\frac{d x}{d y} = 0$. Carefully solving these equations and shifting to allow for ellipses not centered at the origin, we obtain the following four points:
+
+$$
+\begin{equation}
+\begin{aligned}
+x = x_0 \pm \sqrt{a^2\cos^2\theta + b^2\sin^2\theta} \\\\
+y = y_0 \pm \sqrt{a^2\sin^2\theta + b^2\cos^2\theta}
+\end{aligned} 
+\end{equation}
+$$
+
+Below you can see an example of the observed bounding boxes (outlined in red) for a pass in a basketball game:
+
+<figure class="figure" style="text-align: center;">
+  <div style="display: flex; flex-direction: column; gap: 20px; align-items: center; margin: 20px auto; max-width: 100%;">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+      <p style="margin: 0; font-weight: 500; color: #333;">Pass captured from broadcast angle</p>
+      <canvas id="ballTrajBBoxCanvas" width="640" height="360" style="border: 1px solid #ccc;"></canvas>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+      <p style="margin: 0; font-weight: 500; color: #333;">XY projection of pass from bird's eye view</p>
+      <canvas id="ballTrajBBoxBirdEyeCanvas" width="640" height="360" style="border: 1px solid #ccc;"></canvas>
+    </div>
+  </div>  
+  <div style="width: 80%; max-width: 800px; margin: 20px auto; display: flex; align-items: center; gap: 15px;">
+    <label for="ballTrajBBoxTSlider" style="white-space: nowrap; min-width: 120px;">t: <span id="ballTrajBBoxTValue">0.0</span>s</label>
+    <input type="range" id="ballTrajBBoxTSlider" min="0" max="5" step="0.1" value="0" style="flex: 1;">
+  </div>
+  <figcaption class="caption" style="font-weight: normal; max-width: 90%; margin: auto;">Interactive visualization of pass trajectory represented as bounding boxes (outlined in <span style="color: blue;">blue</span>) from broadcast and bird's eye views. You can modify the time (t) to see how the ball moves in 3D space.</figcaption>
+</figure>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
+<script type="module" src="/js/ballTrajBBox.js"></script>
+
+We can encode the bounding box as the coordinates of the top-left and bottom-right corners: $O_i = [\mathrm{t}_l, \mathrm{b}_r] = [t^x_l, t^y_l, b^x_r, b^y_r]$. A couple choices for the error metric $e_i$ between the observed bounding box $O'_i$ and the projected bounding box $O_i(s_0)$ are given below.
+
 #### 3.1.2.1. L2 distance
+
+One option is to simply measure the L2 distance between the top-left and bottom-right corners of the bounding boxes:
+$$
+\begin{equation}
+\begin{aligned}
+e_i(O_i', O_i(s_0)) & = || O_i' - O_i(s_0) ||^2 \\\\
+&= || t'_l - t_l(s_0) ||^2 + || b'_r - b_r(s_0) ||^2
+\end{aligned}
+\end{equation}
+$$  
 #### 3.1.2.2. YOLO loss
+
+While the L2 distance is simple and straightforward, it has some limitations. For instance, it treats all pixels equally, even though errors in the width and height might be more or less important than errors in position. 
+
+The YOLO (You Only Look Once) object detection framework encodes the bbox as $O=(c, a)$, where $c=(x_c, y_c)$ is the bbox center and $a=(w, h)$ is the size (width and height). The YOLO loss function combines errors in both center position and size, with different weighting factors:
+
+$$
+\begin{equation}
+e_i(O_i', O_i(s_0)) = \lambda_c \cdot e_i^c(c', c_i(s_0)) + \lambda_s \cdot e_i^s(a_i', a_i(s_0))
+\end{equation}
+$$
+
+where $\lambda_c$ and $\lambda_s$ are weighting factors that control the importance of the corresponding terms given by:
+
+$$
+\begin{equation}
+e_i^c(c', c_i(s_0)) = || c' - c_i(s_0) ||^2
+\end{equation}
+$$
+
+and
+
+$$
+\begin{equation}
+e_i^s(a', a_i(s_0)) = || \sqrt{w'} - \sqrt{w_i(s_0)} ||^2 + || \sqrt{h'} - \sqrt{h_i(s_0)} ||^2
+\end{equation}
+$$
+
+The key innovation here is the use of square roots for the width and height terms, which penalizes errors in small boxes more than in large boxes.
 
 ## 3.2. Optimization
 
-# 4. Conclusion
+Now that we have defined cost functions to measure the quality of a trajectory estimate, we need an optimization algorithm to find the initial state $\mathbf{s}_0 = [\mathbf{p}_0, \mathbf{v}_0, \boldsymbol{\omega}_0]$ that minimizes this cost.
 
+Our goal is to find the **global minimum** of the cost function. However, this is challenging because the cost function is **non-convex**, meaning it has multiple local minima. The main source of non-convexity is the **bouncing** in the trajectory—the abrupt changes in velocity when the ball hits the ground create discontinuities that lead to multiple local minima in the optimization landscape.
 
-# 5. References
+There are two sensible approaches to overcome this challenge:
+
+1. **Partial trajectory fitting**: Identify the bouncing points and break the problem into fitting the trajectory per segments in between bounces. The final state of each segment serves as the initial state for the next segment. In this scenario, the optimization becomes locally convex within each segment, making gradient-based methods well-suited for the task. Common choices include **Gradient Descent**, **Levenberg-Marquardt**, and **L-BFGS-B**.
+
+2. **Global optimization methods**: Use gradient-free methods that can explore different regions of the parameter space in search of the global minimum, thus avoiding getting stuck in local minima. Common choices include **Nelder-Mead Simplex** and **Differential Evolution**.
+
+# 4. Implementation
+
+# 5. Conclusion
+
+In this post, we have explored how to estimate the 3D trajectory of a ball from its 2D projections in video frames. We started by building a comprehensive physics simulation that models the ball's motion under various forces:
+
+1. **Gravity**: The fundamental force pulling the ball downward
+2. **Bouncing**: Modeled using the coefficient of restitution to simulate energy loss during collisions
+3. **Friction and drag**: Air resistance and ground friction that slow the ball down
+4. **Magnus effect**: The force resulting from ball spin that creates curved trajectories
+
+By formulating these effects as a system of differential equations, we created a forward model that maps an initial state $\mathbf{s}_0 = [\mathbf{p}_0, \mathbf{v}_0, \boldsymbol{\omega}_0]$ to a temporal sequence of 2D projections.
+
+Then we focused on the inverse problem: estimating the initial state from observed 2D projections. We framed it as a non-linear optimization problem and explored different cost functions based on:
+- **Ellipse fitting**: Using algebraic distance or Sampson distance to measure discrepancy between observed and predicted ellipses
+- **Bounding box fitting**: Using L2 distance or YOLO-style loss for axis-aligned bounding boxes
+
+We have also provided interactive visualizations to illustrate the concepts discussed, as well as an auxiliary repository with the complete code implementation.
+
+# 6. References
 
 1. Richard Hartley and Andrew Zisserman (2000), Page 143, *Multiple View Geometry in Computer Vision*, Cambridge University Press.
-2. Wikipedia. [Cone](https://en.wikipedia.org/wiki/Cone_(geometry))
-3. Wikipedia. [Von Neumann's trace inequality](https://en.wikipedia.org/wiki/Trace_inequality#Von_Neumann's_trace_inequality_and_related_results)
-4. Wikipedia. [Procrustes problem](https://en.wikipedia.org/wiki/Orthogonal_Procrustes_problem)
+2. SciPy. [Optimize module](https://docs.scipy.org/doc/scipy/reference/optimize.html)
+3. Math Stack Exchabge. [How to get the limits of rotated ellipse](https://math.stackexchange.com/questions/91132/how-to-get-the-limits-of-rotated-ellipse)
+4. Spiff. [Magnus effect](http://spiff.rit.edu/richmond/baseball/traj/traj.html)
