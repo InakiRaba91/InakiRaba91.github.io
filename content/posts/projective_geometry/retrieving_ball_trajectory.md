@@ -1,6 +1,6 @@
 +++
 title = '⚽ Projective Geometry: Retrieving 3D Ball Trajectory'
-date = 2025-12-26T09:16:19+01:00
+date = 2026-01-02T09:16:19+01:00
 tags = ["computer vision", "projective geometry", "3d ball trajectory"]
 draft = false
 +++
