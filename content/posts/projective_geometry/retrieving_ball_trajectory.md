@@ -737,3 +737,90 @@ We have also provided interactive visualizations to illustrate the concepts disc
 2. SciPy. [Optimize module](https://docs.scipy.org/doc/scipy/reference/optimize.html)
 3. Math Stack Exchabge. [How to get the limits of rotated ellipse](https://math.stackexchange.com/questions/91132/how-to-get-the-limits-of-rotated-ellipse)
 4. Spiff. [Magnus effect](http://spiff.rit.edu/richmond/baseball/traj/traj.html)
+
+# 7.Clarify
+Given a noisy measurement vector $\mathbf{p} \in \mathbb{R}^n$ and a constraint function $f(\mathbf{p}) \in \mathbb{R}^m$, the goal is to find a corrected vector $\mathbf{p} + \delta \mathbf{p}$ that lies on the manifold defined by $f(\mathbf{p}) = 0$, while minimizing the correction magnitude $|| \delta \mathbf{p} ||^2$:
+$$
+\begin{equation}
+\delta \mathbf{p} = \arg \min_{\delta \mathbf{p}} || \delta \mathbf{p} ||^2 \quad \text{s.t.} \quad f(\mathbf{p} + \delta \mathbf{p}) = 0
+\end{equation}
+$$
+Sampson's idea is to assume that if $\delta \mathbf{p}$ is small, we can linearize the constraint function using a first-order Taylor expansion around $\mathbf{p}$:
+$$
+\begin{equation}
+f(\mathbf{p} + \delta \mathbf{p}) \approx f(\mathbf{p}) + J_f(\mathbf{p}) \delta \mathbf{p}
+\end{equation}
+$$
+where $J_f(\mathbf{p})$ is the Jacobian matrix of $f$ evaluated at $\mathbf{p}$. Since we want $f(\mathbf{p} + \delta \mathbf{p}) = 0$, this leads to the linearized constraint:
+$$
+\begin{equation}
+f(\mathbf{p}) + J_f(\mathbf{p}) \delta \mathbf{p} = 0
+\end{equation}
+$$
+This is a constrained optimization problem that can be solved using Lagrange multipliers. The Lagrangian is defined as:
+$$
+\begin{equation}
+\mathcal{L}(\delta \mathbf{p}, \lambda) = || \delta \mathbf{p} ||^2 + \lambda^T (f(\mathbf{p}) + J_f(\mathbf{p}) \delta \mathbf{p})
+\end{equation}
+$$
+Taking the gradient of the Lagrangian with respect to $\delta \mathbf{p}$ and setting it to zero gives:
+$$
+\begin{equation}
+\frac{\partial \mathcal{L}}{\partial \delta \mathbf{p}} = 2 \delta \mathbf{p} + J_f(\mathbf{p})^T \lambda = 0
+\end{equation}
+$$
+Solving for $\delta \mathbf{p}$ yields:
+$$
+\begin{equation}
+\delta \mathbf{p} = -\frac{1}{2} J_f(\mathbf{p})^T \lambda
+\end{equation}
+$$
+Substituting this back into the linearized constraint gives:
+$$
+\begin{equation}
+f(\mathbf{p}) - \frac{1}{2} J_f(\mathbf{p}) J_f(\mathbf{p})^T \lambda = 0
+\end{equation}
+$$
+Solving for $\lambda$:  
+$$
+\begin{equation}
+\lambda = 2 (J_f(\mathbf{p}) J_f(\mathbf{p})^T)^{-1} f(\mathbf{p})
+\end{equation}
+$$
+Substituting $\lambda$ back into the expression for $\delta \mathbf{p}$ gives:
+$$
+\begin{equation}
+\delta \mathbf{p} = - J_f(\mathbf{p})^T (J_f(\mathbf{p}) J_f(\mathbf{p})^T)^{-1} f(\mathbf{p})
+\end{equation}
+$$
+Finally, the squared magnitude of the correction $\delta \mathbf{p}$, which defines the Sampson distance, is given by:
+$$
+\begin{equation}
+\boxed{d_{\text{Sampson}}(\mathbf{p}) = || \delta \mathbf{p} ||^2 = f(\mathbf{p})^T (J_f(\mathbf{p}) J_f(\mathbf{p})^T)^{-1} f(\mathbf{p})}
+\end{equation}
+$$
+Let us apply this to the case of an ellipse defined by the matrix $\mathbf{C}$. The constraint function is a mapping from $\mathbf{p}=[x, y]^T\in \mathbb{R}^2$ to $f(\mathbf{p}) \in \mathbb{R}$ defined as:
+$$
+\begin{equation}
+f(\mathbf{p}) = \mathbf{p}_H^T \mathbf{C} \mathbf{p}_H
+\end{equation}
+$$
+with $\mathbf{p}_H = [x, y, 1]^T$. As we have seen before, this is a paraboloid surface where the ellipse corresponds to the zero level set. For a given point $\mathbf{p}$, we are approximating the surface by the tangent plane at that point as illustrated below:
+<figure class="figure" style="text-align: center; margin-left: auto; margin-right: auto;">
+  <div id="sampsonTangentPlot" style="width: 700px; height: 500px; margin: 20px auto;"></div>
+  <figcaption class="caption" style="font-weight: normal; max-width: 90%; margin: auto;">Tangent plane approximation of the parabolic surface. The figure shows: (1) the parabolic surface (<span style="color: blue;">blue</span>) defined by $f(p) = p_H^T\cdot C\cdot p$, (2) a noisy measurement point (<span style="color: red;">red</span>), (3) the tangent plane (<span style="color: orange;">orange</span>) at that point, (4) the ground plane (<span style="color: gray;">gray</span>) at z=0, and (5) the ellipse (<span style="color: green;">green</span>) corresponding to $p_H^T\cdot C\cdot p = 0$.</figcaption>
+</figure>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script src="/js/sampsonTangentPlane.js"></script>
+We can compute the Jacobian of $f(\mathbf{p})$ as follows:
+$$
+\begin{equation}
+J_f(\mathbf{p}) = \begin{bmatrix} \frac{\partial f}{\partial x} & \frac{\partial f}{\partial y} \end{bmatrix} = \begin{bmatrix} 2 (\mathbf{C} \mathbf{p})_x & 2 (\mathbf{C} \mathbf{p})_y \end{bmatrix}
+\end{equation}
+$$
+which leads to the result above:
+$$
+\begin{equation}
+d_{\text{Sampson}}(\mathbf{p}, \mathbf{C}) = \frac{(\mathbf{p}^T \mathbf{C} \mathbf{p})^2}{(2 \mathbf{C} \mathbf{p})_x^2 + (2 \mathbf{C} \mathbf{p})_y^2}
+\end{equation}
+$$
