@@ -20,7 +20,6 @@ In this article we will focus on the topic of <strong>Compressed Sensing</strong
 In recent times, the amount of data generated each day is staggering, and it is only increasing. We deal with vasts amounts of data that aim at capturing some form of representation of the natural world around us. Take images for example. An image can be thought of as a $W \times H$ 2D array of pixels, where each pixel is a 3-tuple of RGB values represented with $B$ bits per channel. That means there are $2^{3 \cdot B \cdot W \cdot H}$ possible images we could have, which is a mind-boggling number. However, that begs the question: how many of these images are actually interesting?
 
 <figure class="figure" style="text-align: center;">
-  <img src="/compressed_sensing_sparsity/random_image.png" alt="Random image" width="70%" style="display: block; margin: auto;">
   <figcaption class="caption" style="font-weight: normal; max-width: 80%; margin: auto;">Random image.</figcaption>
 </figure>
 

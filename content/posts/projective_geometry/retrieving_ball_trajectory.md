@@ -354,6 +354,8 @@ We now have all the ingredients we need. But let us add a final pinch of salt: m
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
 <script type="module" src="/js/ballTrajNoise.js"></script>
 
+You can find the complete code for the simulation engine [here](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/physics_engine/trajectory.py).
+
 # 3. Estimating the 3D ball trajectory
 
 We have now built a simulation engine that maps an initial state $\mathbf{s}_0=\begin{bmatrix} \mathbf{p}_0, \mathbf{v}_0, \boldsymbol{\omega}_0 \end{bmatrix}$ to a temporal sequence of 2D objects $O_i=O(t_i)$ representing the ball projections in the image plane at different time steps $t_i$.
@@ -375,7 +377,7 @@ $$
 $$
 
 where $e_i$ is an error metric that quantifies the error between the observed object $O'_i$ and the projected object $O_i(s_0)$ at time $t_i$.
-Depending on how we represent the 2D objects, we can define different types of cost functions.
+Depending on how we represent the 2D objects, we can define different types of cost functions. You can find their implementations [here](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/physics_engine/cost_functions.py).
 
 ### 3.1.1. Ellipse fitting
 
@@ -688,7 +690,29 @@ There are two sensible approaches to overcome this challenge:
 
 2. **Global optimization methods**: Use gradient-free methods that can explore different regions of the parameter space in search of the global minimum, thus avoiding getting stuck in local minima. Common choices include **Nelder-Mead Simplex** and **Differential Evolution**.
 
-# 4. Implementation
+Picking a good initial guess for the parameters is crucial for the success of both approaches. To do so, one can estimate the initial trajectory frame-wise with the method described in our previous post and then infer the initial state $\mathbf{s}_0$ from these estimates.
+
+# 4. Demo
+
+You can find an implementation of these optimization methods in the auxiliary [GitHub repository](https://github.com/InakiRaba91/ProjectiveGeometry). We provide an example that you can try yourself by running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/entrypoints/locate_3d_ball_trajectory_demo_fn.py):
+
+```python
+poetry run python -m projective_geometry locate-3d-ball-trajectory-demo
+``` 
+
+It will generate the ball trajectory displayed below (gray) and corrupt the observations (red) with noise and missed detections:
+
+<figure class="figure" style="text-align: center;">
+  <img src="/retrieving_ball_trajectory/locate_3d_ball_trajectory_observations.png" alt="Trajectory observations" width="100%" style="display: block; margin: auto;">  <figcaption class="caption" style="font-weight: normal; max-width: 90%; margin: auto;">3D ball trajectory estimation from noisy 2D observations. The <span style="color: gray;">gray</span> dots represent the ground-truth trajectory, while the <span style="color: red;">red</span> dots represent the noisy observations used for optimization.</figcaption>
+</figure>
+
+Then it will plot the estimated trajectory (blue) against the ground-truth (gray):
+
+<figure class="figure" style="text-align: center;">
+  <img src="/retrieving_ball_trajectory/locate_3d_ball_trajectory_estimated.png" alt="Trajectory estimation" width="100%" style="display: block; margin: auto;">  <figcaption class="caption" style="font-weight: normal; max-width: 90%; margin: auto;">3D ball trajectory estimation from noisy 2D observations. The <span style="color: gray;">gray</span> dots represent the ground-truth trajectory, while the <span style="color: blue;">blue</span> dots represent the estimated trajectory obtained through optimization.</figcaption>
+</figure>
+
+It uses the algebraic distance by default, but you can easily switch to any of the other cost functions described above by passing the corresponding argument to the entrypoint function. It also uses a convex optimizer (L-BFGS-B) by default, but you can switch to a global optimizer (Differential Evolution) as well, which is particularly useful when there is bouncing in the trajectory.
 
 # 5. Conclusion
 

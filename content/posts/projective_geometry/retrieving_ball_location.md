@@ -470,10 +470,10 @@ In this post we have shown how the 3D location of a sphere with known radius can
     \end{equation}
     $$
 
-**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L766). In order to do so, just install the repository (`poetry install`) and then run 
+**Note**: you can give it a try by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/entrypoints/locate_ball_3d_demo_fn.py). In order to do so, just install the repository (`poetry install`) and then run 
 
 ```python
-poetry run python -m projective_geometry locate-ball-3d 3 5 6
+poetry run python -m projective_geometry locate-ball-3d-demo 3 5 6
 ```
 
 where `3 5 6` are the $X, Y, Z$ coordinates of the ball in meters. The script will simulate the projection of the ball onto the image plane and then retrieve its 3D location from that projection.
