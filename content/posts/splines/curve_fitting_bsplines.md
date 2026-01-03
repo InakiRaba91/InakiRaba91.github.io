@@ -772,7 +772,7 @@ You can use the slider to change the degree of the polynomial:
 <input type="range" id="degreeSlider" min="0" max="5" value="0">
 <span id="degreeValue">n=0</span>
 <div id="plot"></div>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <script type="module" src="/js/plotBSplines.js"></script>
 
 # 5. Practical Applications: Trajectory interpolation

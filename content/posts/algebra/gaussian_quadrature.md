@@ -131,7 +131,7 @@ The <strong>Legendre polynomials</strong> are a sequence of orthogonal polynomia
 <input type="range" id="degreeSlider" min="0" max="10" value="0">
 <span id="degreeValue">n=0</span>
 <div id="plot"></div>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <script type="module" src="/js/plotLegendre.js"></script>
 
 It is worth noting a few properties they satisfy. Proofs for these properties is included for the sake of completeness, but feel free to skip them if you are not interested:
@@ -287,7 +287,7 @@ The interactive plot below shows how the different methods approximate the integ
 <br><br>
 <div id="functionPlot"></div>
 
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
 <script type="module" src="/js/plotLegendreIntegral.js"></script>
 

@@ -359,7 +359,7 @@ that we can solve following the procedure defined for the previous scenario.
 
 **Try it yourself!**
 
-You can see an example of how to retrieve the camera from a set of ellipse correspondences in the [repository](https://github.com/InakiRaba91/ProjectiveGeometry). In order to do so, just install the package (`poetry install`) and then run 
+You can see an example of how to retrieve the camera from a set of ellipse correspondences in the [repository](https://github.com/InakiRaba91/ProjectiveGeometry). In order to do so, just install the package (`poetry install`) and then run this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/entrypoints/homography_from_ellipse_correspondences_demo_fn.py):
 
 ```bash
 # from ellipses
@@ -399,7 +399,7 @@ $$
 
 **Try it yourself!**
 
-You can see an example of how to retrieve the camera from a set of point, line and ellipse correspondences in the [repository](https://github.com/InakiRaba91/ProjectiveGeometry). In order to do so, just install the package (`poetry install`) and then run 
+You can see an example of how to retrieve the camera from a set of point, line and ellipse correspondences in the [repository](https://github.com/InakiRaba91/ProjectiveGeometry). In order to do so, just install the package (`poetry install`) and then run this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/entrypoints/homography_from_correspondences_demo_fn.py)
 
 ```bash
 # from ellipses
@@ -441,11 +441,11 @@ Given a set of geometric features identified in one of the images, LK algorithm 
 
 **Try it yourself!**
 
-You can see an example of how to retrieve the camera from two images in the [repository](https://github.com/InakiRaba91/ProjectiveGeometry). In order to do so, just install the package (`poetry install`) and then run 
+You can see an example of how to retrieve the camera from two images in the [repository](https://github.com/InakiRaba91/ProjectiveGeometry). In order to do so, just install the package (`poetry install`) and then run this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/entrypoints/homography_from_image_registration_demo_fn.pyy)
 
 ```bash
 # from ellipses
-poetry run python -m projective_geometry homography-from-image-registration
+poetry run python -m projective_geometry homography-from-image-registration-demo
 ```
 
 This will grab the following two images:

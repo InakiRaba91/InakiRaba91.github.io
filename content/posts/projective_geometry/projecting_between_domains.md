@@ -395,7 +395,7 @@ Whenever the frisbee is right at the edge of the camera plane, the frisbee gets 
 
 Moreover, whenever the frisbee is partially in front of the camera, and partially behind it, there is a split in the projection. As a result, we get the unexpected hyperbola. Again, this is a mathematical artefact that would never manifest in a real photograph, it only arises if one naively projects without considering the location of objects w.r.t. the camera plane.
 
-**Note**: you can generate the previous video by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L244). In order to do so, just install the repository (`poetry install`) and then run 
+**Note**: you can generate the previous video by simply running this [script](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/entrypoints/frisbee_demo_fn.py). In order to do so, just install the repository (`poetry install`) and then run 
 
 ```python
 poetry run python -m projective_geometry frisbee-demo --output <LOCATION_OUTPUT_VIDEO.mp4>
@@ -438,7 +438,7 @@ Finally, we just need to **interpolate** the image values at the projected grid
 
 **OpenCV** provides a method that applies this transform, [cv2.warpPerspective](https://docs.opencv.org/4.x/da/d54/group__imgproc__transform.html#gaf73673a7e8e18ec6963e3774e6a94b87). It provides different methods to carry out the interpolation, some of which are differentiable. Differentiability becomes essential for dealing with optimization problems. Most often, this kind of problems are tackled via gradient-descent algorithms. Therefore, whenever the image projection transform is part of the cost function we are trying to optimize for, one must ensure the underlying interpolation is carried out in a differentiable fashion.
 
-This is useful for validating if a camera is properly corrected by visual inspection. You can simply project the source image using the camera and validate it overlaps with the target image. There is an example in case you want to try it out by yourself [here](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/__main__.py#L470), which you can run with the command below
+This is useful for validating if a camera is properly corrected by visual inspection. You can simply project the source image using the camera and validate it overlaps with the target image. There is an example in case you want to try it out by yourself [here](https://github.com/InakiRaba91/ProjectiveGeometry/blob/main/projective_geometry/entrypoints/homography_from_point_correspondences_demo_fn.py), which you can run with the command below
 
 ```python
 poetry run python -m projective_geometry homography-from-point-correspondences-demo --output <LOCATION_OUTPUT_IMAGE.png>
